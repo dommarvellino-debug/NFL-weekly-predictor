@@ -169,7 +169,45 @@ games = add_rolling_form(build_game_features(2026))
 picks = predict_games(artifact, games)   # game_id, teams, home_win_prob
 ```
 
+## Weekly predictions
+
+`src/predict.py` applies the fitted model to a 2026 game week. By default it
+picks the first week with unplayed games; pass `--week N` for a specific week.
+Team form is computed from completed 2025 + 2026 games, so every prediction
+uses only information available before kickoff.
+
+```powershell
+python -m src.predict           # next upcoming week
+python -m src.predict --week 12 # a specific week
+```
+
+This prints a readable pick table and writes `web/data/predictions.json`, shaped
+for the UI:
+
+```json
+{
+  "season": 2026,
+  "week": 11,
+  "games": [
+    {
+      "game_id": "2026_11_MIA_BUF",
+      "gameday": "2026-11-22",
+      "home": {"abbr": "BUF", "name": "Buffalo Bills", "record": "8-1", "win_prob": 0.8861},
+      "away": {"abbr": "MIA", "name": "Miami Dolphins", "record": "1-8", "win_prob": 0.1139},
+      "predicted_winner": "BUF",
+      "confidence": "high"
+    }
+  ]
+}
+```
+
+The Kaggle dataset ends at 2025, so there is no closing line for 2026 — these
+are pure model probabilities, not market-adjusted picks. Forecasts are most
+reliable for the next upcoming week: further-out weeks depend on games that
+haven't been played and therefore have no pre-game form yet.
+
 ## Status
 
-Data loading, feature engineering, the logistic-regression model, and the
-four-screen static UI are ready. Next: wire the model's predictions into `web/`.
+Data loading, feature engineering, the logistic-regression model, generated
+2026 weekly predictions, and the four-screen static UI are ready. Next: wire
+`web/data/predictions.json` into the `web/` pages.
