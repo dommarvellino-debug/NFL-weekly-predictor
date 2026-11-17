@@ -35,6 +35,14 @@ nfl-game-predictor/
 │   ├── features.py   # EPA / pace / rest / bye + rolling form
 │   └── ...           # models
 ├── tests/            # unit tests
+├── web/              # static GridironML-style UI (4 screens)
+│   ├── index.html          # Weekly Matchup Board & AI Picks (landing)
+│   ├── pick-simulator.html # Solo Pick Simulator & AI Comparison
+│   ├── model-metrics.html  # Model Performance & Calibration
+│   ├── game-insights.html  # Game Insights & ML Deep Dive
+│   ├── theme.js            # shared Tailwind config / design tokens
+│   ├── styles.css          # shared base styles
+│   └── logo.svg            # local logo (no external image dependency)
 ├── requirements.txt
 └── README.md
 ```
@@ -52,6 +60,26 @@ pip install -r requirements.txt
 
 (If PowerShell blocks the activation script, run
 `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` first.)
+
+## Static web UI
+
+The four-screen GridironML UI lives in `web/`. It is plain HTML/CSS/JS with a
+shared Tailwind config, so no build step or backend is required. Tailwind and
+Google Fonts are loaded from CDNs; the logo is local.
+
+```powershell
+cd web
+python -m http.server 8000
+```
+
+Then open <http://127.0.0.1:8000/> (Weekly Board). The header nav links to all
+four screens. You can also open an individual `*.html` file directly in a
+browser, but serving over HTTP is recommended so shared assets resolve
+consistently.
+
+> The screens currently display realistic mock Week 10 data and client-side
+> interactions (filters, pick selection, scenario slider). They are a UI shell
+> ready to be wired to real model predictions once modeling is in place.
 
 ## Data sources
 
@@ -96,4 +124,5 @@ model_input = add_rolling_form(games, window=3)
 
 ## Status
 
-Data loading and feature engineering are ready. Modeling code is next.
+Data loading, feature engineering, and the four-screen static UI are ready.
+Modeling code is next; once it exists, connect its predictions to `web/`.

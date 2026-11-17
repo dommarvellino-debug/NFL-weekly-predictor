@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="web_standard" name="shell-type">
+<title>Weekly Board · GridironML</title>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Outfit:wght@600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="styles.css" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="theme.js"></script>
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased">
+<header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+<div class="h-12 max-w-[1360px] mx-auto px-margin-lg flex items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-xs">
+<img alt="GridironML Logo" class="h-6 w-auto object-contain" src="logo.svg">
+<span class="font-headline-sm text-[15px] text-on-surface tracking-tight font-bold">GridironML</span>
+<span class="font-label-sm text-[10px] bg-primary-fixed text-on-primary-fixed px-1.5 py-0.5 rounded-full uppercase tracking-wider font-bold ml-1">v4.2</span>
+</div>
+<nav class="hidden lg:flex items-center gap-0.5 bg-surface-container-low p-0.5 rounded-lg" data-active-classes="bg-surface-container text-on-surface font-label-md font-bold rounded">
+<a aria-current="page" class="px-space-sm py-1 transition-colors bg-surface-container text-on-surface font-label-md text-label-md font-bold rounded" data-path="weekly-board" href="index.html">Weekly Board</a>
+<a class="px-space-sm py-1 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors rounded" data-path="game-insights" href="game-insights.html">Game Insights</a>
+<a class="px-space-sm py-1 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors rounded" data-path="model-metrics" href="model-metrics.html">Model Metrics</a>
+<a class="px-space-sm py-1 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors rounded" data-path="pick-simulator" href="pick-simulator.html">Pick Simulator</a>
+</nav>
+<div class="flex items-center gap-1.5">
+<div class="hidden xl:flex items-center gap-1 bg-surface-container-low px-2 py-1 rounded-md text-on-surface-variant">
+<span class="font-label-sm text-label-sm font-semibold text-on-surface">Week 10</span>
+<span class="text-outline-variant font-label-sm text-label-sm">•</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Regular</span>
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant">expand_more</span>
+</div>
+<div class="hidden md:flex items-center gap-1.5 bg-surface-container-low px-2 py-1 rounded-md">
+<span class="font-label-sm text-[11px] font-bold text-primary">⚡ 10k Sims</span>
+<span class="text-outline-variant font-label-sm text-label-sm">•</span>
+<span class="font-label-sm text-[11px] font-bold text-secondary-container">71.4% Acc</span>
+</div>
+<button aria-label="Model Settings" class="p-1 rounded-md bg-surface-container-low text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors flex items-center justify-center" type="button"><span class="material-symbols-outlined text-[18px]">tune</span></button>
+<div class="w-7 h-7 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[15px]">person</span></div>
+</div>
+</div>
+</header>
+<main class="w-full bg-surface pt-12">
+<div class="max-w-[1360px] mx-auto px-margin-lg py-space-xl">
+<div class="flex flex-col w-full gap-space-lg">
+<!-- Summary & Quick Filters Section -->
+<section class="flex flex-col gap-space-md">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-space-sm">
+<div class="bg-surface-container-lowest shadow-sm rounded-xl p-space-md flex items-center justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider block">Slate Status</span>
+<span class="font-data-display text-data-display text-on-surface">14</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant ml-1">Simulated</span>
+</div>
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-primary"><span class="material-symbols-outlined text-[22px]">sports_football</span></div>
+</div>
+<div class="bg-surface-container-lowest shadow-sm rounded-xl p-space-md flex items-center justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider block">Confidence Picks</span>
+<div class="flex items-baseline gap-1">
+<span class="font-data-display text-data-display text-primary">5</span>
+<span class="font-label-md text-label-md text-primary font-bold">Lock Tier</span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-xl bg-primary-fixed flex items-center justify-center text-on-primary-fixed"><span class="material-symbols-outlined text-[22px]">verified</span></div>
+</div>
+<div class="bg-surface-container-lowest shadow-sm rounded-xl p-space-md flex items-center justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider block">Average ML Edge</span>
+<span class="font-data-display text-data-display text-secondary-container">+4.2</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant ml-1">Points</span>
+</div>
+<div class="w-10 h-10 rounded-xl bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed"><span class="material-symbols-outlined text-[22px]">trending_up</span></div>
+</div>
+<div class="bg-surface-container-lowest shadow-sm rounded-xl p-space-md flex items-center justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider block">Neural Engine</span>
+<span class="font-headline-md text-headline-md text-on-surface">v4.2 Monte</span>
+<span class="font-body-sm text-body-sm text-outline-variant block">10,000 Itr/Game</span>
+</div>
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-primary-container"><span class="material-symbols-outlined text-[22px]">memory</span></div>
+</div>
+</div>
+<div class="flex flex-wrap items-center justify-between gap-space-sm bg-surface-container-lowest shadow-sm rounded-xl p-space-sm">
+<div class="flex flex-wrap items-center gap-space-xs" id="filter-container">
+<button class="filter-btn active bg-on-surface text-surface font-label-md text-label-md px-space-md py-1.5 rounded-lg shadow-sm transition-all" data-filter="all" type="button">All Games (14)</button>
+<button class="filter-btn bg-surface-container text-on-surface-variant hover:text-on-surface font-label-md text-label-md px-space-md py-1.5 rounded-lg transition-all" data-filter="high" type="button">High Confidence (≥70%)</button>
+<button class="filter-btn bg-surface-container text-on-surface-variant hover:text-on-surface font-label-md text-label-md px-space-md py-1.5 rounded-lg transition-all" data-filter="primetime" type="button">Primetime (3)</button>
+<button class="filter-btn bg-surface-container text-on-surface-variant hover:text-on-surface font-label-md text-label-md px-space-md py-1.5 rounded-lg transition-all" data-filter="upset" type="button">Upset Alerts (2)</button>
+<button class="filter-btn bg-surface-container text-on-surface-variant hover:text-on-surface font-label-md text-label-md px-space-md py-1.5 rounded-lg transition-all" data-filter="rivals" type="button">Conference Rivals</button>
+</div>
+<div class="flex items-center gap-space-xs">
+<div class="flex items-center gap-1.5 px-space-sm py-1.5 rounded-lg bg-surface-container text-on-surface font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-outline">sort</span>
+<span>Confidence %</span>
+<span class="material-symbols-outlined text-[14px]">arrow_downward</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Featured "Lock of the Week" Card -->
+<section class="relative bg-surface-container-lowest rounded-2xl shadow-md p-space-lg overflow-hidden">
+<div class="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-primary-fixed/20 blur-3xl pointer-events-none"></div>
+<div class="absolute -left-20 -bottom-20 w-80 h-80 rounded-full bg-secondary-fixed/20 blur-3xl pointer-events-none"></div>
+<div class="relative z-10 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-space-lg">
+<div class="flex flex-col gap-space-md flex-1">
+<div class="flex items-center gap-space-sm flex-wrap">
+<span class="font-label-sm text-label-sm bg-primary text-on-primary px-space-sm py-1 rounded-full uppercase tracking-wider font-bold flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">lock</span> Lock of the Week</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Thursday Night Football • Paycor Stadium</span>
+<span class="font-label-sm text-label-sm bg-surface-container text-on-surface-variant px-space-xs py-0.5 rounded">Simulated 10,000x</span>
+</div>
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-sm flex-1">
+<div class="w-14 h-14 rounded-2xl bg-[#241773] text-white flex items-center justify-center font-headline-md text-headline-md shadow-md ring-2 ring-[#9E7C0C]/30 flex-shrink-0">BAL</div>
+<div>
+<div class="flex items-center gap-1"><span class="font-headline-md text-headline-md text-on-surface font-bold">Ravens</span><span class="material-symbols-outlined text-primary text-[18px]" title="Model Favored">verified</span></div>
+<span class="font-label-sm text-label-sm text-outline uppercase font-semibold">7-2 • Road Fav (-4.5)</span>
+</div>
+</div>
+<div class="flex flex-col items-center justify-center px-space-sm">
+<span class="font-headline-sm text-headline-sm font-extrabold text-outline-variant">AT</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">8:15 PM ET</span>
+</div>
+<div class="flex items-center gap-space-sm flex-1 justify-end text-right">
+<div>
+<div class="flex items-center justify-end gap-1"><span class="font-headline-md text-headline-md text-on-surface font-bold">Bengals</span></div>
+<span class="font-label-sm text-label-sm text-outline uppercase font-semibold">4-5 • Home Dog (+4.5)</span>
+</div>
+<div class="w-14 h-14 rounded-2xl bg-[#FB4F14] text-white flex items-center justify-center font-headline-md text-headline-md shadow-md flex-shrink-0">CIN</div>
+</div>
+</div>
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between font-label-md text-label-md">
+<span class="font-bold text-primary flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-primary inline-block"></span>Ravens ML 76.4%</span>
+<span class="font-semibold text-secondary flex items-center gap-1">Bengals ML 23.6%<span class="w-2.5 h-2.5 rounded-full bg-secondary-container inline-block"></span></span>
+</div>
+<div class="w-full h-3 rounded-full bg-surface-container overflow-hidden flex p-0.5">
+<div class="h-full bg-primary-container rounded-l-full transition-all duration-700" style="width: 76.4%;"></div>
+<div class="h-full bg-secondary-container rounded-r-full transition-all duration-700" style="width: 23.6%;"></div>
+</div>
+</div>
+</div>
+<div class="flex flex-col justify-between gap-space-md lg:w-80 bg-surface-container-low p-space-md rounded-xl">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-bold">Projected Final</span>
+<span class="font-label-sm text-label-sm px-space-xs py-0.5 rounded bg-primary-fixed text-on-primary-fixed font-bold">+7.0 Point Margin</span>
+</div>
+<div class="flex items-center justify-around py-space-xs">
+<div class="text-center"><span class="font-data-display text-data-display text-primary block leading-none">27</span><span class="font-label-sm text-label-sm text-outline uppercase">Baltimore</span></div>
+<span class="font-headline-lg text-headline-lg text-outline-variant font-light">:</span>
+<div class="text-center"><span class="font-data-display text-data-display text-on-surface-variant block leading-none">20</span><span class="font-label-sm text-label-sm text-outline uppercase">Cincinnati</span></div>
+</div>
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between text-on-surface bg-surface-container-lowest px-space-sm py-1 rounded font-body-sm text-body-sm"><span class="flex items-center gap-1 text-on-surface-variant"><span class="material-symbols-outlined text-[15px] text-primary">speed</span>EPA / Play</span><span class="font-semibold text-primary">+0.18 Edge</span></div>
+<div class="flex items-center justify-between text-on-surface bg-surface-container-lowest px-space-sm py-1 rounded font-body-sm text-body-sm"><span class="flex items-center gap-1 text-on-surface-variant"><span class="material-symbols-outlined text-[15px] text-primary">shield</span>Pass Rush Win</span><span class="font-semibold text-on-surface">44% (Elite)</span></div>
+<div class="flex items-center justify-between text-on-surface bg-surface-container-lowest px-space-sm py-1 rounded font-body-sm text-body-sm"><span class="flex items-center gap-1 text-on-surface-variant"><span class="material-symbols-outlined text-[15px] text-outline">thermostat</span>Condition</span><span class="font-semibold text-on-surface">Clear • 54°F</span></div>
+</div>
+<div class="bg-primary text-on-primary px-space-sm py-2 rounded-lg flex items-center justify-between">
+<div class="flex flex-col"><span class="font-label-sm text-label-sm tracking-wider uppercase opacity-80">AI Model Recommendation</span><span class="font-label-lg text-label-lg font-bold">BAL -4.5 (82% Cover)</span></div>
+<a href="game-insights.html" aria-label="View Full Simulation" class="w-8 h-8 rounded-lg bg-primary-container hover:bg-surface-tint flex items-center justify-center text-on-primary transition-all active:scale-95"><span class="material-symbols-outlined text-[18px]">arrow_forward</span></a>
+</div>
+</div>
+</div>
+</section>
+<!-- Section Header for Grid -->
+<div class="flex items-center justify-between pt-space-xs">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface font-bold">Sunday &amp; Monday Schedule</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">10k simulated game states evaluated against opening consensus lines</p>
+</div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold hidden sm:inline-block">Updated 3m ago</span>
+</div>
+<!-- Weekly Matchup Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space-md" id="matchup-grid">
+<article class="bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-shadow p-space-md flex flex-col justify-between gap-space-md">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-semibold text-outline">Sun 1:00 PM ET • Arrowhead</span>
+<span class="font-label-sm text-label-sm bg-primary-fixed text-on-primary-fixed font-bold px-space-xs py-0.5 rounded-full flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">check_circle</span> High Conf</span>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<div class="w-8 h-8 rounded-lg bg-[#E31837] text-white flex items-center justify-center font-headline-sm text-headline-sm font-bold shadow-sm">KC</div>
+<div><div class="flex items-center gap-1"><span class="font-label-lg text-label-lg font-bold text-on-surface">Chiefs</span><span class="w-2 h-2 rounded-full bg-primary"></span></div><span class="font-body-sm text-body-sm text-outline">8-0 • Home</span></div>
+</div>
+<span class="font-data-display-mobile text-data-display-mobile font-bold text-primary">24</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<div class="w-8 h-8 rounded-lg bg-[#FB4F14] text-white flex items-center justify-center font-headline-sm text-headline-sm font-bold shadow-sm">DEN</div>
+<div><span class="font-label-lg text-label-lg font-bold text-on-surface">Broncos</span><span class="font-body-sm text-body-sm text-outline block">5-4 • Away</span></div>
+</div>
+<span class="font-data-display-mobile text-data-display-mobile font-bold text-on-surface-variant">17</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex justify-between font-label-sm text-label-sm"><span class="font-bold text-primary">KC 72%</span><span class="font-semibold text-on-surface-variant">DEN 28%</span></div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden flex"><div class="h-full bg-primary rounded-l-full" style="width: 72%;"></div><div class="h-full bg-surface-variant rounded-r-full" style="width: 28%;"></div></div>
+</div>
+<div class="pt-space-xs flex items-center justify-between bg-surface-container-low p-space-xs rounded-lg">
+<div class="flex items-center gap-space-xs"><span class="font-label-sm text-label-sm bg-surface-container-lowest px-1.5 py-0.5 rounded font-bold text-on-surface">Edge: KC -8.0</span><span class="font-body-sm text-body-sm text-outline">Line: -7.5</span></div>
+<a href="game-insights.html" class="text-primary hover:text-primary-container font-label-md text-label-md font-bold flex items-center gap-0.5">Inspect <span class="material-symbols-outlined text-[16px]">chevron_right</span></a>
+</div>
+</article>
+<article class="bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-shadow p-space-md flex flex-col justify-between gap-space-md">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-semibold text-outline">Sun 8:20 PM ET • NRG Stadium</span>
+<span class="font-label-sm text-label-sm bg-secondary-fixed text-on-secondary-fixed font-bold px-space-xs py-0.5 rounded-full flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">bolt</span> Moderate</span>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<div class="w-8 h-8 rounded-lg bg-[#0076B6] text-white flex items-center justify-center font-headline-sm text-headline-sm font-bold shadow-sm">DET</div>
+<div><div class="flex items-center gap-1"><span class="font-label-lg text-label-lg font-bold text-on-surface">Lions</span><span class="w-2 h-2 rounded-full bg-primary"></span></div><span class="font-body-sm text-body-sm text-outline">7-1 • Away</span></div>
+</div>
+<span class="font-data-display-mobile text-data-display-mobile font-bold text-primary">28</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<div class="w-8 h-8 rounded-lg bg-[#03202F] text-white flex items-center justify-center font-headline-sm text-headline-sm font-bold shadow-sm">HOU</div>
+<div><span class="font-label-lg text-label-lg font-bold text-on-surface">Texans</span><span class="font-body-sm text-body-sm text-outline block">6-3 • Home</span></div>
+</div>
+<span class="font-data-display-mobile text-data-display-mobile font-bold text-on-surface-variant">24</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex justify-between font-label-sm text-label-sm"><span class="font-bold text-primary">DET 64%</span><span class="font-semibold text-on-surface-variant">HOU 36%</span></div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden flex"><div class="h-full bg-primary rounded-l-full" style="width: 64%;"></div><div class="h-full bg-surface-variant rounded-r-full" style="width: 36%;"></div></div>
+</div>
+<div class="pt-space-xs flex items-center justify-between bg-surface-container-low p-space-xs rounded-lg">
+<div class="flex items-center gap-space-xs"><span class="font-label-sm text-label-sm bg-surface-container-lowest px-1.5 py-0.5 rounded font-bold text-secondary-container">Edge: Over 49.5</span><span class="font-body-sm text-body-sm text-outline">O/U 47.0</span></div>
+<a href="game-insights.html" class="text-primary hover:text-primary-container font-label-md text-label-md font-bold flex items-center gap-0.5">Inspect <span class="material-symbols-outlined text-[16px]">chevron_right</span></a>
+</div>
+</article>
+<article class="bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-shadow p-space-md flex flex-col justify-between gap-space-md">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-semibold text-outline">Sun 1:00 PM ET • Raymond James</span>
+<span class="font-label-sm text-label-sm bg-primary-fixed text-on-primary-fixed font-bold px-space-xs py-0.5 rounded-full flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">check_circle</span> High Conf</span>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<div class="w-8 h-8 rounded-lg bg-[#AA0000] text-white flex items-center justify-center font-headline-sm text-headline-sm font-bold shadow-sm">SF</div>
+<div><div class="flex items-center gap-1"><span class="font-label-lg text-label-lg font-bold text-on-surface">49ers</span><span class="w-2 h-2 rounded-full bg-primary"></span></div><span class="font-body-sm text-body-sm text-outline">4-4 • Away</span></div>
+</div>
+<span class="font-data-display-mobile text-data-display-mobile font-bold text-primary">26</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<div class="w-8 h-8 rounded-lg bg-[#D50A0A] text-white flex items-center justify-center font-headline-sm text-headline-sm font-bold shadow-sm">TB</div>
+<div><span class="font-label-lg text-label-lg font-bold text-on-surface">Buccaneers</span><span class="font-body-sm text-body-sm text-outline block">4-5 • Home</span></div>
+</div>
+<span class="font-data-display-mobile text-data-display-mobile font-bold text-on-surface-variant">20</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex justify-between font-label-sm text-label-sm"><span class="font-bold text-primary">SF 68%</span><span class="font-semibold text-on-surface-variant">TB 32%</span></div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden flex"><div class="h-full bg-primary rounded-l-full" style="width: 68%;"></div><div class="h-full bg-surface-variant rounded-r-full" style="width: 32%;"></div></div>
+</div>
+<div class="pt-space-xs flex items-center justify-between bg-surface-container-low p-space-xs rounded-lg">
+<div class="flex items-center gap-space-xs"><span class="font-label-sm text-label-sm bg-surface-container-lowest px-1.5 py-0.5 rounded font-bold text-on-surface">Edge: SF -5.5</span><span class="font-body-sm text-body-sm text-outline">Line: -4.0</span></div>
+<a href="game-insights.html" class="text-primary hover:text-primary-container font-label-md text-label-md font-bold flex items-center gap-0.5">Inspect <span class="material-symbols-outlined text-[16px]">chevron_right</span></a>
+</div>
+</article>
+<article class="bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-shadow p-space-md flex flex-col justify-between gap-space-md">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-semibold text-outline">Sun 4:25 PM ET • AT&amp;T Stadium</span>
+<span class="font-label-sm text-label-sm bg-primary-container text-on-primary font-bold px-space-xs py-0.5 rounded-full flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">verified</span> 79% Top Lock</span>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<div class="w-8 h-8 rounded-lg bg-[#004C54] text-white flex items-center justify-center font-headline-sm text-headline-sm font-bold shadow-sm">PHI</div>
+<div><div class="flex items-center gap-1"><span class="font-label-lg text-label-lg font-bold text-on-surface">Eagles</span><span class="w-2 h-2 rounded-full bg-primary"></span></div><span class="font-body-sm text-body-sm text-outline">6-2 • Away</span></div>
+</div>
+<span class="font-data-display-mobile text-data-display-mobile font-bold text-primary">31</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<div class="w-8 h-8 rounded-lg bg-[#041E42] text-white flex items-center justify-center font-headline-sm text-headline-sm font-bold shadow-sm">DAL</div>
+<div><span class="font-label-lg text-label-lg font-bold text-on-surface">Cowboys</span><span class="font-body-sm text-body-sm text-outline block">3-5 • Home</span></div>
+</div>
+<span class="font-data-display-mobile text-data-display-mobile font-bold text-on-surface-variant">16</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex justify-between font-label-sm text-label-sm"><span class="font-bold text-primary">PHI 79%</span><span class="font-semibold text-on-surface-variant">DAL 21%</span></div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden flex"><div class="h-full bg-primary-container rounded-l-full" style="width: 79%;"></div><div class="h-full bg-surface-variant rounded-r-full" style="width: 21%;"></div></div>
+</div>
+<div class="pt-space-xs flex items-center justify-between bg-surface-container-low p-space-xs rounded-lg">
+<div class="flex items-center gap-space-xs"><span class="font-label-sm text-label-sm bg-surface-container-lowest px-1.5 py-0.5 rounded font-bold text-primary">Upset Alert: Low (14%)</span><span class="font-body-sm text-body-sm text-outline">PHI -7.5</span></div>
+<a href="game-insights.html" class="text-primary hover:text-primary-container font-label-md text-label-md font-bold flex items-center gap-0.5">Inspect <span class="material-symbols-outlined text-[16px]">chevron_right</span></a>
+</div>
+</article>
+<article class="bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-shadow p-space-md flex flex-col justify-between gap-space-md">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-semibold text-outline">Sun 1:00 PM ET • Northwest Stadium</span>
+<span class="font-label-sm text-label-sm bg-tertiary-fixed text-on-tertiary-fixed font-bold px-space-xs py-0.5 rounded-full flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">balance</span> Toss-up</span>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<div class="w-8 h-8 rounded-lg bg-[#5A1414] text-white flex items-center justify-center font-headline-sm text-headline-sm font-bold shadow-sm">WAS</div>
+<div><div class="flex items-center gap-1"><span class="font-label-lg text-label-lg font-bold text-on-surface">Commanders</span><span class="w-2 h-2 rounded-full bg-tertiary"></span></div><span class="font-body-sm text-body-sm text-outline">7-2 • Home</span></div>
+</div>
+<span class="font-data-display-mobile text-data-display-mobile font-bold text-tertiary">22</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<div class="w-8 h-8 rounded-lg bg-[#FFB612] text-[#101820] flex items-center justify-center font-headline-sm text-headline-sm font-bold shadow-sm">PIT</div>
+<div><span class="font-label-lg text-label-lg font-bold text-on-surface">Steelers</span><span class="font-body-sm text-body-sm text-outline block">6-2 • Away</span></div>
+</div>
+<span class="font-data-display-mobile text-data-display-mobile font-bold text-on-surface-variant">21</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex justify-between font-label-sm text-label-sm"><span class="font-bold text-tertiary">WAS 53%</span><span class="font-semibold text-on-surface-variant">PIT 47%</span></div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden flex"><div class="h-full bg-tertiary rounded-l-full" style="width: 53%;"></div><div class="h-full bg-surface-variant rounded-r-full" style="width: 47%;"></div></div>
+</div>
+<div class="pt-space-xs flex items-center justify-between bg-surface-container-low p-space-xs rounded-lg">
+<div class="flex items-center gap-space-xs"><span class="font-label-sm text-label-sm bg-surface-container-lowest px-1.5 py-0.5 rounded font-bold text-tertiary">Tight Spread</span><span class="font-body-sm text-body-sm text-outline">WAS -2.5</span></div>
+<a href="game-insights.html" class="text-primary hover:text-primary-container font-label-md text-label-md font-bold flex items-center gap-0.5">Inspect <span class="material-symbols-outlined text-[16px]">chevron_right</span></a>
+</div>
+</article>
+<article class="bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-shadow p-space-md flex flex-col justify-between gap-space-md">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-semibold text-outline">Sun 1:00 PM ET • Lucas Oil</span>
+<span class="font-label-sm text-label-sm bg-primary-fixed text-on-primary-fixed font-bold px-space-xs py-0.5 rounded-full flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">check_circle</span> High Conf</span>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<div class="w-8 h-8 rounded-lg bg-[#00338D] text-white flex items-center justify-center font-headline-sm text-headline-sm font-bold shadow-sm">BUF</div>
+<div><div class="flex items-center gap-1"><span class="font-label-lg text-label-lg font-bold text-on-surface">Bills</span><span class="w-2 h-2 rounded-full bg-primary"></span></div><span class="font-body-sm text-body-sm text-outline">7-2 • Away</span></div>
+</div>
+<span class="font-data-display-mobile text-data-display-mobile font-bold text-primary">29</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<div class="w-8 h-8 rounded-lg bg-[#002C5F] text-white flex items-center justify-center font-headline-sm text-headline-sm font-bold shadow-sm">IND</div>
+<div><span class="font-label-lg text-label-lg font-bold text-on-surface">Colts</span><span class="font-body-sm text-body-sm text-outline block">4-5 • Home</span></div>
+</div>
+<span class="font-data-display-mobile text-data-display-mobile font-bold text-on-surface-variant">18</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex justify-between font-label-sm text-label-sm"><span class="font-bold text-primary">BUF 74%</span><span class="font-semibold text-on-surface-variant">IND 26%</span></div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden flex"><div class="h-full bg-primary rounded-l-full" style="width: 74%;"></div><div class="h-full bg-surface-variant rounded-r-full" style="width: 26%;"></div></div>
+</div>
+<div class="pt-space-xs flex items-center justify-between bg-surface-container-low p-space-xs rounded-lg">
+<div class="flex items-center gap-space-xs"><span class="font-label-sm text-label-sm bg-surface-container-lowest px-1.5 py-0.5 rounded font-bold text-on-surface">Edge: BUF -4.0</span><span class="font-body-sm text-body-sm text-outline">Line: -4.0</span></div>
+<a href="game-insights.html" class="text-primary hover:text-primary-container font-label-md text-label-md font-bold flex items-center gap-0.5">Inspect <span class="material-symbols-outlined text-[16px]">chevron_right</span></a>
+</div>
+</article>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const buttons = document.querySelectorAll('#filter-container .filter-btn');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => {
+          b.classList.remove('bg-on-surface', 'text-surface', 'shadow-sm');
+          b.classList.add('bg-surface-container', 'text-on-surface-variant');
+        });
+        btn.classList.remove('bg-surface-container', 'text-on-surface-variant');
+        btn.classList.add('bg-on-surface', 'text-surface', 'shadow-sm');
+      });
+    });
+  });
+</script>
+</div>
+</div>
+</main>
+<footer class="w-full bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] mt-space-xl">
+<div class="max-w-[1360px] mx-auto px-margin-lg py-space-lg flex flex-col md:flex-row items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-sm"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-bold">GridironML Engine</span><span class="text-outline-variant font-label-sm text-label-sm">•</span><span class="font-body-sm text-body-sm text-on-surface-variant">Algorithmic probabilistic models for informational and entertainment analysis only. Not sports wagering advice.</span></div>
+<div class="flex items-center gap-space-md"><span class="font-label-sm text-label-sm text-on-surface-variant">NFL Slate Synchronized: Sunday, Nov 10 • 12:45 PM ET</span><div class="h-2 w-2 rounded-full bg-primary-container animate-pulse"></div></div>
+</div>
+</footer>
+</body>
+</html>

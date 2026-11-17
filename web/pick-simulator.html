@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="web_standard" name="shell-type">
+<title>Pick Simulator · GridironML</title>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Outfit:wght@600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="styles.css" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="theme.js"></script>
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased">
+<header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+<div class="h-12 max-w-[1360px] mx-auto px-margin-lg flex items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-xs">
+<img alt="GridironML Logo" class="h-6 w-auto object-contain" src="logo.svg">
+<span class="font-headline-sm text-[16px] text-on-surface tracking-tight font-bold">GridironML</span>
+<span class="font-label-sm text-[10px] bg-primary-fixed text-on-primary-fixed px-1.5 py-0.5 rounded-full uppercase tracking-wider font-bold">v4.2</span>
+</div>
+<nav class="hidden lg:flex items-center gap-1 bg-surface-container-low p-1 rounded-lg" data-active-classes="bg-surface-container text-on-surface font-label-md font-bold rounded">
+<a class="px-space-sm py-1 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors rounded" data-path="weekly-board" href="index.html">Weekly Board</a>
+<a class="px-space-sm py-1 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors rounded" data-path="game-insights" href="game-insights.html">Game Insights</a>
+<a class="px-space-sm py-1 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors rounded" data-path="model-metrics" href="model-metrics.html">Model Metrics</a>
+<a aria-current="page" class="px-space-sm py-1 transition-colors bg-surface-container text-on-surface font-label-md text-label-md font-bold rounded" data-path="pick-simulator" href="pick-simulator.html">Pick Simulator</a>
+</nav>
+<div class="flex items-center gap-space-xs">
+<div class="hidden xl:flex items-center gap-1 bg-surface-container-low px-space-xs py-1 rounded text-on-surface-variant">
+<span class="font-label-sm text-label-sm font-semibold text-on-surface">Week 10</span>
+<span class="text-outline-variant font-label-sm text-label-sm">•</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Reg Season</span>
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant">expand_more</span>
+</div>
+<div class="hidden md:flex items-center gap-1 bg-surface-container-low px-space-xs py-1 rounded">
+<span class="font-label-sm text-label-sm font-bold text-primary">⚡ 10k Sims</span>
+<span class="text-outline-variant font-label-sm text-label-sm">•</span>
+<span class="font-label-sm text-label-sm font-bold text-secondary-container">71.4%</span>
+</div>
+<button aria-label="Model Settings" class="p-1 rounded bg-surface-container-low text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors flex items-center justify-center" type="button"><span class="material-symbols-outlined text-[18px]">tune</span></button>
+<div class="w-7 h-7 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[16px]">person</span></div>
+</div>
+</div>
+</header>
+<main class="w-full bg-surface h-12">
+<div class="max-w-[1360px] mx-auto px-margin-lg py-space-xl">
+<div class="flex flex-col w-full">
+<!-- Top Command Ribbon & Metrics Bar -->
+<section class="relative w-full rounded-2xl bg-surface-container-lowest p-space-lg shadow-sm mb-space-xl overflow-hidden">
+<div class="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-primary-fixed/20 blur-3xl pointer-events-none"></div>
+<div class="absolute -left-12 -bottom-12 w-48 h-48 rounded-full bg-secondary-fixed/30 blur-2xl pointer-events-none"></div>
+<div class="relative z-10 flex flex-col xl:flex-row xl:items-center justify-between gap-space-lg">
+<div class="space-y-1">
+<div class="flex items-center gap-space-sm">
+<span class="px-space-sm py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm uppercase tracking-wider font-bold">Solo Lab</span>
+<span class="text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">Monte Carlo V4.2 Real-time Sync</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight font-extrabold">My Week 10 Slate Simulator</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Test your football instincts against the Machine Learning engine. Lock in your picks and see instant simulation synergy.</p>
+</div>
+<div class="grid grid-cols-3 gap-space-sm bg-surface-container-low p-space-sm rounded-xl">
+<div class="bg-surface-container-lowest px-space-md py-space-sm rounded-lg shadow-sm text-center">
+<span class="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Picks Made</span>
+<span class="font-data-display-mobile text-data-display-mobile text-primary font-bold" id="stat-picks-count">10 / 14</span>
+</div>
+<div class="bg-surface-container-lowest px-space-md py-space-sm rounded-lg shadow-sm text-center">
+<span class="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Model Match</span>
+<span class="font-data-display-mobile text-data-display-mobile text-on-surface font-bold" id="stat-agreement-pct">78%</span>
+</div>
+<div class="bg-surface-container-lowest px-space-md py-space-sm rounded-lg shadow-sm text-center">
+<span class="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Projected Score</span>
+<span class="font-data-display-mobile text-data-display-mobile text-secondary-container font-bold" id="stat-proj-score">11-3</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Main Grid: Pick Matrix (Left 8 Cols) + Solo Telemetry Sidebar (Right 4 Cols) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<div class="lg:col-span-8 space-y-space-md">
+<!-- Slate Filter & Mode Toggles -->
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface">Weekly Matchups</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">6 Focused Cards</span>
+</div>
+<div class="flex items-center gap-space-sm">
+<span class="font-label-md text-label-md text-on-surface-variant">Auto-Lock Consensus:</span>
+<button class="px-space-sm py-1 bg-surface-container-high hover:bg-surface-dim text-on-surface font-label-md text-label-md rounded-lg transition-colors flex items-center gap-1" id="auto-sync-btn" type="button"><span class="material-symbols-outlined text-[16px]">bolt</span> Align All</button>
+</div>
+</div>
+<!-- MATCHUP 1: BAL @ CIN -->
+<div class="game-card bg-surface-container-lowest rounded-xl p-space-md shadow-sm transition-all hover:shadow-md" data-game-id="g1" data-ml-pick="BAL" data-ml-prob="76" data-user-pick="BAL">
+<div class="flex flex-wrap items-center justify-between gap-space-xs mb-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm bg-surface-container text-on-surface-variant px-space-xs py-0.5 rounded font-bold">THU 8:15 PM</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">M&amp;T Bank Stadium</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="flex items-center gap-1 text-on-primary-fixed bg-primary-fixed px-space-xs py-0.5 rounded-full font-label-sm text-label-sm font-bold"><span class="material-symbols-outlined text-[14px]">psychology</span> AI: BAL -7.4</span>
+<span class="status-badge px-space-xs py-0.5 rounded-full font-label-sm text-label-sm font-bold bg-primary-container text-on-primary-container flex items-center gap-1"><span class="material-symbols-outlined text-[13px]">done</span> Synced with AI (76%)</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-sm">
+<button class="team-option-BAL flex items-center justify-between p-space-sm rounded-xl bg-surface-container-low transition-all active:scale-[0.99] ring-2 ring-primary bg-primary-fixed/20" onclick="selectTeam('g1', 'BAL')" type="button">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-[22px] shadow-sm">🏈</div>
+<div class="text-left"><div class="flex items-center gap-1.5"><span class="font-headline-sm text-headline-sm font-bold text-on-surface">BAL</span><span class="font-label-sm text-label-sm text-on-surface-variant">Ravens (7-3)</span></div><span class="font-label-sm text-label-sm text-primary font-bold">Win Prob: 76.2%</span></div>
+</div>
+<div class="pick-radio-BAL w-5 h-5 rounded-full bg-primary flex items-center justify-center text-on-primary"><span class="material-symbols-outlined text-[14px]">check</span></div>
+</button>
+<button class="team-option-CIN flex items-center justify-between p-space-sm rounded-xl bg-surface-container-low transition-all active:scale-[0.99] hover:bg-surface-container" onclick="selectTeam('g1', 'CIN')" type="button">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-[22px] shadow-sm">🐯</div>
+<div class="text-left"><div class="flex items-center gap-1.5"><span class="font-headline-sm text-headline-sm font-bold text-on-surface">CIN</span><span class="font-label-sm text-label-sm text-on-surface-variant">Bengals (4-6)</span></div><span class="font-label-sm text-label-sm text-on-surface-variant">Win Prob: 23.8%</span></div>
+</div>
+<div class="pick-radio-CIN w-5 h-5 rounded-full bg-surface-container-high flex items-center justify-center text-transparent"><span class="material-symbols-outlined text-[14px]">check</span></div>
+</button>
+</div>
+<div class="mt-space-sm pt-space-xs flex flex-wrap items-center justify-between gap-space-sm bg-surface-container-low/60 p-space-xs rounded-lg">
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-semibold">Instinct Confidence:</span>
+<div class="flex items-center text-tertiary">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-[18px] text-surface-dim">star</span>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">ML Model Line: <strong class="text-on-surface">BAL -7.5</strong> • User Bias Factor: <span class="text-primary font-bold">+1.2x</span></span>
+</div>
+</div>
+<!-- MATCHUP 2: KC @ DEN -->
+<div class="game-card bg-surface-container-lowest rounded-xl p-space-md shadow-sm transition-all hover:shadow-md" data-game-id="g2" data-ml-pick="KC" data-ml-prob="82" data-user-pick="KC">
+<div class="flex flex-wrap items-center justify-between gap-space-xs mb-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm bg-surface-container text-on-surface-variant px-space-xs py-0.5 rounded font-bold">SUN 1:00 PM</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Arrowhead Stadium</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="flex items-center gap-1 text-on-primary-fixed bg-primary-fixed px-space-xs py-0.5 rounded-full font-label-sm text-label-sm font-bold"><span class="material-symbols-outlined text-[14px]">psychology</span> AI: KC -9.1</span>
+<span class="status-badge px-space-xs py-0.5 rounded-full font-label-sm text-label-sm font-bold bg-primary-container text-on-primary-container flex items-center gap-1"><span class="material-symbols-outlined text-[13px]">done</span> Synced with AI (82%)</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-sm">
+<button class="team-option-KC flex items-center justify-between p-space-sm rounded-xl bg-surface-container-low transition-all active:scale-[0.99] ring-2 ring-primary bg-primary-fixed/20" onclick="selectTeam('g2', 'KC')" type="button">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-[22px] shadow-sm">🛡️</div>
+<div class="text-left"><div class="flex items-center gap-1.5"><span class="font-headline-sm text-headline-sm font-bold text-on-surface">KC</span><span class="font-label-sm text-label-sm text-on-surface-variant">Chiefs (8-0)</span></div><span class="font-label-sm text-label-sm text-primary font-bold">Win Prob: 82.5%</span></div>
+</div>
+<div class="pick-radio-KC w-5 h-5 rounded-full bg-primary flex items-center justify-center text-on-primary"><span class="material-symbols-outlined text-[14px]">check</span></div>
+</button>
+<button class="team-option-DEN flex items-center justify-between p-space-sm rounded-xl bg-surface-container-low transition-all active:scale-[0.99] hover:bg-surface-container" onclick="selectTeam('g2', 'DEN')" type="button">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-[22px] shadow-sm">🐎</div>
+<div class="text-left"><div class="flex items-center gap-1.5"><span class="font-headline-sm text-headline-sm font-bold text-on-surface">DEN</span><span class="font-label-sm text-label-sm text-on-surface-variant">Broncos (5-4)</span></div><span class="font-label-sm text-label-sm text-on-surface-variant">Win Prob: 17.5%</span></div>
+</div>
+<div class="pick-radio-DEN w-5 h-5 rounded-full bg-surface-container-high flex items-center justify-center text-transparent"><span class="material-symbols-outlined text-[14px]">check</span></div>
+</button>
+</div>
+<div class="mt-space-sm pt-space-xs flex flex-wrap items-center justify-between gap-space-sm bg-surface-container-low/60 p-space-xs rounded-lg">
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-semibold">Instinct Confidence:</span>
+<div class="flex items-center text-tertiary">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">ML Model Line: <strong class="text-on-surface">KC -8.5</strong> • User Consensus Edge: <span class="text-primary font-bold">+6.2 EV</span></span>
+</div>
+</div>
+<!-- MATCHUP 3: DET @ HOU -->
+<div class="game-card bg-surface-container-lowest rounded-xl p-space-md shadow-sm transition-all hover:shadow-md" data-game-id="g3" data-ml-pick="DET" data-ml-prob="68" data-user-pick="DET">
+<div class="flex flex-wrap items-center justify-between gap-space-xs mb-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm bg-surface-container text-on-surface-variant px-space-xs py-0.5 rounded font-bold">SUN 8:20 PM</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">NRG Stadium</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="flex items-center gap-1 text-on-primary-fixed bg-primary-fixed px-space-xs py-0.5 rounded-full font-label-sm text-label-sm font-bold"><span class="material-symbols-outlined text-[14px]">psychology</span> AI: DET -4.0</span>
+<span class="status-badge px-space-xs py-0.5 rounded-full font-label-sm text-label-sm font-bold bg-primary-container text-on-primary-container flex items-center gap-1"><span class="material-symbols-outlined text-[13px]">done</span> Synced with AI (68%)</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-sm">
+<button class="team-option-DET flex items-center justify-between p-space-sm rounded-xl bg-surface-container-low transition-all active:scale-[0.99] ring-2 ring-primary bg-primary-fixed/20" onclick="selectTeam('g3', 'DET')" type="button">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-[22px] shadow-sm">🦁</div>
+<div class="text-left"><div class="flex items-center gap-1.5"><span class="font-headline-sm text-headline-sm font-bold text-on-surface">DET</span><span class="font-label-sm text-label-sm text-on-surface-variant">Lions (7-1)</span></div><span class="font-label-sm text-label-sm text-primary font-bold">Win Prob: 68.1%</span></div>
+</div>
+<div class="pick-radio-DET w-5 h-5 rounded-full bg-primary flex items-center justify-center text-on-primary"><span class="material-symbols-outlined text-[14px]">check</span></div>
+</button>
+<button class="team-option-HOU flex items-center justify-between p-space-sm rounded-xl bg-surface-container-low transition-all active:scale-[0.99] hover:bg-surface-container" onclick="selectTeam('g3', 'HOU')" type="button">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-[22px] shadow-sm">🐂</div>
+<div class="text-left"><div class="flex items-center gap-1.5"><span class="font-headline-sm text-headline-sm font-bold text-on-surface">HOU</span><span class="font-label-sm text-label-sm text-on-surface-variant">Texans (6-3)</span></div><span class="font-label-sm text-label-sm text-on-surface-variant">Win Prob: 31.9%</span></div>
+</div>
+<div class="pick-radio-HOU w-5 h-5 rounded-full bg-surface-container-high flex items-center justify-center text-transparent"><span class="material-symbols-outlined text-[14px]">check</span></div>
+</button>
+</div>
+<div class="mt-space-sm pt-space-xs flex flex-wrap items-center justify-between gap-space-sm bg-surface-container-low/60 p-space-xs rounded-lg">
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-semibold">Instinct Confidence:</span>
+<div class="flex items-center text-tertiary">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-[18px] text-surface-dim">star</span><span class="material-symbols-outlined text-[18px] text-surface-dim">star</span>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">ML Model Line: <strong class="text-on-surface">DET -3.5</strong> • User Pick Delta: <span class="text-primary font-bold">Standard Sync</span></span>
+</div>
+</div>
+<!-- MATCHUP 4: SF @ TB (Contrarian) -->
+<div class="game-card bg-surface-container-lowest rounded-xl p-space-md shadow-sm transition-all hover:shadow-md ring-2 ring-secondary-container/40" data-game-id="g4" data-ml-pick="SF" data-ml-prob="24" data-user-pick="TB">
+<div class="flex flex-wrap items-center justify-between gap-space-xs mb-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm bg-surface-container text-on-surface-variant px-space-xs py-0.5 rounded font-bold">SUN 1:00 PM</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Raymond James Stadium</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="flex items-center gap-1 text-on-primary-fixed bg-primary-fixed px-space-xs py-0.5 rounded-full font-label-sm text-label-sm font-bold"><span class="material-symbols-outlined text-[14px]">psychology</span> AI: SF -6.2</span>
+<span class="status-badge px-space-xs py-0.5 rounded-full font-label-sm text-label-sm font-bold bg-secondary-fixed text-on-secondary-fixed flex items-center gap-1"><span class="material-symbols-outlined text-[13px]">warning</span> Contrarian Gut Pick! (Model: 24%)</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-sm">
+<button class="team-option-SF flex items-center justify-between p-space-sm rounded-xl bg-surface-container-low transition-all active:scale-[0.99] hover:bg-surface-container" onclick="selectTeam('g4', 'SF')" type="button">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-[22px] shadow-sm">⛏️</div>
+<div class="text-left"><div class="flex items-center gap-1.5"><span class="font-headline-sm text-headline-sm font-bold text-on-surface">SF</span><span class="font-label-sm text-label-sm text-on-surface-variant">49ers (4-4)</span></div><span class="font-label-sm text-label-sm text-primary font-bold">Win Prob: 76.0%</span></div>
+</div>
+<div class="pick-radio-SF w-5 h-5 rounded-full bg-surface-container-high flex items-center justify-center text-transparent"><span class="material-symbols-outlined text-[14px]">check</span></div>
+</button>
+<button class="team-option-TB flex items-center justify-between p-space-sm rounded-xl bg-secondary-fixed/30 transition-all active:scale-[0.99] ring-2 ring-secondary-container" onclick="selectTeam('g4', 'TB')" type="button">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-[22px] shadow-sm">🏴‍☠️</div>
+<div class="text-left"><div class="flex items-center gap-1.5"><span class="font-headline-sm text-headline-sm font-bold text-on-surface">TB</span><span class="font-label-sm text-label-sm text-secondary-container font-semibold">Buccaneers (4-5)</span></div><span class="font-label-sm text-label-sm text-secondary-container font-bold">Win Prob: 24.0%</span></div>
+</div>
+<div class="pick-radio-TB w-5 h-5 rounded-full bg-secondary-container flex items-center justify-center text-on-tertiary-container"><span class="material-symbols-outlined text-[14px]">check</span></div>
+</button>
+</div>
+<div class="mt-space-sm pt-space-xs flex flex-wrap items-center justify-between gap-space-sm bg-surface-container-low/60 p-space-xs rounded-lg">
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-semibold">Instinct Confidence:</span>
+<div class="flex items-center text-tertiary">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-[18px] text-surface-dim">star</span><span class="material-symbols-outlined text-[18px] text-surface-dim">star</span><span class="material-symbols-outlined text-[18px] text-surface-dim">star</span>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-secondary font-semibold">⚠️ Contrarian Vector: +380 ML Expected Discrepancy</span>
+</div>
+</div>
+<!-- MATCHUP 5: PHI @ DAL -->
+<div class="game-card bg-surface-container-lowest rounded-xl p-space-md shadow-sm transition-all hover:shadow-md" data-game-id="g5" data-ml-pick="PHI" data-ml-prob="71" data-user-pick="PHI">
+<div class="flex flex-wrap items-center justify-between gap-space-xs mb-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm bg-surface-container text-on-surface-variant px-space-xs py-0.5 rounded font-bold">SUN 4:25 PM</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">AT&amp;T Stadium</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="flex items-center gap-1 text-on-primary-fixed bg-primary-fixed px-space-xs py-0.5 rounded-full font-label-sm text-label-sm font-bold"><span class="material-symbols-outlined text-[14px]">psychology</span> AI: PHI -7.0</span>
+<span class="status-badge px-space-xs py-0.5 rounded-full font-label-sm text-label-sm font-bold bg-primary-container text-on-primary-container flex items-center gap-1"><span class="material-symbols-outlined text-[13px]">done</span> Synced with AI (71%)</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-sm">
+<button class="team-option-PHI flex items-center justify-between p-space-sm rounded-xl bg-surface-container-low transition-all active:scale-[0.99] ring-2 ring-primary bg-primary-fixed/20" onclick="selectTeam('g5', 'PHI')" type="button">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-[22px] shadow-sm">🦅</div>
+<div class="text-left"><div class="flex items-center gap-1.5"><span class="font-headline-sm text-headline-sm font-bold text-on-surface">PHI</span><span class="font-label-sm text-label-sm text-on-surface-variant">Eagles (6-2)</span></div><span class="font-label-sm text-label-sm text-primary font-bold">Win Prob: 71.4%</span></div>
+</div>
+<div class="pick-radio-PHI w-5 h-5 rounded-full bg-primary flex items-center justify-center text-on-primary"><span class="material-symbols-outlined text-[14px]">check</span></div>
+</button>
+<button class="team-option-DAL flex items-center justify-between p-space-sm rounded-xl bg-surface-container-low transition-all active:scale-[0.99] hover:bg-surface-container" onclick="selectTeam('g5', 'DAL')" type="button">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-[22px] shadow-sm">⭐</div>
+<div class="text-left"><div class="flex items-center gap-1.5"><span class="font-headline-sm text-headline-sm font-bold text-on-surface">DAL</span><span class="font-label-sm text-label-sm text-on-surface-variant">Cowboys (3-5)</span></div><span class="font-label-sm text-label-sm text-on-surface-variant">Win Prob: 28.6%</span></div>
+</div>
+<div class="pick-radio-DAL w-5 h-5 rounded-full bg-surface-container-high flex items-center justify-center text-transparent"><span class="material-symbols-outlined text-[14px]">check</span></div>
+</button>
+</div>
+<div class="mt-space-sm pt-space-xs flex flex-wrap items-center justify-between gap-space-sm bg-surface-container-low/60 p-space-xs rounded-lg">
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-semibold">Instinct Confidence:</span>
+<div class="flex items-center text-tertiary">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-[18px] text-surface-dim">star</span>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Spread Margin: <strong class="text-on-surface">Rush EPA/Play Advantage +0.18</strong></span>
+</div>
+</div>
+<!-- MATCHUP 6: PIT @ WAS -->
+<div class="game-card bg-surface-container-lowest rounded-xl p-space-md shadow-sm transition-all hover:shadow-md" data-game-id="g6" data-ml-pick="WAS" data-ml-prob="54" data-user-pick="WAS">
+<div class="flex flex-wrap items-center justify-between gap-space-xs mb-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm bg-surface-container text-on-surface-variant px-space-xs py-0.5 rounded font-bold">SUN 1:00 PM</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Northwest Stadium</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="flex items-center gap-1 text-on-primary-fixed bg-primary-fixed px-space-xs py-0.5 rounded-full font-label-sm text-label-sm font-bold"><span class="material-symbols-outlined text-[14px]">psychology</span> AI: WAS -2.5</span>
+<span class="status-badge px-space-xs py-0.5 rounded-full font-label-sm text-label-sm font-bold bg-primary-container text-on-primary-container flex items-center gap-1"><span class="material-symbols-outlined text-[13px]">done</span> Synced with AI (54%)</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-sm">
+<button class="team-option-PIT flex items-center justify-between p-space-sm rounded-xl bg-surface-container-low transition-all active:scale-[0.99] hover:bg-surface-container" onclick="selectTeam('g6', 'PIT')" type="button">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-[22px] shadow-sm">⚙️</div>
+<div class="text-left"><div class="flex items-center gap-1.5"><span class="font-headline-sm text-headline-sm font-bold text-on-surface">PIT</span><span class="font-label-sm text-label-sm text-on-surface-variant">Steelers (6-2)</span></div><span class="font-label-sm text-label-sm text-on-surface-variant">Win Prob: 45.8%</span></div>
+</div>
+<div class="pick-radio-PIT w-5 h-5 rounded-full bg-surface-container-high flex items-center justify-center text-transparent"><span class="material-symbols-outlined text-[14px]">check</span></div>
+</button>
+<button class="team-option-WAS flex items-center justify-between p-space-sm rounded-xl bg-surface-container-low transition-all active:scale-[0.99] ring-2 ring-primary bg-primary-fixed/20" onclick="selectTeam('g6', 'WAS')" type="button">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-[22px] shadow-sm">🎖️</div>
+<div class="text-left"><div class="flex items-center gap-1.5"><span class="font-headline-sm text-headline-sm font-bold text-on-surface">WAS</span><span class="font-label-sm text-label-sm text-on-surface-variant">Commanders (7-2)</span></div><span class="font-label-sm text-label-sm text-primary font-bold">Win Prob: 54.2%</span></div>
+</div>
+<div class="pick-radio-WAS w-5 h-5 rounded-full bg-primary flex items-center justify-center text-on-primary"><span class="material-symbols-outlined text-[14px]">check</span></div>
+</button>
+</div>
+<div class="mt-space-sm pt-space-xs flex flex-wrap items-center justify-between gap-space-sm bg-surface-container-low/60 p-space-xs rounded-lg">
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-semibold">Instinct Confidence:</span>
+<div class="flex items-center text-tertiary">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-[18px] text-surface-dim">star</span><span class="material-symbols-outlined text-[18px] text-surface-dim">star</span>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Weather Simulation: <strong class="text-on-surface">Clear, 58°F</strong> • Tight Spread</span>
+</div>
+</div>
+</div>
+<!-- Sidebar: Simulation Feedback & Risk Profile -->
+<div class="lg:col-span-4 space-y-space-md sticky top-20">
+<div class="bg-surface-container-lowest rounded-2xl p-space-lg shadow-sm space-y-space-md">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">Simulator Diagnostic</span>
+<span class="p-1 rounded-full bg-surface-container-low text-primary flex items-center justify-center"><span class="material-symbols-outlined text-[20px]">analytics</span></span>
+</div>
+<div class="bg-surface-container-low p-space-md rounded-xl space-y-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-bold">Personal Risk Persona</span>
+<span class="font-label-sm text-label-sm bg-tertiary-fixed text-on-tertiary-fixed px-space-xs py-0.5 rounded font-bold">2 Gut Calls</span>
+</div>
+<div class="font-headline-md text-headline-md font-bold text-on-surface flex items-center gap-1.5">Balanced Analyst <span class="material-symbols-outlined text-primary text-[20px]">verified</span></div>
+<div class="w-full bg-surface-container-high h-2.5 rounded-full overflow-hidden mt-space-xs flex">
+<div class="bg-primary h-full w-[65%] rounded-full"></div><div class="bg-secondary-container h-full w-[25%]"></div><div class="bg-tertiary h-full w-[10%]"></div>
+</div>
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant pt-1"><span>Conservative</span><span class="font-bold text-on-surface">Moderate Risk</span><span>Wildcard</span></div>
+</div>
+<div class="p-space-md rounded-xl bg-surface-container-lowest shadow-sm flex items-center justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider block font-semibold">Expected Outcome</span>
+<span class="font-headline-lg text-headline-lg font-extrabold text-on-surface">10.4 <span class="font-body-md text-body-md text-on-surface-variant font-normal">/ 14 Correct</span></span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-primary-fixed flex items-center justify-center text-on-primary-fixed font-headline-sm font-bold shadow-sm">+1.8</div>
+</div>
+<div class="p-space-md rounded-xl bg-secondary-fixed/40 space-y-space-xs">
+<div class="flex items-center gap-1.5 text-secondary"><span class="material-symbols-outlined text-[18px]">alt_route</span><span class="font-label-md text-label-md font-bold uppercase tracking-wider">Top Disagreement</span></div>
+<p class="font-body-md text-body-md text-on-surface font-medium">Tampa Bay Buccaneers (+5.5) over 49ers</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Your instinct backs TB’s pass rush, while the ML model projects SF by 6.2 pts with Christian McCaffrey’s return.</p>
+<div class="pt-space-xs flex items-center justify-between text-on-secondary-fixed font-label-sm text-label-sm"><span>Model Win Prob: 24.0%</span><span class="font-bold">Delta: -52.0%</span></div>
+</div>
+<div class="space-y-space-xs pt-space-xs">
+<button class="w-full py-2.5 px-space-md rounded-lg bg-primary hover:bg-primary-container active:scale-[0.98] text-on-primary font-label-lg text-label-lg font-bold flex items-center justify-center gap-2 transition-all shadow-sm" id="save-slate-btn" onclick="savePersonalSlate()" type="button"><span class="material-symbols-outlined text-[18px]">bookmark_added</span> Save My Slate</button>
+<button class="w-full py-2 px-space-md rounded-lg bg-surface-container-low hover:bg-surface-container active:scale-[0.98] text-on-surface font-label-md text-label-md font-semibold flex items-center justify-center gap-2 transition-all" onclick="resetToConsensus()" type="button"><span class="material-symbols-outlined text-[18px]">restart_alt</span> Reset to Model Consensus</button>
+<button class="w-full py-2 px-space-md rounded-lg bg-surface-container-low hover:bg-surface-container active:scale-[0.98] text-on-surface-variant font-label-md text-label-md font-semibold flex items-center justify-center gap-2 transition-all" onclick="triggerExportNotice()" type="button"><span class="material-symbols-outlined text-[18px]">picture_as_pdf</span> Export PDF Report</button>
+</div>
+</div>
+<div class="rounded-xl p-space-md bg-surface-container-low flex items-start gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[20px] shrink-0 mt-0.5">tips_and_updates</span>
+<div class="space-y-0.5">
+<span class="font-label-md text-label-md font-bold text-on-surface block">Personalized Learning Loop</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Each locked pick trains your private weights calibration. No public board, no shared leagues — purely your predictive edge.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  const gamesData = {
+    g1: { mlPick: 'BAL', userPick: 'BAL', mlProb: 76, away: 'BAL', home: 'CIN' },
+    g2: { mlPick: 'KC', userPick: 'KC', mlProb: 82, away: 'KC', home: 'DEN' },
+    g3: { mlPick: 'DET', userPick: 'DET', mlProb: 68, away: 'DET', home: 'HOU' },
+    g4: { mlPick: 'SF', userPick: 'TB', mlProb: 24, away: 'SF', home: 'TB' },
+    g5: { mlPick: 'PHI', userPick: 'PHI', mlProb: 71, away: 'PHI', home: 'DAL' },
+    g6: { mlPick: 'WAS', userPick: 'WAS', mlProb: 54, away: 'PIT', home: 'WAS' }
+  };
+
+  function selectTeam(gameId, selectedTeam) {
+    const game = gamesData[gameId];
+    if (!game) return;
+    game.userPick = selectedTeam;
+    const isAgree = (game.userPick === game.mlPick);
+    const card = document.querySelector(`[data-game-id="${gameId}"]`);
+    if (!card) return;
+    const [teamA, teamB] = [game.away, game.home];
+
+    [teamA, teamB].forEach(team => {
+      const btn = card.querySelector(`.team-option-${team}`);
+      const radio = card.querySelector(`.pick-radio-${team}`);
+      if (btn && radio) {
+        if (team === selectedTeam) {
+          if (isAgree) {
+            btn.className = `team-option-${team} flex items-center justify-between p-space-sm rounded-xl bg-surface-container-low transition-all active:scale-[0.99] ring-2 ring-primary bg-primary-fixed/20`;
+            radio.className = `pick-radio-${team} w-5 h-5 rounded-full bg-primary flex items-center justify-center text-on-primary`;
+          } else {
+            btn.className = `team-option-${team} flex items-center justify-between p-space-sm rounded-xl bg-secondary-fixed/30 transition-all active:scale-[0.99] ring-2 ring-secondary-container`;
+            radio.className = `pick-radio-${team} w-5 h-5 rounded-full bg-secondary-container flex items-center justify-center text-on-tertiary-container`;
+          }
+        } else {
+          btn.className = `team-option-${team} flex items-center justify-between p-space-sm rounded-xl bg-surface-container-low transition-all active:scale-[0.99] hover:bg-surface-container`;
+          radio.className = `pick-radio-${team} w-5 h-5 rounded-full bg-surface-container-high flex items-center justify-center text-transparent`;
+        }
+      }
+    });
+
+    const statusBadge = card.querySelector('.status-badge');
+    if (statusBadge) {
+      if (isAgree) {
+        statusBadge.className = 'status-badge px-space-xs py-0.5 rounded-full font-label-sm text-label-sm font-bold bg-primary-container text-on-primary-container flex items-center gap-1';
+        statusBadge.innerHTML = `<span class="material-symbols-outlined text-[13px]">done</span> Synced with AI (${game.mlProb}%)`;
+      } else {
+        statusBadge.className = 'status-badge px-space-xs py-0.5 rounded-full font-label-sm text-label-sm font-bold bg-secondary-fixed text-on-secondary-fixed flex items-center gap-1';
+        statusBadge.innerHTML = `<span class="material-symbols-outlined text-[13px]">warning</span> Contrarian Gut Pick! (Model: ${game.mlProb}%)`;
+      }
+    }
+    recalculateKPIs();
+  }
+
+  function recalculateKPIs() {
+    let matches = 0;
+    const total = Object.keys(gamesData).length;
+    Object.values(gamesData).forEach(g => { if (g.userPick === g.mlPick) matches++; });
+    const agreementPct = Math.round((matches / total) * 100);
+    const scoreElem = document.getElementById('stat-agreement-pct');
+    if (scoreElem) scoreElem.innerText = `${agreementPct}%`;
+    const projScoreElem = document.getElementById('stat-proj-score');
+    if (projScoreElem) {
+      const wins = Math.min(14, 8 + Math.floor(matches * 0.7));
+      projScoreElem.innerText = `${wins}-${14 - wins}`;
+    }
+  }
+
+  function resetToConsensus() {
+    Object.keys(gamesData).forEach(gId => { selectTeam(gId, gamesData[gId].mlPick); });
+  }
+
+  document.getElementById('auto-sync-btn')?.addEventListener('click', resetToConsensus);
+
+  function savePersonalSlate() {
+    const btn = document.getElementById('save-slate-btn');
+    if (!btn) return;
+    const oldHtml = btn.innerHTML;
+    btn.innerHTML = `<span class="material-symbols-outlined text-[18px]">check_circle</span> Slate Encrypted &amp; Saved`;
+    btn.classList.add('bg-primary-container');
+    setTimeout(() => {
+      btn.innerHTML = oldHtml;
+      btn.classList.remove('bg-primary-container');
+    }, 2000);
+  }
+
+  function triggerExportNotice() {
+    alert("Exporting your solo Week 10 Slate PDF dossier with ML feature weights...");
+  }
+</script>
+</div></main>
+<footer class="w-full bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] mt-space-xl">
+<div class="max-w-[1360px] mx-auto px-margin-lg py-space-lg flex flex-col md:flex-row items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-sm"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-bold">GridironML Engine</span><span class="text-outline-variant font-label-sm text-label-sm">•</span><span class="font-body-sm text-body-sm text-on-surface-variant">Algorithmic probabilistic models for informational and entertainment analysis only. Not sports wagering advice.</span></div>
+<div class="flex items-center gap-space-md"><span class="font-label-sm text-label-sm text-on-surface-variant">NFL Slate Synchronized: Sunday, Nov 10 • 12:45 PM ET</span><div class="h-2 w-2 rounded-full bg-primary-container animate-pulse"></div></div>
+</div>
+</footer>
+</body>
+</html>
