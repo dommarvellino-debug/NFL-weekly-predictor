@@ -95,6 +95,24 @@
       "confidence": "moderate"
     },
     {
+      "game_id": "2026_11_CIN_WAS",
+      "gameday": "2026-11-23",
+      "home": {
+        "abbr": "WAS",
+        "name": "Washington Commanders",
+        "record": "3-6",
+        "win_prob": 0.3304
+      },
+      "away": {
+        "abbr": "CIN",
+        "name": "Cincinnati Bengals",
+        "record": "7-2",
+        "win_prob": 0.6696
+      },
+      "predicted_winner": "CIN",
+      "confidence": "moderate"
+    },
+    {
       "game_id": "2026_11_NYJ_LAC",
       "gameday": "2026-11-22",
       "home": {
@@ -131,6 +149,24 @@
       "confidence": "low"
     },
     {
+      "game_id": "2026_11_BAL_CAR",
+      "gameday": "2026-11-22",
+      "home": {
+        "abbr": "CAR",
+        "name": "Carolina Panthers",
+        "record": "4-5",
+        "win_prob": 0.4373
+      },
+      "away": {
+        "abbr": "BAL",
+        "name": "Baltimore Ravens",
+        "record": "4-6",
+        "win_prob": 0.5627
+      },
+      "predicted_winner": "BAL",
+      "confidence": "low"
+    },
+    {
       "game_id": "2026_11_NO_CHI",
       "gameday": "2026-11-22",
       "home": {
@@ -146,42 +182,6 @@
         "win_prob": 0.4424
       },
       "predicted_winner": "CHI",
-      "confidence": "low"
-    },
-    {
-      "game_id": "2026_11_JAX_NYG",
-      "gameday": "2026-11-22",
-      "home": {
-        "abbr": "NYG",
-        "name": "New York Giants",
-        "record": "6-3",
-        "win_prob": 0.5188
-      },
-      "away": {
-        "abbr": "JAX",
-        "name": "Jacksonville Jaguars",
-        "record": "7-2",
-        "win_prob": 0.4812
-      },
-      "predicted_winner": "NYG",
-      "confidence": "low"
-    },
-    {
-      "game_id": "2026_11_PIT_PHI",
-      "gameday": "2026-11-22",
-      "home": {
-        "abbr": "PHI",
-        "name": "Philadelphia Eagles",
-        "record": "2-7",
-        "win_prob": 0.4795
-      },
-      "away": {
-        "abbr": "PIT",
-        "name": "Pittsburgh Steelers",
-        "record": "6-3",
-        "win_prob": 0.5205
-      },
-      "predicted_winner": "PIT",
       "confidence": "low"
     },
     {
@@ -203,40 +203,40 @@
       "confidence": "low"
     },
     {
-      "game_id": "2026_11_BAL_CAR",
+      "game_id": "2026_11_PIT_PHI",
       "gameday": "2026-11-22",
       "home": {
-        "abbr": "CAR",
-        "name": "Carolina Panthers",
-        "record": "4-5",
-        "win_prob": 0.4373
+        "abbr": "PHI",
+        "name": "Philadelphia Eagles",
+        "record": "2-7",
+        "win_prob": 0.4795
       },
       "away": {
-        "abbr": "BAL",
-        "name": "Baltimore Ravens",
-        "record": "4-6",
-        "win_prob": 0.5627
+        "abbr": "PIT",
+        "name": "Pittsburgh Steelers",
+        "record": "6-3",
+        "win_prob": 0.5205
       },
-      "predicted_winner": "BAL",
+      "predicted_winner": "PIT",
       "confidence": "low"
     },
     {
-      "game_id": "2026_11_CIN_WAS",
-      "gameday": "2026-11-23",
+      "game_id": "2026_11_JAX_NYG",
+      "gameday": "2026-11-22",
       "home": {
-        "abbr": "WAS",
-        "name": "Washington Commanders",
-        "record": "3-6",
-        "win_prob": 0.3304
+        "abbr": "NYG",
+        "name": "New York Giants",
+        "record": "6-3",
+        "win_prob": 0.5188
       },
       "away": {
-        "abbr": "CIN",
-        "name": "Cincinnati Bengals",
+        "abbr": "JAX",
+        "name": "Jacksonville Jaguars",
         "record": "7-2",
-        "win_prob": 0.6696
+        "win_prob": 0.4812
       },
-      "predicted_winner": "CIN",
-      "confidence": "moderate"
+      "predicted_winner": "NYG",
+      "confidence": "low"
     }
   ]
 }

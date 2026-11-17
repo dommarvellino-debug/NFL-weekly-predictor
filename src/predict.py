@@ -135,7 +135,10 @@ def generate_week_predictions(
         axis=1,
     )
     picks["confidence"] = picks["home_win_prob"].apply(_confidence)
-    return picks.sort_values("home_win_prob", ascending=False).reset_index(drop=True)
+    # Rank by how confident the model is in the predicted winner, not by raw
+    # home probability (which would scatter away-team picks down the table).
+    picks["_margin"] = (picks["home_win_prob"] - 0.5).abs()
+    return picks.sort_values("_margin", ascending=False).drop(columns="_margin").reset_index(drop=True)
 
 
 def to_json(picks: pd.DataFrame, week: int, season: int = SEASON) -> dict:
