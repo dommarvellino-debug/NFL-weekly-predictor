@@ -9,290 +9,89 @@
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Outfit:wght@600;700;800&amp;display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
 <link href="styles.css" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="theme.js"></script>
+<script src="app.js" defer></script>
 </head>
-<body class="bg-surface font-body-md text-on-surface antialiased">
+<body class="bg-surface font-body-md text-on-surface antialiased" data-page="insights">
 <header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
-<div class="h-14 max-w-[1360px] mx-auto px-margin-lg flex items-center justify-between gap-space-sm">
-<div class="flex items-center gap-2">
-<img alt="GridironML Logo" class="h-7 w-auto object-contain" src="logo.svg">
-<span class="font-headline-sm text-headline-sm text-on-surface tracking-tight font-bold">GridironML</span>
-<span class="font-label-sm text-[11px] bg-primary-fixed text-on-primary-fixed px-1.5 py-0.2 rounded font-bold uppercase tracking-wider">v4.2</span>
+<div class="h-12 max-w-[1360px] mx-auto px-margin-lg flex items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-xs">
+<img alt="GridironML Logo" class="h-6 w-auto object-contain" src="logo.svg">
+<span class="font-headline-sm text-[15px] text-on-surface tracking-tight font-bold">GridironML</span>
+<span class="font-label-sm text-[10px] bg-primary-fixed text-on-primary-fixed px-1.5 py-0.5 rounded-full uppercase tracking-wider font-bold ml-1">v4.2</span>
 </div>
-<nav class="hidden lg:flex items-center gap-1 bg-surface-container-low p-1 rounded-lg" data-active-classes="bg-surface-container text-on-surface font-label-md font-bold rounded">
+<nav class="hidden lg:flex items-center gap-0.5 bg-surface-container-low p-0.5 rounded-lg" data-active-classes="bg-surface-container text-on-surface font-label-md font-bold rounded">
 <a class="px-space-sm py-1 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors rounded" data-path="weekly-board" href="index.html">Weekly Board</a>
-<a aria-current="page" class="px-space-sm py-1 transition-colors bg-surface-container text-on-surface font-label-md font-bold rounded" data-path="game-insights" href="game-insights.html">Game Insights</a>
+<a aria-current="page" class="px-space-sm py-1 transition-colors bg-surface-container text-on-surface font-label-md text-label-md font-bold rounded" data-path="game-insights" href="game-insights.html">Game Insights</a>
 <a class="px-space-sm py-1 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors rounded" data-path="model-metrics" href="model-metrics.html">Model Metrics</a>
 <a class="px-space-sm py-1 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors rounded" data-path="pick-simulator" href="pick-simulator.html">Pick Simulator</a>
 </nav>
-<div class="flex items-center gap-2">
-<div class="hidden xl:flex items-center gap-1 bg-surface-container-low px-2 py-1 rounded text-on-surface-variant cursor-pointer hover:bg-surface-container-high transition-colors">
-<span class="font-label-sm text-label-sm font-semibold text-on-surface">Week 10</span>
+<div class="flex items-center gap-1.5">
+<div class="hidden xl:flex items-center gap-1 bg-surface-container-low px-2 py-1 rounded-md text-on-surface-variant">
+<span class="font-label-sm text-label-sm font-semibold text-on-surface" id="week-badge">Week —</span>
 <span class="text-outline-variant font-label-sm text-label-sm">•</span>
 <span class="font-label-sm text-label-sm text-on-surface-variant">Regular</span>
-<span class="material-symbols-outlined text-[14px] text-on-surface-variant">expand_more</span>
 </div>
-<div class="hidden md:flex items-center gap-1 bg-surface-container-low px-2 py-1 rounded"><span class="font-label-sm text-label-sm font-bold text-primary">⚡ 10k Sims</span><span class="text-outline-variant font-label-sm text-label-sm">•</span><span class="font-label-sm text-label-sm font-bold text-secondary-container">71.4%</span></div>
-<button aria-label="Model Settings" class="p-1 rounded bg-surface-container-low text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors flex items-center justify-center" type="button"><span class="material-symbols-outlined text-[18px]">tune</span></button>
-<div class="w-7 h-7 rounded-full bg-primary flex items-center justify-center shadow-xs"><span class="material-symbols-outlined text-on-primary text-[16px]">person</span></div>
+<div class="hidden md:flex items-center gap-1.5 bg-surface-container-low px-2 py-1 rounded-md">
+<span class="font-label-sm text-[11px] font-bold text-primary">Logistic Regression</span>
+<span class="text-outline-variant font-label-sm text-label-sm">•</span>
+<span class="font-label-sm text-[11px] font-bold text-secondary-container" id="acc-badge">— Acc</span>
+</div>
+<button aria-label="Model Settings" class="p-1 rounded-md bg-surface-container-low text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors flex items-center justify-center" type="button"><span class="material-symbols-outlined text-[18px]">tune</span></button>
+<div class="w-7 h-7 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[15px]">person</span></div>
 </div>
 </div>
 </header>
-<main class="w-full bg-surface pt-14">
+<main class="w-full bg-surface pt-12" data-page-content>
 <div class="max-w-[1360px] mx-auto px-margin-lg py-space-xl">
-<div class="flex flex-col w-full">
-<!-- Micro Top Context & Action Strip -->
-<div class="flex flex-wrap items-center justify-between gap-space-sm mb-space-md">
-<div class="flex items-center gap-space-xs text-on-surface-variant">
-<span class="font-label-md text-label-md uppercase tracking-wider text-primary font-bold">Week 10 Slate</span>
-<span class="font-label-sm text-label-sm">•</span>
-<span class="font-label-sm text-label-sm">Thursday Night Football</span>
-<span class="font-label-sm text-label-sm">•</span>
-<span class="font-label-sm text-label-sm text-on-surface font-medium">Paycor Stadium, Cincinnati OH</span>
+<div class="flex flex-col w-full gap-space-lg">
+<div class="flex flex-col gap-space-xs">
+<span class="font-label-md text-label-md uppercase tracking-wider text-primary font-bold" id="game-week-label">Week Slate</span>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight font-extrabold">Game Insights &amp; ML Deep Dive</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Every number below is a real model input or output — rolling form from games already played, plus the model's win probability. No simulated box scores or betting lines.</p>
 </div>
-<div class="flex items-center gap-space-xs">
-<span class="font-label-sm text-label-sm bg-surface-container-high text-on-surface-variant px-space-sm py-1 rounded-full flex items-center gap-1 font-semibold"><span class="material-symbols-outlined text-[14px] text-primary">model_training</span> Model v4.2 Neural-Opt</span>
-<span class="font-label-sm text-label-sm bg-tertiary-fixed text-on-tertiary-fixed px-space-sm py-1 rounded-full font-bold flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">verified</span> 8.4 ML Edge</span>
-</div>
-</div>
-<!-- Hero Matchup Forecast Card -->
-<div class="relative w-full bg-surface-container-lowest rounded-xl shadow-md p-space-md md:p-space-lg mb-space-lg overflow-hidden">
-<div class="absolute -top-24 -right-24 w-72 h-72 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
-<div class="absolute -bottom-24 -left-24 w-72 h-72 bg-secondary-container/5 rounded-full blur-3xl pointer-events-none"></div>
-<div class="relative z-10 flex flex-col gap-space-md">
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md items-center">
-<div class="lg:col-span-4 flex items-center gap-space-md bg-surface-container-low p-space-md rounded-xl">
-<div class="w-14 h-14 rounded-xl bg-inverse-surface text-inverse-on-surface flex items-center justify-center font-headline-md text-headline-md shadow-sm select-none">BAL</div>
-<div class="flex flex-col min-w-0">
-<div class="flex items-center gap-space-xs"><span class="font-headline-md text-headline-md font-bold text-on-surface tracking-tight">Ravens</span><span class="font-label-sm text-label-sm bg-primary-fixed text-on-primary-fixed px-1.5 py-0.5 rounded font-bold">7-3</span></div>
-<span class="font-body-sm text-body-sm text-on-surface-variant">Lamar Jackson • Pass EPA #1</span>
-<div class="mt-1 flex items-center gap-2"><span class="font-data-display text-data-display text-primary font-extrabold leading-none">27.4</span><span class="font-label-sm text-label-sm uppercase tracking-wider text-primary font-bold">Proj Pts</span></div>
-</div>
-</div>
-<div class="lg:col-span-4 flex flex-col items-center justify-center text-center px-space-xs">
-<div class="flex items-center justify-center gap-space-xs mb-1">
-<span class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant font-bold">Consensus Vegas</span>
-<span class="font-label-sm text-label-sm font-bold text-on-surface bg-surface-container px-2 py-0.5 rounded">BAL -6.5</span>
-<span class="font-label-sm text-label-sm font-bold text-on-surface bg-surface-container px-2 py-0.5 rounded">O/U 47.5</span>
-</div>
-<div class="flex items-center justify-center gap-2 text-on-surface"><span class="font-headline-xl text-headline-xl font-extrabold tracking-tight">BAL -7.3</span></div>
-<span class="font-label-sm text-label-sm text-primary font-bold flex items-center gap-1 mt-0.5"><span class="material-symbols-outlined text-[16px]">trending_up</span>GridironML Line: High Confidence Spread Edge (+0.8)</span>
-<div class="mt-space-xs inline-flex items-center gap-1 text-on-surface-variant font-body-sm text-body-sm"><span>Simulated 10,000 times</span><span>•</span><span class="font-semibold text-on-surface">Paycor Stadium Turf</span></div>
-</div>
-<div class="lg:col-span-4 flex items-center justify-between lg:justify-end gap-space-md bg-surface-container-low p-space-md rounded-xl">
-<div class="flex flex-col text-left lg:text-right min-w-0">
-<div class="flex items-center lg:justify-end gap-space-xs"><span class="font-label-sm text-label-sm bg-surface-container text-on-surface-variant px-1.5 py-0.5 rounded font-bold">4-6</span><span class="font-headline-md text-headline-md font-bold text-on-surface tracking-tight">Bengals</span></div>
-<span class="font-body-sm text-body-sm text-on-surface-variant">Joe Burrow • Pass Vol #3</span>
-<div class="mt-1 flex items-center lg:justify-end gap-2"><span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-bold">Proj Pts</span><span class="font-data-display text-data-display text-secondary font-extrabold leading-none">20.1</span></div>
-</div>
-<div class="w-14 h-14 rounded-xl bg-secondary-container text-on-secondary flex items-center justify-center font-headline-md text-headline-md shadow-sm select-none">CIN</div>
-</div>
-</div>
-<div class="bg-surface-container p-space-md rounded-xl flex flex-col gap-space-xs">
-<div class="flex justify-between items-center font-label-lg text-label-lg">
-<div class="flex items-center gap-space-xs text-primary font-bold"><span class="w-2.5 h-2.5 rounded-full bg-primary inline-block"></span><span>Ravens 76.0% Probability</span><span class="font-label-sm text-label-sm bg-primary-fixed text-on-primary-fixed px-1.5 py-0.2 rounded font-bold">FAVORED</span></div>
-<div class="flex items-center gap-space-xs text-secondary font-bold"><span class="font-label-sm text-label-sm bg-secondary-fixed text-on-secondary-fixed px-1.5 py-0.2 rounded font-bold">UNDERDOG</span><span>Bengals 24.0%</span><span class="w-2.5 h-2.5 rounded-full bg-secondary-container inline-block"></span></div>
-</div>
-<div class="relative w-full h-4 bg-surface-container-high rounded-full overflow-hidden flex">
-<div class="h-full bg-primary transition-all duration-700 ease-out" style="width: 76%;"></div>
-<div class="h-full bg-secondary-container transition-all duration-700 ease-out" style="width: 24%;"></div>
-</div>
-<div class="flex justify-between items-center text-on-surface-variant font-label-sm text-label-sm">
-<span>Implicit ML Moneyline: -316</span>
-<span class="font-semibold text-on-surface">Monte Carlo Convergence: &lt;0.01 Dev</span>
-<span>Implicit ML Moneyline: +262</span>
-</div>
-</div>
-</div>
-</div>
-<!-- Main Split: Analytical Breakdown & Monte Carlo Distribution -->
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg mb-space-lg">
-<div class="lg:col-span-7 flex flex-col gap-space-md">
-<div class="bg-surface-container-lowest p-space-md md:p-space-lg rounded-xl shadow-sm flex flex-col h-full">
-<div class="flex items-center justify-between mb-space-md">
-<div class="flex items-center gap-space-xs">
-<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary"><span class="material-symbols-outlined text-[20px]">insights</span></div>
-<div><h2 class="font-headline-sm text-headline-sm font-bold text-on-surface tracking-tight">ML Feature Drivers</h2><p class="font-body-sm text-body-sm text-on-surface-variant">SHAP importance score attributing probability tilt</p></div>
-</div>
-<span class="font-label-sm text-label-sm bg-surface-container-low text-on-surface font-semibold px-space-xs py-1 rounded">5 Key Signals</span>
-</div>
-<div class="flex flex-col gap-space-md my-auto">
-<div class="flex flex-col gap-1">
-<div class="flex justify-between items-center text-on-surface">
-<div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-[16px] text-primary">sports_football</span><span class="font-label-lg text-label-lg font-semibold">Passing EPA per Dropback</span></div>
-<span class="font-label-md text-label-md font-bold text-primary">+18.4% BAL Edge</span>
-</div>
-<div class="w-full bg-surface-container-low h-3 rounded-full overflow-hidden flex"><div class="bg-primary h-full rounded-full" style="width: 82%;"></div></div>
-<div class="flex justify-between text-on-surface-variant font-body-sm text-body-sm"><span>Lamar Jackson: +0.28 EPA/db (NFL #1)</span><span>CIN Pass DVOA: 24th</span></div>
-</div>
-<div class="flex flex-col gap-1">
-<div class="flex justify-between items-center text-on-surface">
-<div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-[16px] text-primary">check_circle</span><span class="font-label-lg text-label-lg font-semibold">Red Zone TD Conversion Rate</span></div>
-<span class="font-label-md text-label-md font-bold text-primary">+12.1% BAL Edge</span>
-</div>
-<div class="w-full bg-surface-container-low h-3 rounded-full overflow-hidden flex"><div class="bg-primary-container h-full rounded-full" style="width: 68%;"></div></div>
-<div class="flex justify-between text-on-surface-variant font-body-sm text-body-sm"><span>BAL: 74.3% in scoring zone</span><span>CIN Allowed: 66.7%</span></div>
-</div>
-<div class="flex flex-col gap-1">
-<div class="flex justify-between items-center text-on-surface">
-<div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-[16px] text-primary">shield</span><span class="font-label-lg text-label-lg font-semibold">Defensive Front Pressure Rate</span></div>
-<span class="font-label-md text-label-md font-bold text-primary">+9.7% BAL Edge</span>
-</div>
-<div class="w-full bg-surface-container-low h-3 rounded-full overflow-hidden flex"><div class="bg-primary-container h-full rounded-full" style="width: 54%;"></div></div>
-<div class="flex justify-between text-on-surface-variant font-body-sm text-body-sm"><span>Ravens blitz simulation win rate: 36.8%</span><span>CIN Pocket collapse: 2.3s avg</span></div>
-</div>
-<div class="flex flex-col gap-1">
-<div class="flex justify-between items-center text-on-surface">
-<div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-[16px] text-secondary">stadium</span><span class="font-label-lg text-label-lg font-semibold">Home Stadium Crowd / Field Index</span></div>
-<span class="font-label-md text-label-md font-bold text-secondary">+6.2% CIN Edge</span>
-</div>
-<div class="w-full bg-surface-container-low h-3 rounded-full overflow-hidden flex justify-end"><div class="bg-secondary-container h-full rounded-full" style="width: 38%;"></div></div>
-<div class="flex justify-between text-on-surface-variant font-body-sm text-body-sm"><span>Paycor Stadium night noise level</span><span>Burrow home split: +1.4 YPA</span></div>
-</div>
-<div class="flex flex-col gap-1">
-<div class="flex justify-between items-center text-on-surface">
-<div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-[16px] text-outline">schedule</span><span class="font-label-lg text-label-lg font-semibold">Short Week Rest Balance (TNF)</span></div>
-<span class="font-label-md text-label-md font-semibold text-outline">0.0% Neutral</span>
-</div>
-<div class="w-full bg-surface-container-low h-3 rounded-full overflow-hidden flex"><div class="bg-outline-variant h-full rounded-full mx-auto" style="width: 8%;"></div></div>
-<div class="flex justify-between text-on-surface-variant font-body-sm text-body-sm"><span>Both teams on 4 calendar days rest</span><span>Zero travel fatigue skew</span></div>
-</div>
-</div>
-<div class="mt-space-md bg-surface-container-low p-space-sm rounded-lg flex items-center gap-space-sm text-on-surface">
-<span class="material-symbols-outlined text-tertiary text-[20px] shrink-0">tips_and_updates</span>
-<span class="font-body-sm text-body-sm"><strong class="font-bold">Neural Note:</strong> Cincinnati’s secondary vulnerability on play-action routes accounts for 63% of Baltimore's projected expected value differential.</span>
-</div>
-</div>
-</div>
-<div class="lg:col-span-5 flex flex-col gap-space-md">
-<div class="bg-surface-container-lowest p-space-md md:p-space-lg rounded-xl shadow-sm flex flex-col justify-between h-full">
-<div>
-<div class="flex items-center justify-between mb-space-sm">
-<div class="flex items-center gap-space-xs">
-<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-secondary-container"><span class="material-symbols-outlined text-[20px]">equalizer</span></div>
-<div><h2 class="font-headline-sm text-headline-sm font-bold text-on-surface tracking-tight">Monte Carlo Distribution</h2><p class="font-body-sm text-body-sm text-on-surface-variant">10,000 game simulation outcome spread</p></div>
-</div>
-</div>
-<div class="w-full my-space-sm flex flex-col items-center">
-<div class="relative w-full h-40 bg-surface-container-low rounded-lg p-space-xs flex items-end">
-<svg class="w-full h-full text-primary" preserveAspectRatio="none" viewBox="0 0 400 120">
-<defs>
-<linearGradient id="mcGrad" x1="0%" x2="100%" y1="0%" y2="0%">
-<stop offset="0%" stop-color="#fd761a" stop-opacity="0.8"></stop>
-<stop offset="24%" stop-color="#fd761a" stop-opacity="0.3"></stop>
-<stop offset="25%" stop-color="#006948" stop-opacity="0.3"></stop>
-<stop offset="100%" stop-color="#006948" stop-opacity="0.8"></stop>
-</linearGradient>
-</defs>
-<path d="M 0 115 C 40 115, 60 110, 80 95 C 110 70, 140 30, 200 12 C 260 30, 310 60, 340 90 C 370 108, 390 115, 400 115 L 400 120 L 0 120 Z" fill="url(#mcGrad)"></path>
-<path d="M 0 115 C 40 115, 60 110, 80 95 C 110 70, 140 30, 200 12 C 260 30, 310 60, 340 90 C 370 108, 390 115, 400 115" fill="none" stroke="currentColor" stroke-width="2.5"></path>
-<line stroke="#002114" stroke-dasharray="3,3" stroke-width="2" x1="210" x2="210" y1="0" y2="120"></line>
-<line stroke="#fd761a" stroke-width="1.5" x1="198" x2="198" y1="20" y2="120"></line>
-</svg>
-<div class="absolute top-2 right-4 bg-surface-container-lowest/90 px-2 py-0.5 rounded text-[11px] font-bold text-on-surface shadow-xs">Peak BAL +7.3 Median</div>
-</div>
-<div class="w-full flex justify-between text-on-surface-variant font-label-sm text-label-sm mt-1 px-1">
-<span>CIN +14</span><span>CIN +3</span><span class="text-on-surface font-bold">BAL +7.3</span><span>BAL +14</span><span>BAL +24</span>
-</div>
-</div>
-<div class="grid grid-cols-2 gap-space-xs mt-space-sm">
-<div class="bg-surface-container-low p-space-xs rounded-lg flex flex-col"><span class="font-label-sm text-label-sm text-primary font-bold">Ravens Close Win (1-13)</span><div class="flex items-baseline justify-between mt-1"><span class="font-headline-sm text-headline-sm font-bold text-on-surface">48%</span><span class="font-label-sm text-label-sm text-on-surface-variant">Most Likely</span></div></div>
-<div class="bg-surface-container-low p-space-xs rounded-lg flex flex-col"><span class="font-label-sm text-label-sm text-primary font-bold">Ravens Blowout (&gt;14)</span><div class="flex items-baseline justify-between mt-1"><span class="font-headline-sm text-headline-sm font-bold text-on-surface">28%</span><span class="font-label-sm text-label-sm text-on-surface-variant">High Impact</span></div></div>
-<div class="bg-surface-container-low p-space-xs rounded-lg flex flex-col"><span class="font-label-sm text-label-sm text-secondary font-bold">Bengals Upset (1-7)</span><div class="flex items-baseline justify-between mt-1"><span class="font-headline-sm text-headline-sm font-bold text-on-surface">18%</span><span class="font-label-sm text-label-sm text-on-surface-variant">Vegas Line</span></div></div>
-<div class="bg-surface-container-low p-space-xs rounded-lg flex flex-col"><span class="font-label-sm text-label-sm text-secondary font-bold">Bengals Blowout (&gt;7)</span><div class="flex items-baseline justify-between mt-1"><span class="font-headline-sm text-headline-sm font-bold text-on-surface">6%</span><span class="font-label-sm text-label-sm text-on-surface-variant">Low Chance</span></div></div>
-</div>
-</div>
-<div class="mt-space-md pt-space-sm bg-surface-container p-space-sm rounded-xl flex flex-col gap-space-xs">
-<div class="flex justify-between items-center">
-<span class="font-label-md text-label-md font-bold text-on-surface flex items-center gap-1"><span class="material-symbols-outlined text-[16px] text-primary">tune</span>Scrub Score Scenarios</span>
-<span class="font-label-md text-label-md font-extrabold text-primary bg-surface-container-lowest px-2 py-0.5 rounded shadow-xs" id="slider-margin-display">Sim #5,420: BAL by 7 (27-20)</span>
-</div>
-<input class="w-full accent-primary h-2 bg-surface-container-highest rounded-lg cursor-pointer" id="simulation-slider" max="10000" min="1" type="range" value="5420">
-<div class="flex justify-between text-on-surface-variant font-label-sm text-label-sm"><span>Sim #1 (CIN +18)</span><span>Sim #10,000 (BAL +31)</span></div>
-</div>
-</div>
-</div>
-</div>
-<!-- Unit-by-Unit ML Matchup Comparison Grid -->
-<div class="w-full flex flex-col gap-space-sm">
+<section class="bg-surface-container-lowest rounded-xl shadow-sm p-space-md flex flex-col gap-space-sm">
 <div class="flex items-center justify-between">
-<div class="flex items-center gap-space-xs"><h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">Unit-by-Unit Efficiency Ratings</h3><span class="font-label-sm text-label-sm bg-surface-container text-on-surface-variant px-space-xs py-0.5 rounded">Granular Model Matchups</span></div>
-<span class="font-label-sm text-label-sm text-on-surface-variant font-semibold">Calculated from last 8 rolling games</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider font-bold text-outline">Select a game</span>
+<span class="font-body-sm text-body-sm text-outline" id="insight-summary">—</span>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-md">
-<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between">
+<div class="flex flex-wrap gap-space-xs" id="game-chips"></div>
+<div class="flex flex-col gap-1 pt-space-xs">
+<span class="font-label-sm text-label-sm font-bold text-on-surface" id="slider-label">—</span>
+<input class="w-full accent-primary h-2 bg-surface-container-highest rounded-lg cursor-pointer" id="game-slider" max="12" min="0" type="range" value="0">
+</div>
+</section>
+<section class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col gap-space-lg" id="insight-header"></section>
+<section class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col gap-space-md">
 <div>
-<div class="flex justify-between items-center mb-space-xs"><span class="font-label-sm text-label-sm font-bold uppercase tracking-wider text-on-surface-variant">Air Battle</span><span class="font-label-sm text-label-sm font-extrabold bg-primary-fixed text-on-primary-fixed px-2 py-0.5 rounded">ADVANTAGE BAL</span></div>
-<div class="font-headline-sm text-headline-sm font-bold text-on-surface">BAL Pass Off #2</div><div class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">vs CIN Pass Def #24</div>
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface">Win Probability</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Model output — P(home win) from pre-game features only.</p>
 </div>
-<div class="mt-space-md pt-space-xs flex items-center justify-between bg-surface-container-low p-2 rounded-lg text-on-surface">
-<div class="flex flex-col"><span class="font-label-sm text-label-sm text-on-surface-variant">Yds Per Attempt</span><span class="font-label-lg text-label-lg font-bold">8.9 vs 7.4</span></div>
-<span class="material-symbols-outlined text-primary text-[20px]">air</span>
-</div>
-</div>
-<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between">
+<div id="insight-prob"></div>
+</section>
+<section class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col gap-space-md">
 <div>
-<div class="flex justify-between items-center mb-space-xs"><span class="font-label-sm text-label-sm font-bold uppercase tracking-wider text-on-surface-variant">Ground Game</span><span class="font-label-sm text-label-sm font-extrabold bg-primary-fixed text-on-primary-fixed px-2 py-0.5 rounded">ADVANTAGE BAL</span></div>
-<div class="font-headline-sm text-headline-sm font-bold text-on-surface">BAL 182.4 yds/g</div><div class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">vs CIN 134.2 yds/g allowed</div>
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface">Model Inputs — Home vs Away</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Rolling averages cover each team's previous three games (offensive EPA, EPA allowed, pace). Rest and bye come from the schedule.</p>
 </div>
-<div class="mt-space-md pt-space-xs flex items-center justify-between bg-surface-container-low p-2 rounded-lg text-on-surface">
-<div class="flex flex-col"><span class="font-label-sm text-label-sm text-on-surface-variant">Rush Success Rate</span><span class="font-label-lg text-label-lg font-bold">54.1% vs 41.0%</span></div>
-<span class="material-symbols-outlined text-primary text-[20px]">sprint</span>
-</div>
-</div>
-<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-sm" id="insight-features"></div>
+</section>
+<section class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col gap-space-md">
 <div>
-<div class="flex justify-between items-center mb-space-xs"><span class="font-label-sm text-label-sm font-bold uppercase tracking-wider text-on-surface-variant">Ball Security</span><span class="font-label-sm text-label-sm font-extrabold bg-primary-fixed text-on-primary-fixed px-2 py-0.5 rounded">BAL +1.2 NET</span></div>
-<div class="font-headline-sm text-headline-sm font-bold text-on-surface">BAL +0.8 Proj TO</div><div class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">CIN -0.4 Proj TO differential</div>
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface">Full Slate Confidence</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Select any game to inspect its inputs above. Bar length shows margin above a coin flip.</p>
 </div>
-<div class="mt-space-md pt-space-xs flex items-center justify-between bg-surface-container-low p-2 rounded-lg text-on-surface">
-<div class="flex flex-col"><span class="font-label-sm text-label-sm text-on-surface-variant">Int Simulation Exp</span><span class="font-label-lg text-label-lg font-bold">0.4 BAL vs 1.1 CIN</span></div>
-<span class="material-symbols-outlined text-primary text-[20px]">swap_horiz</span>
-</div>
-</div>
-<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col justify-between">
-<div>
-<div class="flex justify-between items-center mb-space-xs"><span class="font-label-sm text-label-sm font-bold uppercase tracking-wider text-on-surface-variant">Roster Health</span><span class="font-label-sm text-label-sm font-extrabold bg-surface-container text-on-surface-variant px-2 py-0.5 rounded">EQUAL HEALTH</span></div>
-<div class="font-headline-sm text-headline-sm font-bold text-on-surface">98.4 Health Index</div><div class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Full 22 starters active on both sides</div>
-</div>
-<div class="mt-space-md pt-space-xs flex items-center justify-between bg-surface-container-low p-2 rounded-lg text-on-surface">
-<div class="flex flex-col"><span class="font-label-sm text-label-sm text-on-surface-variant">Impact On Spread</span><span class="font-label-lg text-label-lg font-bold">&lt;0.2 pts skew</span></div>
-<span class="material-symbols-outlined text-outline text-[20px]">medication</span>
+<div class="flex flex-col gap-0.5" id="slate-bars"></div>
+</section>
 </div>
 </div>
-</div>
-</div>
-<script>
-  (function initScrubber() {
-    const slider = document.getElementById('simulation-slider');
-    const display = document.getElementById('slider-margin-display');
-    if (!slider || !display) return;
-    const scenarios = [
-      { threshold: 1200, text: "Sim #840: CIN by 6 (26-20) [Burrow 3 TD]" },
-      { threshold: 2400, text: "Sim #2,110: CIN by 2 (24-22) [Walk-off FG]" },
-      { threshold: 4500, text: "Sim #3,900: BAL by 3 (27-24) [OT Thriller]" },
-      { threshold: 7200, text: "Sim #5,420: BAL by 7 (27-20) [Median Scenario]" },
-      { threshold: 9000, text: "Sim #8,300: BAL by 14 (31-17) [Henry 2 TD]" },
-      { threshold: 10000, text: "Sim #9,820: BAL by 21 (38-17) [Pass Defense Collapse]" }
-    ];
-    slider.addEventListener('input', function(e) {
-      const val = parseInt(e.target.value, 10);
-      let match = scenarios[scenarios.length - 1].text;
-      for (let i = 0; i < scenarios.length; i++) {
-        if (val <= scenarios[i].threshold) { match = scenarios[i].text; break; }
-      }
-      display.textContent = match;
-    });
-  })();
-</script>
-</div></div></main>
+</main>
 <footer class="w-full bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] mt-space-xl">
 <div class="max-w-[1360px] mx-auto px-margin-lg py-space-lg flex flex-col md:flex-row items-center justify-between gap-space-md">
 <div class="flex items-center gap-space-sm"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-bold">GridironML Engine</span><span class="text-outline-variant font-label-sm text-label-sm">•</span><span class="font-body-sm text-body-sm text-on-surface-variant">Algorithmic probabilistic models for informational and entertainment analysis only. Not sports wagering advice.</span></div>
-<div class="flex items-center gap-space-md"><span class="font-label-sm text-label-sm text-on-surface-variant">NFL Slate Synchronized: Sunday, Nov 10 • 12:45 PM ET</span><div class="h-2 w-2 rounded-full bg-primary-container animate-pulse"></div></div>
+<div class="flex items-center gap-space-md"><span class="font-label-sm text-label-sm text-on-surface-variant" id="footer-sync">—</span><div class="h-2 w-2 rounded-full bg-primary-container animate-pulse"></div></div>
 </div>
 </footer>
 </body>

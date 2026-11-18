@@ -34,16 +34,21 @@ nfl-game-predictor/
 │   ├── data.py       # nflreadpy -> pandas loaders
 │   ├── betting_data.py  # Kaggle scores + betting-line loaders
 │   ├── features.py   # EPA / pace / rest / bye + rolling form
-│   └── model.py      # logistic regression training + prediction
+│   ├── model.py      # logistic regression training + walk-forward evaluation
+│   └── predict.py    # current-week predictions + web data exports
 ├── tests/            # unit tests
 ├── web/              # static GridironML-style UI (4 screens)
 │   ├── index.html          # Weekly Matchup Board & AI Picks (landing)
 │   ├── pick-simulator.html # Solo Pick Simulator & AI Comparison
 │   ├── model-metrics.html  # Model Performance & Calibration
 │   ├── game-insights.html  # Game Insights & ML Deep Dive
+│   ├── app.js              # shared JSON loader + all four screen renderers
 │   ├── theme.js            # shared Tailwind config / design tokens
 │   ├── styles.css          # shared base styles
-│   └── logo.svg            # local logo (no external image dependency)
+│   ├── logo.svg            # local logo (no external image dependency)
+│   └── data/
+│       ├── predictions.json    # current week's model output
+│       └── model-metrics.json  # validation + calibration for the UI
 ├── requirements.txt
 └── README.md
 ```
@@ -68,19 +73,31 @@ The four-screen GridironML UI lives in `web/`. It is plain HTML/CSS/JS with a
 shared Tailwind config, so no build step or backend is required. Tailwind and
 Google Fonts are loaded from CDNs; the logo is local.
 
+All four screens are data-driven: `web/app.js` loads `web/data/predictions.json`
+and `web/data/model-metrics.json` and renders the current slate, model inputs,
+validation results, and calibration curve. There is no mock data in the UI.
+
 ```powershell
+# regenerate the two JSON files after a new model/week (from repo root)
+python -m src.predict
+
+# serve the web folder
 cd web
 python -m http.server 8000
 ```
 
 Then open <http://127.0.0.1:8000/> (Weekly Board). The header nav links to all
-four screens. You can also open an individual `*.html` file directly in a
-browser, but serving over HTTP is recommended so shared assets resolve
-consistently.
+four screens:
 
-> The screens currently display realistic mock Week 10 data and client-side
-> interactions (filters, pick selection, scenario slider). They are a UI shell
-> ready to be wired to real model predictions once modeling is in place.
+- **Weekly Board** — featured lock, confidence filters, and every model pick.
+- **Pick Simulator** — select your winners and compare them with the model.
+- **Model Metrics** — walk-forward accuracy, Brier score, benchmarks, and a
+  reliability diagram built from out-of-fold predictions.
+- **Game Insights** — switch between games to inspect the exact rolling EPA,
+  pace, rest, and bye inputs behind each probability.
+
+> Serve the folder over HTTP. Opening an `*.html` file with `file://` will block
+> the `fetch()` calls that load the JSON data.
 
 ## Data sources
 
@@ -147,16 +164,24 @@ each season is scored by a model trained only on earlier seasons:
 
 | Test season | Accuracy | ROC AUC | Brier |
 | --- | --- | --- | --- |
-| 2021 | 0.658 | 0.651 | 0.239 |
+| 2021 | 0.655 | 0.651 | 0.239 |
 | 2022 | 0.550 | 0.582 | 0.251 |
-| 2023 | 0.575 | 0.604 | 0.244 |
+| 2023 | 0.572 | 0.606 | 0.244 |
 | 2024 | 0.621 | 0.680 | 0.224 |
-| 2025 | 0.634 | 0.674 | 0.227 |
+| 2025 | 0.634 | 0.676 | 0.227 |
 
-Last-three-season average: **0.610 accuracy / 0.652 AUC / 0.232 Brier**, versus
+Last-three-season average: **0.609 accuracy / 0.654 AUC / 0.232 Brier**, versus
 baselines of 0.550 for always picking the home team and 0.667 for the closing
-market favorite. The model beats the naive baseline but not the betting market,
-which is a useful reference point rather than a surprise.
+market favorite. The final model refit on all ten seasons scores 0.643 accuracy
+and 0.699 AUC in-sample; that number is descriptive, not a validation estimate.
+The model beats the naive baseline but not the betting market, which is a useful
+reference point rather than a surprise.
+
+Training also writes a calibration table from all 1,420 out-of-fold walk-forward
+predictions, using fixed 0–10% through 90–100% probability bins. Those values are
+stored in both `models/logistic_regression.json` and
+`web/data/model-metrics.json` and power the reliability diagram on the Model
+Metrics screen.
 
 Use the fitted model:
 
@@ -181,33 +206,65 @@ python -m src.predict           # next upcoming week
 python -m src.predict --week 12 # a specific week
 ```
 
-This prints a readable pick table and writes `web/data/predictions.json`, shaped
-for the UI:
+This prints a readable pick table and writes two UI-facing files:
+`web/data/predictions.json` and `web/data/model-metrics.json`. The predictions
+file includes model metadata, kickoff/venue details, the pre-game inputs used
+for each team, and the winner probability/confidence:
 
 ```json
 {
   "season": 2026,
   "week": 11,
+  "model": {
+    "type": "logistic_regression",
+    "training_games": 2751,
+    "features": 83,
+    "walk_forward_accuracy": 0.6089,
+    "walk_forward_auc": 0.6542
+  },
   "games": [
     {
       "game_id": "2026_11_MIA_BUF",
       "gameday": "2026-11-22",
-      "home": {"abbr": "BUF", "name": "Buffalo Bills", "record": "8-1", "win_prob": 0.8861},
-      "away": {"abbr": "MIA", "name": "Miami Dolphins", "record": "1-8", "win_prob": 0.1139},
+      "weekday": "Sunday",
+      "gametime": "13:00",
+      "stadium": "Highmark Stadium",
+      "home": {
+        "abbr": "BUF",
+        "name": "Buffalo Bills",
+        "record": "8-1",
+        "win_prob": 0.8991,
+        "features": {"off_epa": 4.1, "def_epa": -16.82, "pace": 90.0, "rest_days": 7, "bye": false}
+      },
+      "away": {
+        "abbr": "MIA",
+        "name": "Miami Dolphins",
+        "record": "1-8",
+        "win_prob": 0.1009,
+        "features": {"off_epa": -11.4, "def_epa": -5.42, "pace": 79.7, "rest_days": 7, "bye": false}
+      },
       "predicted_winner": "BUF",
-      "confidence": "high"
+      "confidence": "high",
+      "edge_pp": 39.9
     }
   ]
 }
 ```
 
+The `features` objects are the model's actual inputs (rolling three-game form,
+rest, and bye proxy), which is what the Game Insights screen displays.
+`edge_pp` is the predicted winner's distance from a 50/50 coin flip in
+percentage points; it is not a market edge.
+
 The Kaggle dataset ends at 2025, so there is no closing line for 2026 — these
-are pure model probabilities, not market-adjusted picks. Forecasts are most
-reliable for the next upcoming week: further-out weeks depend on games that
-haven't been played and therefore have no pre-game form yet.
+are pure model probabilities, not market-adjusted picks. The UI therefore shows
+model confidence instead of fabricated spreads or simulated scores. Forecasts
+are most reliable for the next upcoming week: further-out weeks depend on games
+that haven't been played and therefore have no pre-game form yet.
 
 ## Status
 
 Data loading, feature engineering, the logistic-regression model, generated
-2026 weekly predictions, and the four-screen static UI are ready. Next: wire
-`web/data/predictions.json` into the `web/` pages.
+2026 weekly predictions, calibration export, and the four-screen static UI are
+complete. Run `python -m src.predict` whenever a new week's games are complete,
+then refresh the served `web/` pages to see the updated slate.

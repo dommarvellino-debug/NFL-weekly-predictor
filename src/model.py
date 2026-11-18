@@ -127,15 +127,39 @@ def train(
     year = ds["season"].to_numpy()
 
     walk_forward = []
+    oof_y: list[int] = []
+    oof_p: list[float] = []
     for test_year in range(walk_forward_from, max(seasons) + 1):
         train_mask, test_mask = year < test_year, year == test_year
         if not train_mask.any() or not test_mask.any():
             continue
         season_model = make_pipeline(C).fit(X[train_mask], y[train_mask])
+        year_y, year_p = y[test_mask], season_model.predict_proba(X[test_mask])[:, 1]
+        oof_y.extend(year_y.tolist())
+        oof_p.extend(year_p.tolist())
         walk_forward.append({
             "season": test_year,
             "games": int(test_mask.sum()),
-            **evaluate(season_model, X[test_mask], y[test_mask]),
+            **evaluate(season_model, X[test_mask], year_y),
+        })
+
+    # Reliability curve from all out-of-fold walk-forward predictions, using
+    # fixed 0-10% .. 90-100% bins so the UI can plot a stable axis.
+    oof_probs = np.asarray(oof_p)
+    oof_labels = np.asarray(oof_y)
+    edges = np.linspace(0.0, 1.0, 11)
+    calibration = []
+    for i in range(10):
+        upper_inclusive = oof_probs <= edges[i + 1] if i == 9 else oof_probs < edges[i + 1]
+        mask = (oof_probs >= edges[i]) & upper_inclusive
+        count = int(mask.sum())
+        mean_pred = float(oof_probs[mask].mean()) if count else float((edges[i] + edges[i + 1]) / 2)
+        actual = float(oof_labels[mask].mean()) if count else mean_pred
+        calibration.append({
+            "bin": f"{int(edges[i] * 100)}-{int(edges[i + 1] * 100)}%",
+            "mean_pred": mean_pred,
+            "actual": actual,
+            "count": count,
         })
 
     final_model = make_pipeline(C).fit(X, y)
@@ -159,8 +183,11 @@ def train(
         "C": C,
         "in_sample": in_sample,
         "walk_forward": walk_forward,
+        "calibration": calibration,
         "baselines": baselines,
         "training_games": int(len(ds)),
+        "feature_count": len(NUMERIC_FEATURES) + 2 * len(teams),
+        "num_teams": len(teams),
     }
 
     if save:

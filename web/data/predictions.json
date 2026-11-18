@@ -1,242 +1,494 @@
 {
   "season": 2026,
   "week": 11,
-  "model": "logistic_regression",
+  "model": {
+    "type": "logistic_regression",
+    "seasons": [
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "training_games": 2751,
+    "features": 83,
+    "walk_forward_accuracy": 0.6089,
+    "walk_forward_auc": 0.6542
+  },
   "note": "Model probabilities only; no betting line available for 2026.",
   "games": [
     {
       "game_id": "2026_11_MIA_BUF",
       "gameday": "2026-11-22",
+      "weekday": "Sunday",
+      "gametime": "13:00",
+      "stadium": "Highmark Stadium",
       "home": {
         "abbr": "BUF",
         "name": "Buffalo Bills",
         "record": "8-1",
-        "win_prob": 0.8861
+        "win_prob": 0.8991,
+        "features": {
+          "off_epa": 4.1,
+          "def_epa": -16.82,
+          "pace": 90.0,
+          "rest_days": 7,
+          "bye": false
+        }
       },
       "away": {
         "abbr": "MIA",
         "name": "Miami Dolphins",
         "record": "1-8",
-        "win_prob": 0.1139
+        "win_prob": 0.1009,
+        "features": {
+          "off_epa": -11.4,
+          "def_epa": -5.42,
+          "pace": 79.7,
+          "rest_days": 7,
+          "bye": false
+        }
       },
       "predicted_winner": "BUF",
-      "confidence": "high"
+      "confidence": "high",
+      "edge_pp": 39.9
     },
     {
       "game_id": "2026_11_ARI_KC",
       "gameday": "2026-11-22",
+      "weekday": "Sunday",
+      "gametime": "13:00",
+      "stadium": "GEHA Field at Arrowhead Stadium",
       "home": {
         "abbr": "KC",
         "name": "Kansas City Chiefs",
         "record": "7-2",
-        "win_prob": 0.8474
+        "win_prob": 0.8635,
+        "features": {
+          "off_epa": 5.81,
+          "def_epa": -8.13,
+          "pace": 84.3,
+          "rest_days": 7,
+          "bye": false
+        }
       },
       "away": {
         "abbr": "ARI",
         "name": "Arizona Cardinals",
         "record": "3-7",
-        "win_prob": 0.1526
+        "win_prob": 0.1365,
+        "features": {
+          "off_epa": -5.74,
+          "def_epa": 7.53,
+          "pace": 73.0,
+          "rest_days": 7,
+          "bye": false
+        }
       },
       "predicted_winner": "KC",
-      "confidence": "high"
+      "confidence": "high",
+      "edge_pp": 36.3
     },
     {
       "game_id": "2026_11_LV_DEN",
       "gameday": "2026-11-22",
+      "weekday": "Sunday",
+      "gametime": "16:25",
+      "stadium": "Empower Field at Mile High",
       "home": {
         "abbr": "DEN",
         "name": "Denver Broncos",
         "record": "7-2",
-        "win_prob": 0.751
+        "win_prob": 0.7655,
+        "features": {
+          "off_epa": 8.62,
+          "def_epa": 0.8,
+          "pace": 82.0,
+          "rest_days": 14,
+          "bye": true
+        }
       },
       "away": {
         "abbr": "LV",
         "name": "Las Vegas Raiders",
         "record": "4-6",
-        "win_prob": 0.249
+        "win_prob": 0.2345,
+        "features": {
+          "off_epa": 1.08,
+          "def_epa": 8.29,
+          "pace": 73.3,
+          "rest_days": 7,
+          "bye": false
+        }
       },
       "predicted_winner": "DEN",
-      "confidence": "high"
+      "confidence": "high",
+      "edge_pp": 26.5
     },
     {
       "game_id": "2026_11_IND_HOU",
       "gameday": "2026-11-19",
+      "weekday": "Thursday",
+      "gametime": "20:15",
+      "stadium": "Reliant Stadium",
       "home": {
         "abbr": "HOU",
         "name": "Houston Texans",
         "record": "3-6",
-        "win_prob": 0.734
+        "win_prob": 0.7536,
+        "features": {
+          "off_epa": 3.49,
+          "def_epa": -1.39,
+          "pace": 85.3,
+          "rest_days": 4,
+          "bye": false
+        }
       },
       "away": {
         "abbr": "IND",
         "name": "Indianapolis Colts",
         "record": "3-7",
-        "win_prob": 0.266
+        "win_prob": 0.2464,
+        "features": {
+          "off_epa": -16.18,
+          "def_epa": -3.55,
+          "pace": 79.3,
+          "rest_days": 4,
+          "bye": false
+        }
       },
       "predicted_winner": "HOU",
-      "confidence": "high"
-    },
-    {
-      "game_id": "2026_11_TEN_DAL",
-      "gameday": "2026-11-22",
-      "home": {
-        "abbr": "DAL",
-        "name": "Dallas Cowboys",
-        "record": "4-6",
-        "win_prob": 0.6704
-      },
-      "away": {
-        "abbr": "TEN",
-        "name": "Tennessee Titans",
-        "record": "1-8",
-        "win_prob": 0.3296
-      },
-      "predicted_winner": "DAL",
-      "confidence": "moderate"
+      "confidence": "high",
+      "edge_pp": 25.4
     },
     {
       "game_id": "2026_11_CIN_WAS",
       "gameday": "2026-11-23",
+      "weekday": "Monday",
+      "gametime": "20:15",
+      "stadium": "Northwest Stadium",
       "home": {
         "abbr": "WAS",
         "name": "Washington Commanders",
         "record": "3-6",
-        "win_prob": 0.3304
+        "win_prob": 0.318,
+        "features": {
+          "off_epa": -1.06,
+          "def_epa": -4.63,
+          "pace": 80.7,
+          "rest_days": 11,
+          "bye": false
+        }
       },
       "away": {
         "abbr": "CIN",
         "name": "Cincinnati Bengals",
         "record": "7-2",
-        "win_prob": 0.6696
+        "win_prob": 0.682,
+        "features": {
+          "off_epa": 15.7,
+          "def_epa": 2.3,
+          "pace": 83.0,
+          "rest_days": 8,
+          "bye": false
+        }
       },
       "predicted_winner": "CIN",
-      "confidence": "moderate"
+      "confidence": "moderate",
+      "edge_pp": 18.2
+    },
+    {
+      "game_id": "2026_11_TEN_DAL",
+      "gameday": "2026-11-22",
+      "weekday": "Sunday",
+      "gametime": "13:00",
+      "stadium": "AT&T Stadium",
+      "home": {
+        "abbr": "DAL",
+        "name": "Dallas Cowboys",
+        "record": "4-6",
+        "win_prob": 0.6777,
+        "features": {
+          "off_epa": 5.2,
+          "def_epa": 7.16,
+          "pace": 97.0,
+          "rest_days": 7,
+          "bye": false
+        }
+      },
+      "away": {
+        "abbr": "TEN",
+        "name": "Tennessee Titans",
+        "record": "1-8",
+        "win_prob": 0.3223,
+        "features": {
+          "off_epa": 2.03,
+          "def_epa": 11.49,
+          "pace": 82.0,
+          "rest_days": 7,
+          "bye": false
+        }
+      },
+      "predicted_winner": "DAL",
+      "confidence": "moderate",
+      "edge_pp": 17.8
     },
     {
       "game_id": "2026_11_NYJ_LAC",
       "gameday": "2026-11-22",
+      "weekday": "Sunday",
+      "gametime": "16:05",
+      "stadium": "SoFi Stadium",
       "home": {
         "abbr": "LAC",
         "name": "Los Angeles Chargers",
         "record": "1-8",
-        "win_prob": 0.6576
+        "win_prob": 0.6525,
+        "features": {
+          "off_epa": -10.15,
+          "def_epa": 0.77,
+          "pace": 80.3,
+          "rest_days": 6,
+          "bye": false
+        }
       },
       "away": {
         "abbr": "NYJ",
         "name": "New York Jets",
         "record": "2-8",
-        "win_prob": 0.3424
+        "win_prob": 0.3475,
+        "features": {
+          "off_epa": -2.44,
+          "def_epa": 14.09,
+          "pace": 83.7,
+          "rest_days": 7,
+          "bye": false
+        }
       },
       "predicted_winner": "LAC",
-      "confidence": "moderate"
+      "confidence": "moderate",
+      "edge_pp": 15.3
     },
     {
       "game_id": "2026_11_MIN_SF",
       "gameday": "2026-11-22",
+      "weekday": "Sunday",
+      "gametime": "20:20",
+      "stadium": "Estadio Banorte",
       "home": {
         "abbr": "SF",
         "name": "San Francisco 49ers",
         "record": "8-1",
-        "win_prob": 0.5632
+        "win_prob": 0.583,
+        "features": {
+          "off_epa": 12.25,
+          "def_epa": 5.39,
+          "pace": 83.3,
+          "rest_days": 7,
+          "bye": false
+        }
       },
       "away": {
         "abbr": "MIN",
         "name": "Minnesota Vikings",
         "record": "7-2",
-        "win_prob": 0.4368
+        "win_prob": 0.417,
+        "features": {
+          "off_epa": -9.19,
+          "def_epa": -9.58,
+          "pace": 72.3,
+          "rest_days": 7,
+          "bye": false
+        }
       },
       "predicted_winner": "SF",
-      "confidence": "low"
-    },
-    {
-      "game_id": "2026_11_BAL_CAR",
-      "gameday": "2026-11-22",
-      "home": {
-        "abbr": "CAR",
-        "name": "Carolina Panthers",
-        "record": "4-5",
-        "win_prob": 0.4373
-      },
-      "away": {
-        "abbr": "BAL",
-        "name": "Baltimore Ravens",
-        "record": "4-6",
-        "win_prob": 0.5627
-      },
-      "predicted_winner": "BAL",
-      "confidence": "low"
+      "confidence": "low",
+      "edge_pp": 8.3
     },
     {
       "game_id": "2026_11_NO_CHI",
       "gameday": "2026-11-22",
+      "weekday": "Sunday",
+      "gametime": "13:00",
+      "stadium": "Soldier Field",
       "home": {
         "abbr": "CHI",
         "name": "Chicago Bears",
         "record": "7-2",
-        "win_prob": 0.5576
+        "win_prob": 0.5733,
+        "features": {
+          "off_epa": 2.93,
+          "def_epa": -5.38,
+          "pace": 82.7,
+          "rest_days": 14,
+          "bye": true
+        }
       },
       "away": {
         "abbr": "NO",
         "name": "New Orleans Saints",
         "record": "3-6",
-        "win_prob": 0.4424
+        "win_prob": 0.4267,
+        "features": {
+          "off_epa": -4.76,
+          "def_epa": -1.1,
+          "pace": 80.3,
+          "rest_days": 7,
+          "bye": false
+        }
       },
       "predicted_winner": "CHI",
-      "confidence": "low"
+      "confidence": "low",
+      "edge_pp": 7.3
     },
     {
-      "game_id": "2026_11_TB_DET",
+      "game_id": "2026_11_BAL_CAR",
       "gameday": "2026-11-22",
+      "weekday": "Sunday",
+      "gametime": "13:00",
+      "stadium": "Bank of America Stadium",
       "home": {
-        "abbr": "DET",
-        "name": "Detroit Lions",
-        "record": "7-2",
-        "win_prob": 0.4559
+        "abbr": "CAR",
+        "name": "Carolina Panthers",
+        "record": "4-5",
+        "win_prob": 0.4548,
+        "features": {
+          "off_epa": -3.52,
+          "def_epa": -0.98,
+          "pace": 85.7,
+          "rest_days": 7,
+          "bye": false
+        }
       },
       "away": {
-        "abbr": "TB",
-        "name": "Tampa Bay Buccaneers",
-        "record": "3-6",
-        "win_prob": 0.5441
+        "abbr": "BAL",
+        "name": "Baltimore Ravens",
+        "record": "4-6",
+        "win_prob": 0.5452,
+        "features": {
+          "off_epa": -16.21,
+          "def_epa": 1.47,
+          "pace": 77.7,
+          "rest_days": 6,
+          "bye": false
+        }
       },
-      "predicted_winner": "TB",
-      "confidence": "low"
+      "predicted_winner": "BAL",
+      "confidence": "low",
+      "edge_pp": 4.5
     },
     {
       "game_id": "2026_11_PIT_PHI",
       "gameday": "2026-11-22",
+      "weekday": "Sunday",
+      "gametime": "16:25",
+      "stadium": "Lincoln Financial Field",
       "home": {
         "abbr": "PHI",
         "name": "Philadelphia Eagles",
         "record": "2-7",
-        "win_prob": 0.4795
+        "win_prob": 0.4571,
+        "features": {
+          "off_epa": -7.97,
+          "def_epa": 6.85,
+          "pace": 87.3,
+          "rest_days": 14,
+          "bye": true
+        }
       },
       "away": {
         "abbr": "PIT",
         "name": "Pittsburgh Steelers",
         "record": "6-3",
-        "win_prob": 0.5205
+        "win_prob": 0.5429,
+        "features": {
+          "off_epa": 3.31,
+          "def_epa": 1.35,
+          "pace": 75.3,
+          "rest_days": 7,
+          "bye": false
+        }
       },
       "predicted_winner": "PIT",
-      "confidence": "low"
+      "confidence": "low",
+      "edge_pp": 4.3
+    },
+    {
+      "game_id": "2026_11_TB_DET",
+      "gameday": "2026-11-22",
+      "weekday": "Sunday",
+      "gametime": "13:00",
+      "stadium": "Ford Field",
+      "home": {
+        "abbr": "DET",
+        "name": "Detroit Lions",
+        "record": "7-2",
+        "win_prob": 0.4604,
+        "features": {
+          "off_epa": 1.83,
+          "def_epa": -11.33,
+          "pace": 81.3,
+          "rest_days": 7,
+          "bye": false
+        }
+      },
+      "away": {
+        "abbr": "TB",
+        "name": "Tampa Bay Buccaneers",
+        "record": "3-6",
+        "win_prob": 0.5396,
+        "features": {
+          "off_epa": -2.25,
+          "def_epa": -17.48,
+          "pace": 82.3,
+          "rest_days": 14,
+          "bye": true
+        }
+      },
+      "predicted_winner": "TB",
+      "confidence": "low",
+      "edge_pp": 4.0
     },
     {
       "game_id": "2026_11_JAX_NYG",
       "gameday": "2026-11-22",
+      "weekday": "Sunday",
+      "gametime": "13:00",
+      "stadium": "MetLife Stadium",
       "home": {
         "abbr": "NYG",
         "name": "New York Giants",
         "record": "6-3",
-        "win_prob": 0.5188
+        "win_prob": 0.4999,
+        "features": {
+          "off_epa": 2.68,
+          "def_epa": -2.04,
+          "pace": 83.3,
+          "rest_days": 10,
+          "bye": false
+        }
       },
       "away": {
         "abbr": "JAX",
         "name": "Jacksonville Jaguars",
         "record": "7-2",
-        "win_prob": 0.4812
+        "win_prob": 0.5001,
+        "features": {
+          "off_epa": 10.56,
+          "def_epa": -15.26,
+          "pace": 79.0,
+          "rest_days": 7,
+          "bye": false
+        }
       },
-      "predicted_winner": "NYG",
-      "confidence": "low"
+      "predicted_winner": "JAX",
+      "confidence": "low",
+      "edge_pp": 0.0
     }
   ]
 }

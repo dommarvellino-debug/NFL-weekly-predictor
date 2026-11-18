@@ -31,7 +31,10 @@ from src.model import load_model, predict_games
 
 SEASON = 2026
 CONTEXT_SEASONS = (2025, 2026)
-PREDICTIONS_PATH = Path(__file__).resolve().parents[1] / "web" / "data" / "predictions.json"
+WEB_DATA = Path(__file__).resolve().parents[1] / "web" / "data"
+PREDICTIONS_PATH = WEB_DATA / "predictions.json"
+METRICS_PATH = WEB_DATA / "model-metrics.json"
+FORM_COLUMNS = ("prev3_off_epa", "prev3_def_epa", "prev3_pace")
 
 # Canonical current names keyed by nflverse abbreviation. The Kaggle teams
 # table lists historical names in inconsistent order, so it's only a fallback.
@@ -120,8 +123,20 @@ def generate_week_predictions(
         raise ValueError(f"No games found for {season} week {week}")
 
     picks = predict_games(artifact, week_games)
-    picks["gameday"] = week_games["gameday"].to_numpy()
     picks["week"] = week
+
+    # Kickoff / venue metadata and the actual pre-game inputs used by the model.
+    schedule_meta = schedule.loc[
+        schedule["week"] == week,
+        ["game_id", "gameday", "weekday", "gametime", "stadium"],
+    ]
+    picks = picks.merge(schedule_meta, on="game_id", how="left", validate="one_to_one")
+    picks["gameday"] = picks["gameday"].astype(str)
+
+    form_cols = [f"{side}_{col}" for side in ("home", "away") for col in FORM_COLUMNS]
+    form_cols += ["home_rest", "away_rest", "home_had_bye", "away_had_bye"]
+    form = week_games[["game_id"] + form_cols].copy()
+    picks = picks.merge(form, on="game_id", how="left", validate="one_to_one")
 
     names = team_name_map()
     records = team_records(schedule)
@@ -141,35 +156,88 @@ def generate_week_predictions(
     return picks.sort_values("_margin", ascending=False).drop(columns="_margin").reset_index(drop=True)
 
 
-def to_json(picks: pd.DataFrame, week: int, season: int = SEASON) -> dict:
+def _side_features(row, side: str) -> dict:
+    return {
+        "off_epa": round(float(getattr(row, f"{side}_prev3_off_epa")), 2),
+        "def_epa": round(float(getattr(row, f"{side}_prev3_def_epa")), 2),
+        "pace": round(float(getattr(row, f"{side}_prev3_pace")), 1),
+        "rest_days": int(getattr(row, f"{side}_rest")),
+        "bye": bool(getattr(row, f"{side}_had_bye")),
+    }
+
+
+def to_json(
+    picks: pd.DataFrame, week: int, season: int = SEASON, artifact: dict | None = None
+) -> dict:
     """Shape the prediction table for the static UI / external consumers."""
+    artifact = artifact if artifact is not None else load_model()
+    recent = artifact["walk_forward"][-3:]
+    meta = {
+        "type": "logistic_regression",
+        "seasons": artifact["seasons"],
+        "training_games": artifact["training_games"],
+        "features": artifact["feature_count"],
+        "walk_forward_accuracy": round(sum(r["accuracy"] for r in recent) / len(recent), 4),
+        "walk_forward_auc": round(sum(r["roc_auc"] for r in recent) / len(recent), 4),
+    }
     return {
         "season": season,
         "week": week,
-        "model": "logistic_regression",
+        "model": meta,
         "note": "Model probabilities only; no betting line available for 2026.",
         "games": [
             {
                 "game_id": row.game_id,
                 "gameday": str(row.gameday),
+                "weekday": str(row.weekday),
+                "gametime": str(row.gametime),
+                "stadium": str(row.stadium),
                 "home": {
                     "abbr": row.home_team,
                     "name": row.home_name,
                     "record": row.home_record,
                     "win_prob": round(float(row.home_win_prob), 4),
+                    "features": _side_features(row, "home"),
                 },
                 "away": {
                     "abbr": row.away_team,
                     "name": row.away_name,
                     "record": row.away_record,
                     "win_prob": round(float(row.away_win_prob), 4),
+                    "features": _side_features(row, "away"),
                 },
                 "predicted_winner": row.predicted_winner,
                 "confidence": row.confidence,
+                "edge_pp": round((abs(float(row.home_win_prob) - 0.5)) * 100, 1),
             }
             for row in picks.itertuples(index=False)
         ],
     }
+
+
+def write_model_metrics(artifact: dict, path: Path = METRICS_PATH) -> Path:
+    """Export training metadata + the out-of-fold reliability curve for the UI."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    recent = artifact["walk_forward"][-3:]
+    payload = {
+        "seasons": artifact["seasons"],
+        "training_games": artifact["training_games"],
+        "features": artifact["feature_count"],
+        "num_teams": artifact["num_teams"],
+        "C": artifact["C"],
+        "rolling_window": artifact["rolling_window"],
+        "in_sample": artifact["in_sample"],
+        "walk_forward": artifact["walk_forward"],
+        "calibration": artifact["calibration"],
+        "baselines": artifact["baselines"],
+        "recent_average": {
+            "accuracy": round(sum(r["accuracy"] for r in recent) / len(recent), 4),
+            "roc_auc": round(sum(r["roc_auc"] for r in recent) / len(recent), 4),
+            "brier": round(sum(r["brier"] for r in recent) / len(recent), 4),
+        },
+    }
+    path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    return path
 
 
 def print_table(picks: pd.DataFrame, week: int, season: int = SEASON) -> None:
@@ -191,16 +259,19 @@ def main() -> None:
     parser.add_argument("--no-write", action="store_true", help="print only; do not write JSON")
     args = parser.parse_args()
 
-    picks = generate_week_predictions(week=args.week, season=args.season)
+    artifact = load_model()
+    picks = generate_week_predictions(week=args.week, season=args.season, artifact=artifact)
     week = int(picks["week"].iloc[0])
     print_table(picks, week, args.season)
 
     if not args.no_write:
         args.json.parent.mkdir(parents=True, exist_ok=True)
         args.json.write_text(
-            json.dumps(to_json(picks, week, args.season), indent=2), encoding="utf-8"
+            json.dumps(to_json(picks, week, args.season, artifact), indent=2), encoding="utf-8"
         )
+        metrics_path = write_model_metrics(artifact)
         print(f"\nSaved predictions -> {args.json}")
+        print(f"Saved model metrics -> {metrics_path}")
 
 
 if __name__ == "__main__":
