@@ -74,9 +74,16 @@
 <section class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col gap-space-md">
 <div>
 <h2 class="font-headline-md text-headline-md font-bold text-on-surface">Model Inputs — Home vs Away</h2>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Rolling averages cover each team's previous three games (offensive EPA, EPA allowed, pace). Rest and bye come from the schedule.</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Rolling averages cover each team's previous three games (offensive EPA, EPA allowed, pace). Rest and bye come from the schedule; prior-season player form is below.</p>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-space-sm" id="insight-features"></div>
+</section>
+<section class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col gap-space-md">
+<div>
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface">Prior-Season Player Form</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant" id="player-source-note">Team leaders from the Kaggle player-stat dataset. These are real model inputs from the season before this game.</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-space-sm" id="insight-players"></div>
 </section>
 <section class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col gap-space-md">
 <div>

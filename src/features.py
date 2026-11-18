@@ -9,6 +9,7 @@ Feature availability by source
 | Pace             | nflreadpy PBP | number of offensive plays per game |
 | Rest days        | nflreadpy schedules | `home_rest` / `away_rest` (days since last game) |
 | Bye week         | derived | rest >= 12 days is used as a bye proxy |
+| Player form      | Kaggle player stats | prior-season QB/RB/receiver leaders + top-3 receiving yards |
 | Betting lines    | Kaggle | spread + over/under, joined on season/date/teams |
 
 The PBP aggregates describe the *whole game*. For prediction, use
@@ -24,6 +25,11 @@ import pandas as pd
 
 from src import data as nfl_data
 from src.betting_data import load_scores as load_kaggle_scores
+from src.player_stats import (
+    PLAYER_COLUMNS,
+    PLAYER_NAME_COLUMNS,
+    build_team_season_player_stats,
+)
 
 # Kaggle's team IDs differ from nflverse for these two franchises.
 KAGGLE_TO_NFLVERSE = {"LAR": "LA", "LVR": "LV"}
@@ -94,10 +100,34 @@ def _attach_betting(base: pd.DataFrame) -> pd.DataFrame:
     return merged.drop(columns=["home_id", "away_id"])
 
 
+def add_player_features(games: pd.DataFrame) -> pd.DataFrame:
+    """Attach prior-season player leaders for both teams.
+
+    Only season ``S - 1`` is joined to a game in season ``S``. That keeps the
+    player inputs available before kickoff and avoids using a team's current
+    season statistics to predict its current-game result.
+    """
+    stats = build_team_season_player_stats().copy()
+    stats["season"] = stats["season"] + 1  # season N stats are available in N+1
+    lookup = stats[["season", "team"] + list(PLAYER_COLUMNS) + list(PLAYER_NAME_COLUMNS)]
+    lookup = lookup.set_index(["season", "team"])
+
+    out = games.copy().reset_index(drop=True)
+    columns = list(PLAYER_COLUMNS) + list(PLAYER_NAME_COLUMNS)
+    for side in ("home", "away"):
+        keys = pd.MultiIndex.from_frame(
+            out[["season", f"{side}_team"]].rename(columns={f"{side}_team": "team"})
+        )
+        values = lookup.reindex(keys).reset_index(drop=True)
+        values.columns = [f"{side}_player_{col}" for col in columns]
+        out = pd.concat([out, values], axis=1)
+    return out
+
+
 def build_game_features(
     seasons: int | Iterable[int], include_betting: bool = True
 ) -> pd.DataFrame:
-    """Build one row per game with both teams' EPA, pace, rest and bye flags."""
+    """One row per game with EPA, pace, rest, bye, and prior-season player form."""
     schedule = nfl_data.load_schedules(seasons)
     team_game = load_team_game_stats(seasons)
 
@@ -115,7 +145,7 @@ def build_game_features(
 
     if include_betting:
         base = _attach_betting(base)
-    return base
+    return add_player_features(base)
 
 
 def add_rolling_form(games: pd.DataFrame, window: int = 3) -> pd.DataFrame:

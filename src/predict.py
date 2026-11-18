@@ -28,6 +28,7 @@ from src import data as nfl_data
 from src.betting_data import load_teams
 from src.features import KAGGLE_TO_NFLVERSE, add_rolling_form, build_game_features
 from src.model import load_model, predict_games
+from src.player_stats import PLAYER_COLUMNS, PLAYER_NAME_COLUMNS
 
 SEASON = 2026
 CONTEXT_SEASONS = (2025, 2026)
@@ -135,6 +136,11 @@ def generate_week_predictions(
 
     form_cols = [f"{side}_{col}" for side in ("home", "away") for col in FORM_COLUMNS]
     form_cols += ["home_rest", "away_rest", "home_had_bye", "away_had_bye"]
+    form_cols += [
+        f"{side}_player_{col}"
+        for side in ("home", "away")
+        for col in (*PLAYER_COLUMNS, *PLAYER_NAME_COLUMNS)
+    ]
     form = week_games[["game_id"] + form_cols].copy()
     picks = picks.merge(form, on="game_id", how="left", validate="one_to_one")
 
@@ -156,13 +162,39 @@ def generate_week_predictions(
     return picks.sort_values("_margin", ascending=False).drop(columns="_margin").reset_index(drop=True)
 
 
+def _num(value, digits: int = 2):
+    """JSON-safe rounded number (NaN becomes null)."""
+    if pd.isna(value):
+        return None
+    return round(float(value), digits)
+
+
+def _name(value):
+    return None if pd.isna(value) else str(value)
+
+
 def _side_features(row, side: str) -> dict:
     return {
-        "off_epa": round(float(getattr(row, f"{side}_prev3_off_epa")), 2),
-        "def_epa": round(float(getattr(row, f"{side}_prev3_def_epa")), 2),
-        "pace": round(float(getattr(row, f"{side}_prev3_pace")), 1),
+        "off_epa": _num(getattr(row, f"{side}_prev3_off_epa")),
+        "def_epa": _num(getattr(row, f"{side}_prev3_def_epa")),
+        "pace": _num(getattr(row, f"{side}_prev3_pace"), 1),
         "rest_days": int(getattr(row, f"{side}_rest")),
         "bye": bool(getattr(row, f"{side}_had_bye")),
+        # Prior-season player inputs used by the model.
+        "qb_rating": _num(getattr(row, f"{side}_player_qb_rating")),
+        "qb_ypa": _num(getattr(row, f"{side}_player_qb_ypa")),
+        "rb_ypc": _num(getattr(row, f"{side}_player_rb_ypc")),
+        "wr_ypr": _num(getattr(row, f"{side}_player_wr_ypr")),
+        "top3_rec_yards": _num(getattr(row, f"{side}_player_top3_rec_yards"), 0),
+    }
+
+
+def _side_players(row, side: str, season: int) -> dict:
+    return {
+        "prior_season": season - 1,
+        "qb": _name(getattr(row, f"{side}_player_qb_name")),
+        "rb": _name(getattr(row, f"{side}_player_rb_name")),
+        "wr": _name(getattr(row, f"{side}_player_wr_name")),
     }
 
 
@@ -172,11 +204,15 @@ def to_json(
     """Shape the prediction table for the static UI / external consumers."""
     artifact = artifact if artifact is not None else load_model()
     recent = artifact["walk_forward"][-3:]
+    player_stats = artifact.get("player_stats", {})
     meta = {
         "type": "logistic_regression",
         "seasons": artifact["seasons"],
         "training_games": artifact["training_games"],
         "features": artifact["feature_count"],
+        "player_features": artifact.get("player_feature_count", 0),
+        "player_source": player_stats.get("dataset"),
+        "player_seasons": player_stats.get("seasons"),
         "walk_forward_accuracy": round(sum(r["accuracy"] for r in recent) / len(recent), 4),
         "walk_forward_auc": round(sum(r["roc_auc"] for r in recent) / len(recent), 4),
     }
@@ -184,7 +220,7 @@ def to_json(
         "season": season,
         "week": week,
         "model": meta,
-        "note": "Model probabilities only; no betting line available for 2026.",
+        "note": "Model probabilities only; no 2026 betting line. Player form is prior-season.",
         "games": [
             {
                 "game_id": row.game_id,
@@ -198,6 +234,7 @@ def to_json(
                     "record": row.home_record,
                     "win_prob": round(float(row.home_win_prob), 4),
                     "features": _side_features(row, "home"),
+                    "players": _side_players(row, "home", season),
                 },
                 "away": {
                     "abbr": row.away_team,
@@ -205,6 +242,7 @@ def to_json(
                     "record": row.away_record,
                     "win_prob": round(float(row.away_win_prob), 4),
                     "features": _side_features(row, "away"),
+                    "players": _side_players(row, "away", season),
                 },
                 "predicted_winner": row.predicted_winner,
                 "confidence": row.confidence,
@@ -230,6 +268,10 @@ def write_model_metrics(artifact: dict, path: Path = METRICS_PATH) -> Path:
         "walk_forward": artifact["walk_forward"],
         "calibration": artifact["calibration"],
         "baselines": artifact["baselines"],
+        "player_stats": artifact.get("player_stats", {}),
+        "player_feature_count": artifact.get("player_feature_count", 0),
+        "feature_importance": artifact.get("feature_importance", []),
+        "player_feature_importance": artifact.get("player_feature_importance", []),
         "recent_average": {
             "accuracy": round(sum(r["accuracy"] for r in recent) / len(recent), 4),
             "roc_auc": round(sum(r["roc_auc"] for r in recent) / len(recent), 4),
@@ -263,6 +305,11 @@ def main() -> None:
     picks = generate_week_predictions(week=args.week, season=args.season, artifact=artifact)
     week = int(picks["week"].iloc[0])
     print_table(picks, week, args.season)
+    ps = artifact.get("player_stats", {})
+    if ps:
+        print(f"\nPlayer form: {ps['dataset']} "
+              f"({ps['seasons'][0]}-{ps['seasons'][1]}), "
+              f"prior season only")
 
     if not args.no_write:
         args.json.parent.mkdir(parents=True, exist_ok=True)

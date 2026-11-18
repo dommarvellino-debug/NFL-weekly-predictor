@@ -4,6 +4,8 @@ Predict the outcomes of weekly NFL games using historical play-by-play and
 schedule data from the [nflverse](https://nflverse.nflverse.com/) via
 `nflreadpy`, enriched with historical scores and betting lines from the Kaggle
 [NFL Scores & Betting Data](https://www.kaggle.com/datasets/tobycrabtree/nfl-scores-and-betting-data)
+dataset, plus prior-season team player leaders from the Kaggle
+[NFL Stats 1999-2022](https://www.kaggle.com/datasets/philiphyde1/nfl-stats-1999-2022)
 dataset.
 
 ## Tech stack
@@ -16,7 +18,7 @@ dataset.
 | scikit-learn | Machine learning models and evaluation |
 | seaborn | Data visualization / EDA |
 | pyarrow | Bridge for converting nflreadpy's Polars output to pandas |
-| kagglehub | Download the Kaggle scores + betting-lines dataset |
+| kagglehub | Download both Kaggle datasets (scores/betting lines and player stats) |
 
 > Note: `nflreadpy` returns **Polars** DataFrames. The helpers in `src/data.py`
 > convert them to pandas with `.to_pandas()` (which requires `pyarrow`).
@@ -33,7 +35,8 @@ nfl-game-predictor/
 ├── src/
 │   ├── data.py       # nflreadpy -> pandas loaders
 │   ├── betting_data.py  # Kaggle scores + betting-line loaders
-│   ├── features.py   # EPA / pace / rest / bye + rolling form
+│   ├── player_stats.py  # Kaggle player-stat loader + team leaders
+│   ├── features.py   # EPA / pace / rest / bye / player form + rolling form
 │   ├── model.py      # logistic regression training + walk-forward evaluation
 │   └── predict.py    # current-week predictions + web data exports
 ├── tests/            # unit tests
@@ -91,10 +94,11 @@ four screens:
 
 - **Weekly Board** — featured lock, confidence filters, and every model pick.
 - **Pick Simulator** — select your winners and compare them with the model.
-- **Model Metrics** — walk-forward accuracy, Brier score, benchmarks, and a
-  reliability diagram built from out-of-fold predictions.
+- **Model Metrics** — walk-forward accuracy, Brier score, benchmarks, player-stat
+  coverage/feature impact, and a reliability diagram built from out-of-fold
+  predictions.
 - **Game Insights** — switch between games to inspect the exact rolling EPA,
-  pace, rest, and bye inputs behind each probability.
+  pace, rest, bye, and prior-season player inputs behind each probability.
 
 > Serve the folder over HTTP. Opening an `*.html` file with `file://` will block
 > the `fetch()` calls that load the JSON data.
@@ -115,6 +119,25 @@ games = load_scores()  # adds home_id, away_id, home_win, home_margin,
 teams = load_teams()   # team name -> abbreviation mapping
 ```
 
+- **Kaggle player stats** — `philiphyde1/nfl-stats-1999-2022`. Despite the
+  dataset name, the current version contains 2012–2025 seasons. The loader reads
+  only the compact `yearly_player_stats_offense.csv` (not the 342 MB weekly
+  table) and derives one row per team-season:
+
+```python
+import kagglehub
+
+path = kagglehub.dataset_download("philiphyde1/nfl-stats-1999-2022")
+print("Path to dataset files:", path)
+```
+
+```python
+from src.player_stats import build_team_season_player_stats, player_stats_coverage
+
+leaders = build_team_season_player_stats()  # QB/RB/receiver + receiving depth
+coverage = player_stats_coverage()          # seasons, team-seasons, teams
+```
+
 ## Feature availability
 
 | Feature | Source | Implementation |
@@ -124,11 +147,15 @@ teams = load_teams()   # team name -> abbreviation mapping
 | Pace | nflreadpy PBP | offensive plays per game |
 | Rest days | nflreadpy schedules | `home_rest` / `away_rest` (days since previous game) |
 | Bye week | derived | `rest >= 12` days as a proxy |
+| Prior-season player form | Kaggle player stats | leading QB rating/YPA, lead RB YPC, lead receiver YPR, top-3 receiving yards |
 | Spread / over-under / weather | Kaggle | joined on season + date + teams (2024: 282/285 games) |
 
-The Kaggle data does **not** contain EPA or pace; nflreadpy covers those. Kaggle
-adds betting lines and historical context. Team IDs `LAR`/`LVR` in Kaggle are
-mapped to nflverse's `LA`/`LV`.
+The scores/betting Kaggle data does **not** contain EPA or pace; nflreadpy covers
+those. The player-stat Kaggle dataset adds entering-season player form. For a
+game in season `S`, only player leaders from season `S-1` are joined, so the
+model never sees a team's current-season player production before predicting
+that season's games. Team IDs `LAR`/`LVR` in Kaggle are mapped to nflverse's
+`LA`/`LV`.
 
 Build the game-level table (use `add_rolling_form` for leakage-free prediction
 features — it only uses games played before the target game):
@@ -149,10 +176,14 @@ dropped). Features are pre-game only:
 - rolling (previous 3 games) offensive EPA, defensive EPA and pace for each
   team, plus home-minus-away differences
 - rest days and the bye proxy for each side, plus their differences
+- prior-season QB rating/YPA, lead RB YPC, lead receiver YPR and top-3 receiving
+  yards for each side, plus home-minus-away differences (15 player inputs)
 - one-hot team identity (lets the model learn team strength)
 
-Same-game EPA/pace is excluded to avoid leaking the result. The Kaggle closing
-spread is held out of the model and used only as a market baseline.
+That is **98 features** in total (30 numeric + 68 team indicators). Same-game
+EPA/pace is excluded to avoid leaking the result, and player stats are always
+from the prior season. The Kaggle closing spread is held out of the model and
+used only as a market baseline.
 
 ```powershell
 python -m src.model
@@ -164,16 +195,16 @@ each season is scored by a model trained only on earlier seasons:
 
 | Test season | Accuracy | ROC AUC | Brier |
 | --- | --- | --- | --- |
-| 2021 | 0.655 | 0.651 | 0.239 |
-| 2022 | 0.550 | 0.582 | 0.251 |
-| 2023 | 0.572 | 0.606 | 0.244 |
-| 2024 | 0.621 | 0.680 | 0.224 |
-| 2025 | 0.634 | 0.676 | 0.227 |
+| 2021 | 0.630 | 0.628 | 0.248 |
+| 2022 | 0.550 | 0.596 | 0.250 |
+| 2023 | 0.593 | 0.611 | 0.244 |
+| 2024 | 0.632 | 0.687 | 0.222 |
+| 2025 | 0.620 | 0.673 | 0.228 |
 
-Last-three-season average: **0.609 accuracy / 0.654 AUC / 0.232 Brier**, versus
+Last-three-season average: **0.615 accuracy / 0.657 AUC / 0.231 Brier**, versus
 baselines of 0.550 for always picking the home team and 0.667 for the closing
-market favorite. The final model refit on all ten seasons scores 0.643 accuracy
-and 0.699 AUC in-sample; that number is descriptive, not a validation estimate.
+market favorite. The final model refit on all ten seasons scores 0.652 accuracy
+and 0.706 AUC in-sample; that number is descriptive, not a validation estimate.
 The model beats the naive baseline but not the betting market, which is a useful
 reference point rather than a surprise.
 
@@ -182,6 +213,13 @@ predictions, using fixed 0–10% through 90–100% probability bins. Those value
 stored in both `models/logistic_regression.json` and
 `web/data/model-metrics.json` and power the reliability diagram on the Model
 Metrics screen.
+
+Training also exports standardized logistic coefficients (`feature_importance`)
+and the player-only subset (`player_feature_importance`). The largest player
+inputs in the final fit are QB yards/attempt difference (+0.2501) and top-3
+receiving-yard difference (+0.2232). The Model Metrics screen displays the
+player-stat coverage and these coefficients; Game Insights displays the actual
+leaders and their numbers for both teams.
 
 Use the fitted model:
 
@@ -218,9 +256,12 @@ for each team, and the winner probability/confidence:
   "model": {
     "type": "logistic_regression",
     "training_games": 2751,
-    "features": 83,
-    "walk_forward_accuracy": 0.6089,
-    "walk_forward_auc": 0.6542
+    "features": 98,
+    "player_features": 15,
+    "player_source": "philiphyde1/nfl-stats-1999-2022",
+    "player_seasons": [2012, 2025],
+    "walk_forward_accuracy": 0.6148,
+    "walk_forward_auc": 0.6568
   },
   "games": [
     {
@@ -233,26 +274,45 @@ for each team, and the winner probability/confidence:
         "abbr": "BUF",
         "name": "Buffalo Bills",
         "record": "8-1",
-        "win_prob": 0.8991,
-        "features": {"off_epa": 4.1, "def_epa": -16.82, "pace": 90.0, "rest_days": 7, "bye": false}
+        "win_prob": 0.8996,
+        "features": {
+          "off_epa": 4.1, "def_epa": -16.82, "pace": 90.0,
+          "rest_days": 7, "bye": false,
+          "qb_rating": 106.85, "qb_ypa": 8.19, "rb_ypc": 5.04,
+          "wr_ypr": 9.58, "top3_rec_yards": 1729
+        },
+        "players": {
+          "prior_season": 2025,
+          "qb": "Josh Allen", "rb": "James Cook", "wr": "Khalil Shakir"
+        }
       },
       "away": {
         "abbr": "MIA",
         "name": "Miami Dolphins",
         "record": "1-8",
-        "win_prob": 0.1009,
-        "features": {"off_epa": -11.4, "def_epa": -5.42, "pace": 79.7, "rest_days": 7, "bye": false}
+        "win_prob": 0.1004,
+        "features": {
+          "off_epa": -11.4, "def_epa": -5.42, "pace": 79.7,
+          "rest_days": 7, "bye": false,
+          "qb_rating": 94.91, "qb_ypa": 7.25, "rb_ypc": 5.64,
+          "wr_ypr": 14.25, "top3_rec_yards": 1588
+        },
+        "players": {
+          "prior_season": 2025,
+          "qb": "Tua Tagovailoa", "rb": "De'Von Achane", "wr": "Jaylen Waddle"
+        }
       },
       "predicted_winner": "BUF",
       "confidence": "high",
-      "edge_pp": 39.9
+      "edge_pp": 40.0
     }
   ]
 }
 ```
 
 The `features` objects are the model's actual inputs (rolling three-game form,
-rest, and bye proxy), which is what the Game Insights screen displays.
+rest, bye proxy, and prior-season player stats), and `players` gives the real
+leader names behind those numbers. Both are shown on the Game Insights screen.
 `edge_pp` is the predicted winner's distance from a 50/50 coin flip in
 percentage points; it is not a market edge.
 
@@ -264,7 +324,9 @@ that haven't been played and therefore have no pre-game form yet.
 
 ## Status
 
-Data loading, feature engineering, the logistic-regression model, generated
-2026 weekly predictions, calibration export, and the four-screen static UI are
-complete. Run `python -m src.predict` whenever a new week's games are complete,
-then refresh the served `web/` pages to see the updated slate.
+Data loading, EPA/pace/rest/bye features, prior-season player features, the
+logistic-regression model, generated 2026 weekly predictions, calibration and
+feature-impact exports, and the four-screen static UI are complete. Run
+`python -m src.model` after changing the feature set, then `python -m src.predict`
+whenever a new week's games are complete; refresh the served `web/` pages to see
+the updated slate.

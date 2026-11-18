@@ -12,118 +12,118 @@
     2025
   ],
   "training_games": 2751,
-  "features": 83,
+  "features": 98,
   "num_teams": 34,
   "C": 1.0,
   "rolling_window": 3,
   "in_sample": {
-    "accuracy": 0.6430388949472919,
-    "log_loss": 0.6255173241094616,
-    "roc_auc": 0.6988009512937188,
-    "brier": 0.21817358637051465
+    "accuracy": 0.6524900036350418,
+    "log_loss": 0.6213281684088133,
+    "roc_auc": 0.7061588472558465,
+    "brier": 0.2162145384190371
   },
   "walk_forward": [
     {
       "season": 2021,
       "games": 284,
-      "accuracy": 0.6549295774647887,
-      "log_loss": 0.6784994297361833,
-      "roc_auc": 0.6509260638561994,
-      "brier": 0.23898260077222538
+      "accuracy": 0.6302816901408451,
+      "log_loss": 0.7014902799226299,
+      "roc_auc": 0.627786881175828,
+      "brier": 0.2478341011154227
     },
     {
       "season": 2022,
       "games": 282,
       "accuracy": 0.549645390070922,
-      "log_loss": 0.6990630286307262,
-      "roc_auc": 0.5823258196721312,
-      "brier": 0.25112077479561884
+      "log_loss": 0.6958308086915073,
+      "roc_auc": 0.5964139344262295,
+      "brier": 0.24975293119082484
     },
     {
       "season": 2023,
       "games": 285,
-      "accuracy": 0.5719298245614035,
-      "log_loss": 0.6826279110239726,
-      "roc_auc": 0.6059907834101383,
-      "brier": 0.24363638307912416
+      "accuracy": 0.5929824561403508,
+      "log_loss": 0.6869026607812291,
+      "roc_auc": 0.610649168503306,
+      "brier": 0.2442926419596323
     },
     {
       "season": 2024,
       "games": 285,
-      "accuracy": 0.6210526315789474,
-      "log_loss": 0.6377655434761065,
-      "roc_auc": 0.6800337904989068,
-      "brier": 0.2241821096195289
+      "accuracy": 0.631578947368421,
+      "log_loss": 0.6324621912930555,
+      "roc_auc": 0.6869409660107335,
+      "brier": 0.22203416745938317
     },
     {
       "season": 2025,
       "games": 284,
-      "accuracy": 0.6338028169014085,
-      "log_loss": 0.6468416980539592,
-      "roc_auc": 0.6764852472089313,
-      "brier": 0.22701106581215624
+      "accuracy": 0.6197183098591549,
+      "log_loss": 0.6469935219943217,
+      "roc_auc": 0.6727970494417863,
+      "brier": 0.22764339353570162
     }
   ],
   "calibration": [
     {
       "bin": "0-10%",
-      "mean_pred": 0.09942427993104071,
-      "actual": 1.0,
-      "count": 1
+      "mean_pred": 0.05,
+      "actual": 0.05,
+      "count": 0
     },
     {
       "bin": "10-20%",
-      "mean_pred": 0.1717981826314661,
-      "actual": 0.3548387096774194,
-      "count": 31
+      "mean_pred": 0.16935246321328606,
+      "actual": 0.3125,
+      "count": 32
     },
     {
       "bin": "20-30%",
-      "mean_pred": 0.25701678198334255,
-      "actual": 0.41964285714285715,
-      "count": 112
+      "mean_pred": 0.25831974318680767,
+      "actual": 0.4067796610169492,
+      "count": 118
     },
     {
       "bin": "30-40%",
-      "mean_pred": 0.35275427322792074,
-      "actual": 0.4322916666666667,
-      "count": 192
+      "mean_pred": 0.3523935660669311,
+      "actual": 0.42473118279569894,
+      "count": 186
     },
     {
       "bin": "40-50%",
-      "mean_pred": 0.4496630309152022,
-      "actual": 0.43373493975903615,
-      "count": 249
+      "mean_pred": 0.44721382554308386,
+      "actual": 0.45493562231759654,
+      "count": 233
     },
     {
       "bin": "50-60%",
-      "mean_pred": 0.5506177587418547,
-      "actual": 0.5287769784172662,
-      "count": 278
+      "mean_pred": 0.5520561274896996,
+      "actual": 0.5353159851301115,
+      "count": 269
     },
     {
       "bin": "60-70%",
-      "mean_pred": 0.6467837468425746,
-      "actual": 0.6047430830039525,
-      "count": 253
+      "mean_pred": 0.6454311141204842,
+      "actual": 0.596,
+      "count": 250
     },
     {
       "bin": "70-80%",
-      "mean_pred": 0.7433585079545132,
-      "actual": 0.7309644670050761,
-      "count": 197
+      "mean_pred": 0.7482585943570381,
+      "actual": 0.7038834951456311,
+      "count": 206
     },
     {
       "bin": "80-90%",
-      "mean_pred": 0.8406921174772058,
-      "actual": 0.7676767676767676,
-      "count": 99
+      "mean_pred": 0.845440435044409,
+      "actual": 0.7454545454545455,
+      "count": 110
     },
     {
       "bin": "90-100%",
-      "mean_pred": 0.9099138702854148,
-      "actual": 0.75,
-      "count": 8
+      "mean_pred": 0.9172749606179762,
+      "actual": 0.8125,
+      "count": 16
     }
   ],
   "baselines": {
@@ -131,9 +131,171 @@
     "market_favorite": 0.6666666666666666,
     "market_games": 2634
   },
+  "player_stats": {
+    "dataset": "philiphyde1/nfl-stats-1999-2022",
+    "file": "yearly_player_stats_offense.csv",
+    "seasons": [
+      2012,
+      2025
+    ],
+    "team_seasons": 448,
+    "teams": 32,
+    "features": [
+      "qb_rating",
+      "qb_ypa",
+      "rb_ypc",
+      "wr_ypr",
+      "top3_rec_yards"
+    ]
+  },
+  "player_feature_count": 15,
+  "feature_importance": [
+    {
+      "feature": "diff_def_epa",
+      "coefficient": -0.3012,
+      "magnitude": 0.3012
+    },
+    {
+      "feature": "diff_player_qb_ypa",
+      "coefficient": 0.2501,
+      "magnitude": 0.2501
+    },
+    {
+      "feature": "home_off_epa",
+      "coefficient": 0.226,
+      "magnitude": 0.226
+    },
+    {
+      "feature": "diff_player_top3_rec_yards",
+      "coefficient": 0.2232,
+      "magnitude": 0.2232
+    },
+    {
+      "feature": "home_player_wr_ypr",
+      "coefficient": -0.1927,
+      "magnitude": 0.1927
+    },
+    {
+      "feature": "diff_player_wr_ypr",
+      "coefficient": 0.1605,
+      "magnitude": 0.1605
+    },
+    {
+      "feature": "away_player_qb_ypa",
+      "coefficient": 0.1506,
+      "magnitude": 0.1506
+    },
+    {
+      "feature": "diff_player_qb_rating",
+      "coefficient": -0.1497,
+      "magnitude": 0.1497
+    },
+    {
+      "feature": "away_CLE",
+      "coefficient": 0.1414,
+      "magnitude": 0.1414
+    },
+    {
+      "feature": "away_player_qb_rating",
+      "coefficient": -0.1345,
+      "magnitude": 0.1345
+    },
+    {
+      "feature": "away_KC",
+      "coefficient": -0.1327,
+      "magnitude": 0.1327
+    },
+    {
+      "feature": "away_NE",
+      "coefficient": -0.1274,
+      "magnitude": 0.1274
+    },
+    {
+      "feature": "home_player_qb_ypa",
+      "coefficient": -0.1269,
+      "magnitude": 0.1269
+    },
+    {
+      "feature": "home_KC",
+      "coefficient": 0.1227,
+      "magnitude": 0.1227
+    },
+    {
+      "feature": "home_BUF",
+      "coefficient": 0.1194,
+      "magnitude": 0.1194
+    },
+    {
+      "feature": "diff_off_epa",
+      "coefficient": 0.114,
+      "magnitude": 0.114
+    },
+    {
+      "feature": "away_def_epa",
+      "coefficient": -0.1129,
+      "magnitude": 0.1129
+    },
+    {
+      "feature": "home_ARI",
+      "coefficient": -0.1122,
+      "magnitude": 0.1122
+    },
+    {
+      "feature": "home_GB",
+      "coefficient": 0.1111,
+      "magnitude": 0.1111
+    },
+    {
+      "feature": "away_off_epa",
+      "coefficient": -0.1105,
+      "magnitude": 0.1105
+    }
+  ],
+  "player_feature_importance": [
+    {
+      "feature": "diff_player_qb_ypa",
+      "coefficient": 0.2501,
+      "magnitude": 0.2501
+    },
+    {
+      "feature": "diff_player_top3_rec_yards",
+      "coefficient": 0.2232,
+      "magnitude": 0.2232
+    },
+    {
+      "feature": "home_player_wr_ypr",
+      "coefficient": -0.1927,
+      "magnitude": 0.1927
+    },
+    {
+      "feature": "diff_player_wr_ypr",
+      "coefficient": 0.1605,
+      "magnitude": 0.1605
+    },
+    {
+      "feature": "away_player_qb_ypa",
+      "coefficient": 0.1506,
+      "magnitude": 0.1506
+    },
+    {
+      "feature": "diff_player_qb_rating",
+      "coefficient": -0.1497,
+      "magnitude": 0.1497
+    },
+    {
+      "feature": "away_player_qb_rating",
+      "coefficient": -0.1345,
+      "magnitude": 0.1345
+    },
+    {
+      "feature": "home_player_qb_ypa",
+      "coefficient": -0.1269,
+      "magnitude": 0.1269
+    }
+  ],
   "recent_average": {
-    "accuracy": 0.6089,
-    "roc_auc": 0.6542,
-    "brier": 0.2316
+    "accuracy": 0.6148,
+    "roc_auc": 0.6568,
+    "brier": 0.2313
   }
 }

@@ -31,7 +31,26 @@ const pickTeam = (g) => g[pickSide(g)];
 const shortName = (name) => name.split(' ').pop();
 const pct = (p) => `${Math.round(p * 100)}%`;
 const signed = (n, digits = 1) => `${n > 0 ? '+' : ''}${Number(n).toFixed(digits)}`;
+const num = (v, digits = 1) => (v === null || v === undefined || Number.isNaN(Number(v)) ? '—' : Number(v).toFixed(digits));
 const winCount = (record) => parseInt(record, 10) || 0;
+
+function playerFeatureLabel(feature) {
+  const name = String(feature || '')
+    .replace(/^(home|away)_player_/, '')
+    .replace(/^diff_player_/, '');
+  const labels = {
+    qb_rating: 'QB rating',
+    qb_ypa: 'QB yards/attempt',
+    rb_ypc: 'Lead RB yards/carry',
+    wr_ypr: 'Lead receiver yards/reception',
+    top3_rec_yards: 'Top-3 receiving yards',
+  };
+  const base = labels[name] || name.replace(/_/g, ' ');
+  if (String(feature || '').startsWith('diff_player_')) return `${base} (home − away)`;
+  if (String(feature || '').startsWith('home_player_')) return `${base} (home)`;
+  if (String(feature || '').startsWith('away_player_')) return `${base} (away)`;
+  return base;
+}
 
 function kickoff(g) {
   const [h, m] = g.gametime.split(':').map(Number);
@@ -356,6 +375,7 @@ function renderMetrics(metrics, data) {
     </div>`).join('');
 
   renderCalibration(metrics.calibration);
+  renderPlayerStats(metrics);
 
   const base = $('#baseline-bars');
   if (base) {
@@ -399,6 +419,51 @@ function renderCalibration(cal) {
     </table>`;
 }
 
+function renderPlayerStats(metrics) {
+  const src = metrics.player_stats || {};
+  const seasons = src.seasons || [];
+  setText(
+    '#player-source-note',
+    src.dataset
+      ? `${src.dataset} • ${src.file} • ${seasons.join('–')} • prior-season leaders only`
+      : 'Prior-season player data was not available in this model artifact.'
+  );
+
+  const coverage = $('#player-coverage');
+  if (coverage) {
+    const cards = [
+      ['Source seasons', seasons.length ? `${seasons[0]}–${seasons[seasons.length - 1]}` : '—'],
+      ['Team-seasons', src.team_seasons != null ? src.team_seasons.toLocaleString() : '—'],
+      ['Teams', src.teams != null ? src.teams : '—'],
+      ['Model inputs', metrics.player_feature_count != null ? metrics.player_feature_count : '—'],
+    ];
+    coverage.innerHTML = cards.map(([label, value]) => `<div class="bg-surface-container-low rounded-lg p-space-sm">
+        <span class="font-label-sm text-label-sm text-outline uppercase tracking-wider block">${label}</span>
+        <span class="font-data-display text-data-display font-bold text-on-surface">${value}</span>
+      </div>`).join('');
+  }
+
+  const impact = $('#player-impact');
+  if (!impact) return;
+  const items = metrics.player_feature_importance || [];
+  if (!items.length) {
+    impact.innerHTML = '<p class="font-body-sm text-body-sm text-outline">No player-feature coefficients were exported.</p>';
+    return;
+  }
+  const max = Math.max(...items.map((item) => Math.abs(item.magnitude || 0))) || 1;
+  impact.innerHTML = items.map((item) => {
+    const positive = item.coefficient >= 0;
+    const width = Math.max(4, (Math.abs(item.magnitude || 0) / max) * 100);
+    return `<div class="flex items-center gap-space-sm">
+        <span class="font-label-sm text-label-sm text-on-surface-variant w-52 flex-shrink-0 truncate">${playerFeatureLabel(item.feature)}</span>
+        <span class="flex-1 h-2 rounded-full bg-surface-container overflow-hidden">
+          <span class="block h-full ${positive ? 'bg-primary' : 'bg-secondary'} rounded-full" style="width:${width}%"></span>
+        </span>
+        <span class="font-label-sm text-label-sm font-bold ${positive ? 'text-primary' : 'text-secondary'} w-14 text-right">${signed(item.coefficient, 3)}</span>
+      </div>`;
+  }).join('');
+}
+
 /* ---------------- Game insights ---------------- */
 
 const insightState = { data: null, index: 0 };
@@ -440,6 +505,40 @@ function selectGame(index) {
   const slider = $('#game-slider');
   if (slider) slider.value = String(index);
   renderSelectedGame();
+}
+
+const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({
+  '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+}[char]));
+
+function playerCard(g, side) {
+  const team = g[side];
+  const players = team.players || {};
+  const features = team.features || {};
+  const season = players.prior_season || '—';
+  const person = (label, name, metrics) => `<div class="bg-surface-container-lowest rounded-lg p-space-sm min-w-0">
+      <span class="font-label-sm text-label-sm text-outline uppercase tracking-wider block">${label}</span>
+      <div class="font-label-md text-label-md font-bold text-on-surface truncate" title="${esc(name || '')}">${esc(name || '—')}</div>
+      <div class="font-body-sm text-body-sm text-on-surface-variant">${metrics}</div>
+    </div>`;
+  return `<div class="bg-surface-container-low rounded-xl p-space-md">
+    <div class="flex items-center gap-space-xs">
+      ${logo(team.abbr, 'w-8 h-8', 'text-label-md')}
+      <div>
+        <div class="font-label-lg text-label-lg font-bold text-on-surface">${team.abbr} — ${season} leaders</div>
+        <div class="font-body-sm text-body-sm text-outline">Real prior-season inputs used by the model</div>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-space-xs mt-space-sm">
+      ${person('Quarterback', players.qb, `${num(features.qb_rating)} rating · ${num(features.qb_ypa)} YPA`)}
+      ${person('Lead rusher', players.rb, `${num(features.rb_ypc)} YPC`)}
+      ${person('Lead receiver', players.wr, `${num(features.wr_ypr)} YPR`)}
+    </div>
+    <div class="mt-space-xs bg-surface-container-lowest rounded-lg px-space-sm py-1.5 flex items-center justify-between font-body-sm text-body-sm">
+      <span class="text-on-surface-variant">Top-3 receiving yards (team)</span>
+      <span class="font-bold text-primary">${num(features.top3_rec_yards, 0)}</span>
+    </div>
+  </div>`;
 }
 
 function renderSelectedGame() {
@@ -497,6 +596,17 @@ function renderSelectedGame() {
       </div>`;
     }).join('');
   }
+
+  const model = insightState.data?.model || {};
+  const playerSeasons = model.player_seasons || [];
+  setText(
+    '#player-source-note',
+    model.player_source
+      ? `${model.player_source} • ${playerSeasons.join('–')} season leaders • ${model.player_features || 0} player inputs in the model`
+      : 'Prior-season player data was not available in this prediction export.'
+  );
+  const players = $('#insight-players');
+  if (players) players.innerHTML = playerCard(g, 'away') + playerCard(g, 'home');
 
   $$('.game-chip').forEach((btn) => btn.classList.toggle('bg-on-surface', Number(btn.dataset.index) === insightState.index));
   $$('.slate-bar').forEach((btn) => btn.classList.toggle('bg-surface-container', Number(btn.dataset.index) === insightState.index));

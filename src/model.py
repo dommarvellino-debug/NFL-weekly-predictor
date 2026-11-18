@@ -4,6 +4,8 @@ The model predicts P(home team wins) from pre-game information only:
 
 * each team's rolling EPA / defensive EPA / pace over its previous games
 * rest days and a bye-week proxy (both sides plus the difference)
+* prior-season player leaders (QB rating/YPA, lead RB YPC, lead receiver YPR,
+  top-3 receiving yards) from the Kaggle player-stat dataset
 * one-hot team identities, which let the model learn team strength
 
 Same-game EPA/pace is deliberately **not** used as a feature (it would leak the
@@ -34,6 +36,7 @@ from sklearn.preprocessing import StandardScaler
 
 from src import data as nfl_data
 from src.features import add_rolling_form, build_game_features
+from src.player_stats import PLAYER_COLUMNS, player_stats_coverage
 
 DEFAULT_SEASONS = tuple(range(2016, 2026))
 MODEL_PATH = Path(__file__).resolve().parents[1] / "models" / "logistic_regression.joblib"
@@ -46,6 +49,8 @@ NUMERIC_FEATURES = (
         "home_rest", "away_rest", "rest_diff",
         "home_bye", "away_bye", "bye_diff",
     ]
+    + [f"{side}_player_{col}" for side in ("home", "away") for col in PLAYER_COLUMNS]
+    + [f"diff_player_{col}" for col in PLAYER_COLUMNS]
 )
 
 
@@ -86,6 +91,16 @@ def make_features(df: pd.DataFrame, teams: list[str]) -> pd.DataFrame:
     parts["away_bye"] = pd.to_numeric(df["away_had_bye"], errors="coerce")
     parts["bye_diff"] = parts["home_bye"] - parts["away_bye"]
 
+    for side in ("home", "away"):
+        for col in PLAYER_COLUMNS:
+            parts[f"{side}_player_{col}"] = pd.to_numeric(
+                df[f"{side}_player_{col}"], errors="coerce"
+            )
+    for col in PLAYER_COLUMNS:
+        parts[f"diff_player_{col}"] = (
+            parts[f"home_player_{col}"] - parts[f"away_player_{col}"]
+        )
+
     X = pd.DataFrame({name: parts[name] for name in NUMERIC_FEATURES}, index=df.index)
     for side in ("home", "away"):
         columns = [f"{side}_{team}" for team in teams]
@@ -110,6 +125,20 @@ def evaluate(model: Pipeline, X: pd.DataFrame, y: pd.Series) -> dict[str, float]
         "roc_auc": float(roc_auc_score(y, proba)),
         "brier": float(brier_score_loss(y, proba)),
     }
+
+
+def feature_importance(model: Pipeline, feature_names: list[str], limit: int = 20) -> list[dict]:
+    """Rank standardized logistic-regression coefficients by absolute size."""
+    coefs = model.named_steps["clf"].coef_[0]
+    ranked = sorted(zip(feature_names, coefs), key=lambda item: abs(item[1]), reverse=True)
+    return [
+        {
+            "feature": name,
+            "coefficient": round(float(value), 4),
+            "magnitude": round(abs(float(value)), 4),
+        }
+        for name, value in ranked[:limit]
+    ]
 
 
 def train(
@@ -164,6 +193,7 @@ def train(
 
     final_model = make_pipeline(C).fit(X, y)
     in_sample = evaluate(final_model, X, y)
+    importance = feature_importance(final_model, list(X.columns))
 
     spread = ds["bet_home_spread"]
     has_spread = spread.notna()
@@ -188,6 +218,12 @@ def train(
         "training_games": int(len(ds)),
         "feature_count": len(NUMERIC_FEATURES) + 2 * len(teams),
         "num_teams": len(teams),
+        "player_stats": player_stats_coverage(),
+        "player_feature_count": len(PLAYER_COLUMNS) * 3,
+        "feature_importance": importance,
+        "player_feature_importance": [
+            item for item in importance if "_player_" in item["feature"]
+        ],
     }
 
     if save:
@@ -228,6 +264,10 @@ def main() -> None:
           f"({min(artifact['seasons'])}-{max(artifact['seasons'])})")
     print(f"Features: {len(NUMERIC_FEATURES)} numeric + "
           f"{2 * len(artifact['teams'])} team indicators")
+    print(f"Player stats: {artifact['player_stats']['dataset']} "
+          f"({artifact['player_stats']['seasons'][0]}-"
+          f"{artifact['player_stats']['seasons'][1]}, "
+          f"{artifact['player_feature_count']} model inputs)")
     print("\nWalk-forward validation (train on prior seasons):")
     print(f"  {'Season':<8}{'Games':>7}{'Acc':>8}{'AUC':>8}{'LogLoss':>10}{'Brier':>8}")
     for row in artifact["walk_forward"]:
