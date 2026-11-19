@@ -16,17 +16,22 @@
       2025
     ],
     "training_games": 2751,
-    "features": 98,
+    "features": 116,
+    "C": 0.03,
+    "temperature": 1.5,
     "player_features": 15,
     "player_source": "philiphyde1/nfl-stats-1999-2022",
     "player_seasons": [
       2012,
       2025
     ],
-    "walk_forward_accuracy": 0.6148,
-    "walk_forward_auc": 0.6568
+    "weekly_player_features": 12,
+    "weekly_player_window": 4,
+    "weekly_player_source": "nflreadpy weekly player stats (current season, prior games)",
+    "walk_forward_accuracy": 0.6171,
+    "walk_forward_auc": 0.6596
   },
-  "note": "Model probabilities only; no 2026 betting line. Player form is prior-season.",
+  "note": "Temperature-calibrated model probabilities only; no 2026 betting line. Player form is real prior-season and prior-week data.",
   "games": [
     {
       "game_id": "2026_11_MIA_BUF",
@@ -38,111 +43,87 @@
         "abbr": "BUF",
         "name": "Buffalo Bills",
         "record": "8-1",
-        "win_prob": 0.8996,
+        "win_prob": 0.8121,
         "features": {
           "off_epa": 4.1,
           "def_epa": -16.82,
           "pace": 90.0,
+          "off_epa_per_play": 0.058,
+          "def_epa_per_play": -0.241,
+          "success_rate": 0.438,
+          "adj_off_epa": -0.012,
+          "adj_def_epa": -0.384,
           "rest_days": 7,
           "bye": false,
           "qb_rating": 106.85,
           "qb_ypa": 8.19,
           "rb_ypc": 5.04,
           "wr_ypr": 9.58,
-          "top3_rec_yards": 1729.0
+          "top3_rec_yards": 1729.0,
+          "weekly_qb_ypa": 8.44,
+          "weekly_qb_epa_att": 0.174,
+          "weekly_rb_ypc": 3.97,
+          "weekly_wr_ypr": 14.75,
+          "weekly_top3_rec_yards": 580.0
         },
         "players": {
           "prior_season": 2025,
           "qb": "Josh Allen",
           "rb": "James Cook",
-          "wr": "Khalil Shakir"
+          "wr": "Khalil Shakir",
+          "weekly": {
+            "season": 2026,
+            "week": 11,
+            "qb": "J.Allen",
+            "rb": "J.Cook",
+            "wr": "K.Shakir"
+          }
         }
       },
       "away": {
         "abbr": "MIA",
         "name": "Miami Dolphins",
         "record": "1-8",
-        "win_prob": 0.1004,
+        "win_prob": 0.1879,
         "features": {
           "off_epa": -11.4,
           "def_epa": -5.42,
           "pace": 79.7,
+          "off_epa_per_play": -0.144,
+          "def_epa_per_play": -0.071,
+          "success_rate": 0.376,
+          "adj_off_epa": -0.384,
+          "adj_def_epa": -0.012,
           "rest_days": 7,
           "bye": false,
           "qb_rating": 94.91,
           "qb_ypa": 7.25,
           "rb_ypc": 5.64,
           "wr_ypr": 14.25,
-          "top3_rec_yards": 1588.0
+          "top3_rec_yards": 1588.0,
+          "weekly_qb_ypa": null,
+          "weekly_qb_epa_att": null,
+          "weekly_rb_ypc": 4.04,
+          "weekly_wr_ypr": 14.43,
+          "weekly_top3_rec_yards": 513.0
         },
         "players": {
           "prior_season": 2025,
           "qb": "Tua Tagovailoa",
           "rb": "De'Von Achane",
-          "wr": "Jaylen Waddle"
+          "wr": "Jaylen Waddle",
+          "weekly": {
+            "season": 2026,
+            "week": 11,
+            "qb": null,
+            "rb": "O.Gordon",
+            "wr": "C.Douglas"
+          }
         }
       },
       "predicted_winner": "BUF",
       "confidence": "high",
-      "edge_pp": 40.0
-    },
-    {
-      "game_id": "2026_11_LV_DEN",
-      "gameday": "2026-11-22",
-      "weekday": "Sunday",
-      "gametime": "16:25",
-      "stadium": "Empower Field at Mile High",
-      "home": {
-        "abbr": "DEN",
-        "name": "Denver Broncos",
-        "record": "7-2",
-        "win_prob": 0.8054,
-        "features": {
-          "off_epa": 8.62,
-          "def_epa": 0.8,
-          "pace": 82.0,
-          "rest_days": 14,
-          "bye": true,
-          "qb_rating": 89.39,
-          "qb_ypa": 6.53,
-          "rb_ypc": 4.93,
-          "wr_ypr": 13.74,
-          "top3_rec_yards": 2194.0
-        },
-        "players": {
-          "prior_season": 2025,
-          "qb": "Bo Nix",
-          "rb": "J.K. Dobbins",
-          "wr": "Courtland Sutton"
-        }
-      },
-      "away": {
-        "abbr": "LV",
-        "name": "Las Vegas Raiders",
-        "record": "4-6",
-        "win_prob": 0.1946,
-        "features": {
-          "off_epa": 1.08,
-          "def_epa": 8.29,
-          "pace": 73.3,
-          "rest_days": 7,
-          "bye": false,
-          "qb_rating": 87.43,
-          "qb_ypa": 6.95,
-          "rb_ypc": 3.44,
-          "wr_ypr": 12.21,
-          "top3_rec_yards": 1728.0
-        },
-        "players": {
-          "prior_season": 2025,
-          "qb": "Geno Smith",
-          "rb": "Ashton Jeanty",
-          "wr": "Tre Tucker"
-        }
-      },
-      "predicted_winner": "DEN",
-      "confidence": "high",
-      "edge_pp": 30.5
+      "edge_pp": 31.2
     },
     {
       "game_id": "2026_11_TEN_DAL",
@@ -154,53 +135,179 @@
         "abbr": "DAL",
         "name": "Dallas Cowboys",
         "record": "4-6",
-        "win_prob": 0.7685,
+        "win_prob": 0.7103,
         "features": {
           "off_epa": 5.2,
           "def_epa": 7.16,
           "pace": 97.0,
+          "off_epa_per_play": 0.052,
+          "def_epa_per_play": 0.079,
+          "success_rate": 0.457,
+          "adj_off_epa": 0.177,
+          "adj_def_epa": 0.103,
           "rest_days": 7,
           "bye": false,
           "qb_rating": 101.8,
           "qb_ypa": 7.65,
           "rb_ypc": 4.95,
           "wr_ypr": 15.19,
-          "top3_rec_yards": 3170.0
+          "top3_rec_yards": 3170.0,
+          "weekly_qb_ypa": 6.94,
+          "weekly_qb_epa_att": 0.113,
+          "weekly_rb_ypc": 4.41,
+          "weekly_wr_ypr": 12.81,
+          "weekly_top3_rec_yards": 906.0
         },
         "players": {
           "prior_season": 2025,
           "qb": "Dak Prescott",
           "rb": "Javonte Williams",
-          "wr": "George Pickens"
+          "wr": "George Pickens",
+          "weekly": {
+            "season": 2026,
+            "week": 11,
+            "qb": "D.Prescott",
+            "rb": "J.Williams",
+            "wr": "C.Lamb"
+          }
         }
       },
       "away": {
         "abbr": "TEN",
         "name": "Tennessee Titans",
         "record": "1-8",
-        "win_prob": 0.2315,
+        "win_prob": 0.2897,
         "features": {
           "off_epa": 2.03,
           "def_epa": 11.49,
           "pace": 82.0,
+          "off_epa_per_play": 0.023,
+          "def_epa_per_play": 0.126,
+          "success_rate": 0.47,
+          "adj_off_epa": 0.103,
+          "adj_def_epa": 0.177,
           "rest_days": 7,
           "bye": false,
           "qb_rating": 81.37,
           "qb_ypa": 5.89,
           "rb_ypc": 4.31,
           "wr_ypr": 9.12,
-          "top3_rec_yards": 1522.0
+          "top3_rec_yards": 1522.0,
+          "weekly_qb_ypa": 5.87,
+          "weekly_qb_epa_att": -0.043,
+          "weekly_rb_ypc": 4.73,
+          "weekly_wr_ypr": 7.32,
+          "weekly_top3_rec_yards": 343.0
         },
         "players": {
           "prior_season": 2025,
           "qb": "Cam Ward",
           "rb": "Tony Pollard",
-          "wr": "Chig Okonkwo"
+          "wr": "Chig Okonkwo",
+          "weekly": {
+            "season": 2026,
+            "week": 11,
+            "qb": "C.Ward",
+            "rb": "T.Pollard",
+            "wr": "W.Robinson"
+          }
         }
       },
       "predicted_winner": "DAL",
       "confidence": "high",
-      "edge_pp": 26.8
+      "edge_pp": 21.0
+    },
+    {
+      "game_id": "2026_11_LV_DEN",
+      "gameday": "2026-11-22",
+      "weekday": "Sunday",
+      "gametime": "16:25",
+      "stadium": "Empower Field at Mile High",
+      "home": {
+        "abbr": "DEN",
+        "name": "Denver Broncos",
+        "record": "7-2",
+        "win_prob": 0.6917,
+        "features": {
+          "off_epa": 8.62,
+          "def_epa": 0.8,
+          "pace": 82.0,
+          "off_epa_per_play": 0.105,
+          "def_epa_per_play": 0.014,
+          "success_rate": 0.45,
+          "adj_off_epa": 0.206,
+          "adj_def_epa": 0.014,
+          "rest_days": 14,
+          "bye": true,
+          "qb_rating": 89.39,
+          "qb_ypa": 6.53,
+          "rb_ypc": 4.93,
+          "wr_ypr": 13.74,
+          "top3_rec_yards": 2194.0,
+          "weekly_qb_ypa": 5.86,
+          "weekly_qb_epa_att": -0.006,
+          "weekly_rb_ypc": 3.02,
+          "weekly_wr_ypr": 12.27,
+          "weekly_top3_rec_yards": 398.0
+        },
+        "players": {
+          "prior_season": 2025,
+          "qb": "Bo Nix",
+          "rb": "J.K. Dobbins",
+          "wr": "Courtland Sutton",
+          "weekly": {
+            "season": 2026,
+            "week": 11,
+            "qb": "B.Nix",
+            "rb": "J.Dobbins",
+            "wr": "C.Sutton"
+          }
+        }
+      },
+      "away": {
+        "abbr": "LV",
+        "name": "Las Vegas Raiders",
+        "record": "4-6",
+        "win_prob": 0.3083,
+        "features": {
+          "off_epa": 1.08,
+          "def_epa": 8.29,
+          "pace": 73.3,
+          "off_epa_per_play": 0.0,
+          "def_epa_per_play": 0.101,
+          "success_rate": 0.471,
+          "adj_off_epa": 0.014,
+          "adj_def_epa": 0.206,
+          "rest_days": 7,
+          "bye": false,
+          "qb_rating": 87.43,
+          "qb_ypa": 6.95,
+          "rb_ypc": 3.44,
+          "wr_ypr": 12.21,
+          "top3_rec_yards": 1728.0,
+          "weekly_qb_ypa": 6.0,
+          "weekly_qb_epa_att": 0.083,
+          "weekly_rb_ypc": 3.26,
+          "weekly_wr_ypr": 14.42,
+          "weekly_top3_rec_yards": 818.0
+        },
+        "players": {
+          "prior_season": 2025,
+          "qb": "Geno Smith",
+          "rb": "Ashton Jeanty",
+          "wr": "Tre Tucker",
+          "weekly": {
+            "season": 2026,
+            "week": 11,
+            "qb": "F.Mendoza",
+            "rb": "M.Washington",
+            "wr": "B.Bowers"
+          }
+        }
+      },
+      "predicted_winner": "DEN",
+      "confidence": "moderate",
+      "edge_pp": 19.2
     },
     {
       "game_id": "2026_11_ARI_KC",
@@ -212,111 +319,87 @@
         "abbr": "KC",
         "name": "Kansas City Chiefs",
         "record": "7-2",
-        "win_prob": 0.7064,
+        "win_prob": 0.6592,
         "features": {
           "off_epa": 5.81,
           "def_epa": -8.13,
           "pace": 84.3,
+          "off_epa_per_play": 0.069,
+          "def_epa_per_play": -0.09,
+          "success_rate": 0.498,
+          "adj_off_epa": 0.155,
+          "adj_def_epa": -0.209,
           "rest_days": 7,
           "bye": false,
           "qb_rating": 90.42,
           "qb_ypa": 7.19,
           "rb_ypc": 3.69,
           "wr_ypr": 11.08,
-          "top3_rec_yards": 2041.0
+          "top3_rec_yards": 2041.0,
+          "weekly_qb_ypa": 7.41,
+          "weekly_qb_epa_att": 0.105,
+          "weekly_rb_ypc": 5.5,
+          "weekly_wr_ypr": 11.87,
+          "weekly_top3_rec_yards": 654.0
         },
         "players": {
           "prior_season": 2025,
           "qb": "Patrick Mahomes",
           "rb": "Kareem Hunt",
-          "wr": "Travis Kelce"
+          "wr": "Travis Kelce",
+          "weekly": {
+            "season": 2026,
+            "week": 11,
+            "qb": "P.Mahomes",
+            "rb": "E.Johnson",
+            "wr": "R.Rice"
+          }
         }
       },
       "away": {
         "abbr": "ARI",
         "name": "Arizona Cardinals",
         "record": "3-7",
-        "win_prob": 0.2936,
+        "win_prob": 0.3408,
         "features": {
           "off_epa": -5.74,
           "def_epa": 7.53,
           "pace": 73.0,
+          "off_epa_per_play": -0.12,
+          "def_epa_per_play": 0.086,
+          "success_rate": 0.437,
+          "adj_off_epa": -0.209,
+          "adj_def_epa": 0.155,
           "rest_days": 7,
           "bye": false,
           "qb_rating": 100.65,
           "qb_ypa": 7.14,
           "rb_ypc": 11.17,
           "wr_ypr": 9.93,
-          "top3_rec_yards": 2986.0
+          "top3_rec_yards": 2986.0,
+          "weekly_qb_ypa": null,
+          "weekly_qb_epa_att": null,
+          "weekly_rb_ypc": 4.63,
+          "weekly_wr_ypr": 9.35,
+          "weekly_top3_rec_yards": 329.0
         },
         "players": {
           "prior_season": 2025,
           "qb": "Jacoby Brissett",
           "rb": "Emari Demercado",
-          "wr": "Trey McBride"
+          "wr": "Trey McBride",
+          "weekly": {
+            "season": 2026,
+            "week": 11,
+            "qb": null,
+            "rb": "T.Allgeier",
+            "wr": "T.McBride"
+          }
         }
       },
       "predicted_winner": "KC",
-      "confidence": "high",
-      "edge_pp": 20.6
-    },
-    {
-      "game_id": "2026_11_NYJ_LAC",
-      "gameday": "2026-11-22",
-      "weekday": "Sunday",
-      "gametime": "16:05",
-      "stadium": "SoFi Stadium",
-      "home": {
-        "abbr": "LAC",
-        "name": "Los Angeles Chargers",
-        "record": "1-8",
-        "win_prob": 0.7002,
-        "features": {
-          "off_epa": -10.15,
-          "def_epa": 0.77,
-          "pace": 80.3,
-          "rest_days": 6,
-          "bye": false,
-          "qb_rating": 100.14,
-          "qb_ypa": 7.39,
-          "rb_ypc": 4.13,
-          "wr_ypr": 11.74,
-          "top3_rec_yards": 2362.0
-        },
-        "players": {
-          "prior_season": 2025,
-          "qb": "Justin Herbert",
-          "rb": "Kimani Vidal",
-          "wr": "Ladd McConkey"
-        }
-      },
-      "away": {
-        "abbr": "NYJ",
-        "name": "New York Jets",
-        "record": "2-8",
-        "win_prob": 0.2998,
-        "features": {
-          "off_epa": -2.44,
-          "def_epa": 14.09,
-          "pace": 83.7,
-          "rest_days": 7,
-          "bye": false,
-          "qb_rating": 89.91,
-          "qb_ypa": 6.2,
-          "rb_ypc": 4.44,
-          "wr_ypr": 10.78,
-          "top3_rec_yards": 1069.0
-        },
-        "players": {
-          "prior_season": 2025,
-          "qb": "Justin Fields",
-          "rb": "Breece Hall",
-          "wr": "Garrett Wilson"
-        }
-      },
-      "predicted_winner": "LAC",
-      "confidence": "high",
-      "edge_pp": 20.0
+      "confidence": "moderate",
+      "edge_pp": 15.9
     },
     {
       "game_id": "2026_11_CIN_WAS",
@@ -328,169 +411,87 @@
         "abbr": "WAS",
         "name": "Washington Commanders",
         "record": "3-6",
-        "win_prob": 0.3643,
+        "win_prob": 0.3701,
         "features": {
           "off_epa": -1.06,
           "def_epa": -4.63,
           "pace": 80.7,
+          "off_epa_per_play": -0.015,
+          "def_epa_per_play": -0.051,
+          "success_rate": 0.469,
+          "adj_off_epa": 0.012,
+          "adj_def_epa": 0.144,
           "rest_days": 11,
           "bye": false,
           "qb_rating": 88.73,
           "qb_ypa": 7.7,
           "rb_ypc": 4.27,
           "wr_ypr": 10.0,
-          "top3_rec_yards": 1823.0
+          "top3_rec_yards": 1823.0,
+          "weekly_qb_ypa": 7.67,
+          "weekly_qb_epa_att": -0.005,
+          "weekly_rb_ypc": 4.0,
+          "weekly_wr_ypr": 22.0,
+          "weekly_top3_rec_yards": 606.0
         },
         "players": {
           "prior_season": 2025,
           "qb": "Marcus Mariota",
           "rb": "Jacory Croskey-Merritt",
-          "wr": "Deebo Samuel Sr."
+          "wr": "Deebo Samuel Sr.",
+          "weekly": {
+            "season": 2026,
+            "week": 11,
+            "qb": "J.Daniels",
+            "rb": "R.White",
+            "wr": "T.Burks"
+          }
         }
       },
       "away": {
         "abbr": "CIN",
         "name": "Cincinnati Bengals",
         "record": "7-2",
-        "win_prob": 0.6357,
+        "win_prob": 0.6299,
         "features": {
           "off_epa": 15.7,
           "def_epa": 2.3,
           "pace": 83.0,
+          "off_epa_per_play": 0.196,
+          "def_epa_per_play": 0.027,
+          "success_rate": 0.546,
+          "adj_off_epa": 0.144,
+          "adj_def_epa": 0.012,
           "rest_days": 8,
           "bye": false,
           "qb_rating": 101.45,
           "qb_ypa": 7.04,
           "rb_ypc": 4.21,
           "wr_ypr": 11.33,
-          "top3_rec_yards": 2708.0
+          "top3_rec_yards": 2708.0,
+          "weekly_qb_ypa": 8.74,
+          "weekly_qb_epa_att": 0.417,
+          "weekly_rb_ypc": 4.22,
+          "weekly_wr_ypr": 13.59,
+          "weekly_top3_rec_yards": 889.0
         },
         "players": {
           "prior_season": 2025,
           "qb": "Joe Burrow",
           "rb": "Chase Brown",
-          "wr": "Ja'Marr Chase"
+          "wr": "Ja'Marr Chase",
+          "weekly": {
+            "season": 2026,
+            "week": 11,
+            "qb": "J.Burrow",
+            "rb": "C.Brown",
+            "wr": "J.Chase"
+          }
         }
       },
       "predicted_winner": "CIN",
       "confidence": "moderate",
-      "edge_pp": 13.6
-    },
-    {
-      "game_id": "2026_11_BAL_CAR",
-      "gameday": "2026-11-22",
-      "weekday": "Sunday",
-      "gametime": "13:00",
-      "stadium": "Bank of America Stadium",
-      "home": {
-        "abbr": "CAR",
-        "name": "Carolina Panthers",
-        "record": "4-5",
-        "win_prob": 0.3814,
-        "features": {
-          "off_epa": -3.52,
-          "def_epa": -0.98,
-          "pace": 85.7,
-          "rest_days": 7,
-          "bye": false,
-          "qb_rating": 91.74,
-          "qb_ypa": 6.42,
-          "rb_ypc": 4.43,
-          "wr_ypr": 14.16,
-          "top3_rec_yards": 1776.0
-        },
-        "players": {
-          "prior_season": 2025,
-          "qb": "Bryce Young",
-          "rb": "Rico Dowdle",
-          "wr": "Tetairoa McMillan"
-        }
-      },
-      "away": {
-        "abbr": "BAL",
-        "name": "Baltimore Ravens",
-        "record": "4-6",
-        "win_prob": 0.6186,
-        "features": {
-          "off_epa": -16.21,
-          "def_epa": 1.47,
-          "pace": 77.7,
-          "rest_days": 6,
-          "bye": false,
-          "qb_rating": 105.18,
-          "qb_ypa": 8.56,
-          "rb_ypc": 4.96,
-          "wr_ypr": 13.83,
-          "top3_rec_yards": 2028.0
-        },
-        "players": {
-          "prior_season": 2025,
-          "qb": "Lamar Jackson",
-          "rb": "Derrick Henry",
-          "wr": "Zay Flowers"
-        }
-      },
-      "predicted_winner": "BAL",
-      "confidence": "moderate",
-      "edge_pp": 11.9
-    },
-    {
-      "game_id": "2026_11_IND_HOU",
-      "gameday": "2026-11-19",
-      "weekday": "Thursday",
-      "gametime": "20:15",
-      "stadium": "Reliant Stadium",
-      "home": {
-        "abbr": "HOU",
-        "name": "Houston Texans",
-        "record": "3-6",
-        "win_prob": 0.618,
-        "features": {
-          "off_epa": 3.49,
-          "def_epa": -1.39,
-          "pace": 85.3,
-          "rest_days": 4,
-          "bye": false,
-          "qb_rating": 96.16,
-          "qb_ypa": 6.97,
-          "rb_ypc": 3.38,
-          "wr_ypr": 15.65,
-          "top3_rec_yards": 2467.0
-        },
-        "players": {
-          "prior_season": 2025,
-          "qb": "C.J. Stroud",
-          "rb": "Woody Marks",
-          "wr": "Nico Collins"
-        }
-      },
-      "away": {
-        "abbr": "IND",
-        "name": "Indianapolis Colts",
-        "record": "3-7",
-        "win_prob": 0.382,
-        "features": {
-          "off_epa": -16.18,
-          "def_epa": -3.55,
-          "pace": 79.3,
-          "rest_days": 4,
-          "bye": false,
-          "qb_rating": 102.33,
-          "qb_ypa": 8.2,
-          "rb_ypc": 4.85,
-          "wr_ypr": 21.34,
-          "top3_rec_yards": 2643.0
-        },
-        "players": {
-          "prior_season": 2025,
-          "qb": "Daniel Jones",
-          "rb": "Jonathan Taylor",
-          "wr": "Alec Pierce"
-        }
-      },
-      "predicted_winner": "HOU",
-      "confidence": "moderate",
-      "edge_pp": 11.8
+      "edge_pp": 13.0
     },
     {
       "game_id": "2026_11_NO_CHI",
@@ -502,111 +503,87 @@
         "abbr": "CHI",
         "name": "Chicago Bears",
         "record": "7-2",
-        "win_prob": 0.6021,
+        "win_prob": 0.5923,
         "features": {
           "off_epa": 2.93,
           "def_epa": -5.38,
           "pace": 82.7,
+          "off_epa_per_play": 0.029,
+          "def_epa_per_play": -0.058,
+          "success_rate": 0.503,
+          "adj_off_epa": 0.019,
+          "adj_def_epa": -0.119,
           "rest_days": 14,
           "bye": true,
           "qb_rating": 93.19,
           "qb_ypa": 7.01,
           "rb_ypc": 4.76,
           "wr_ypr": 11.8,
-          "top3_rec_yards": 2104.0
+          "top3_rec_yards": 2104.0,
+          "weekly_qb_ypa": 7.74,
+          "weekly_qb_epa_att": 0.193,
+          "weekly_rb_ypc": 3.16,
+          "weekly_wr_ypr": 14.26,
+          "weekly_top3_rec_yards": 781.0
         },
         "players": {
           "prior_season": 2025,
           "qb": "Caleb Williams",
           "rb": "D'Andre Swift",
-          "wr": "Colston Loveland"
+          "wr": "Colston Loveland",
+          "weekly": {
+            "season": 2026,
+            "week": 11,
+            "qb": "C.Williams",
+            "rb": "D.Swift",
+            "wr": "L.Burden"
+          }
         }
       },
       "away": {
         "abbr": "NO",
         "name": "New Orleans Saints",
         "record": "3-6",
-        "win_prob": 0.3979,
+        "win_prob": 0.4077,
         "features": {
           "off_epa": -4.76,
           "def_epa": -1.1,
           "pace": 80.3,
+          "off_epa_per_play": -0.061,
+          "def_epa_per_play": -0.011,
+          "success_rate": 0.42,
+          "adj_off_epa": -0.119,
+          "adj_def_epa": 0.019,
           "rest_days": 7,
           "bye": false,
           "qb_rating": 96.66,
           "qb_ypa": 7.48,
           "rb_ypc": 3.55,
           "wr_ypr": 11.79,
-          "top3_rec_yards": 2644.0
+          "top3_rec_yards": 2644.0,
+          "weekly_qb_ypa": 6.12,
+          "weekly_qb_epa_att": -0.008,
+          "weekly_rb_ypc": 4.27,
+          "weekly_wr_ypr": 11.57,
+          "weekly_top3_rec_yards": 496.0
         },
         "players": {
           "prior_season": 2025,
           "qb": "Tyler Shough",
           "rb": "Alvin Kamara",
-          "wr": "Chris Olave"
+          "wr": "Chris Olave",
+          "weekly": {
+            "season": 2026,
+            "week": 11,
+            "qb": "T.Shough",
+            "rb": "T.Etienne",
+            "wr": "C.Olave"
+          }
         }
       },
       "predicted_winner": "CHI",
-      "confidence": "moderate",
-      "edge_pp": 10.2
-    },
-    {
-      "game_id": "2026_11_TB_DET",
-      "gameday": "2026-11-22",
-      "weekday": "Sunday",
-      "gametime": "13:00",
-      "stadium": "Ford Field",
-      "home": {
-        "abbr": "DET",
-        "name": "Detroit Lions",
-        "record": "7-2",
-        "win_prob": 0.577,
-        "features": {
-          "off_epa": 1.83,
-          "def_epa": -11.33,
-          "pace": 81.3,
-          "rest_days": 7,
-          "bye": false,
-          "qb_rating": 108.53,
-          "qb_ypa": 8.01,
-          "rb_ypc": 4.89,
-          "wr_ypr": 11.9,
-          "top3_rec_yards": 3002.0
-        },
-        "players": {
-          "prior_season": 2025,
-          "qb": "Jared Goff",
-          "rb": "Jahmyr Gibbs",
-          "wr": "Amon-Ra St. Brown"
-        }
-      },
-      "away": {
-        "abbr": "TB",
-        "name": "Tampa Bay Buccaneers",
-        "record": "3-6",
-        "win_prob": 0.423,
-        "features": {
-          "off_epa": -2.25,
-          "def_epa": -17.48,
-          "pace": 82.3,
-          "rest_days": 14,
-          "bye": true,
-          "qb_rating": 92.45,
-          "qb_ypa": 6.94,
-          "rb_ypc": 3.37,
-          "wr_ypr": 14.89,
-          "top3_rec_yards": 1882.0
-        },
-        "players": {
-          "prior_season": 2025,
-          "qb": "Baker Mayfield",
-          "rb": "Bucky Irving",
-          "wr": "Emeka Egbuka"
-        }
-      },
-      "predicted_winner": "DET",
       "confidence": "low",
-      "edge_pp": 7.7
+      "edge_pp": 9.2
     },
     {
       "game_id": "2026_11_MIN_SF",
@@ -618,111 +595,455 @@
         "abbr": "SF",
         "name": "San Francisco 49ers",
         "record": "8-1",
-        "win_prob": 0.573,
+        "win_prob": 0.5868,
         "features": {
           "off_epa": 12.25,
           "def_epa": 5.39,
           "pace": 83.3,
+          "off_epa_per_play": 0.143,
+          "def_epa_per_play": 0.043,
+          "success_rate": 0.525,
+          "adj_off_epa": 0.019,
+          "adj_def_epa": -0.097,
           "rest_days": 7,
           "bye": false,
           "qb_rating": 99.47,
           "qb_ypa": 7.55,
           "rb_ypc": 3.74,
           "wr_ypr": 11.68,
-          "top3_rec_yards": 1833.0
+          "top3_rec_yards": 1833.0,
+          "weekly_qb_ypa": 7.91,
+          "weekly_qb_epa_att": 0.084,
+          "weekly_rb_ypc": 4.6,
+          "weekly_wr_ypr": 10.86,
+          "weekly_top3_rec_yards": 669.0
         },
         "players": {
           "prior_season": 2025,
           "qb": "Mac Jones",
           "rb": "Christian McCaffrey",
-          "wr": "Jauan Jennings"
+          "wr": "Jauan Jennings",
+          "weekly": {
+            "season": 2026,
+            "week": 11,
+            "qb": "B.Purdy",
+            "rb": "C.McCaffrey",
+            "wr": "G.Kittle"
+          }
         }
       },
       "away": {
         "abbr": "MIN",
         "name": "Minnesota Vikings",
         "record": "7-2",
-        "win_prob": 0.427,
+        "win_prob": 0.4132,
         "features": {
           "off_epa": -9.19,
           "def_epa": -9.58,
           "pace": 72.3,
+          "off_epa_per_play": -0.141,
+          "def_epa_per_play": -0.124,
+          "success_rate": 0.415,
+          "adj_off_epa": -0.097,
+          "adj_def_epa": 0.019,
           "rest_days": 7,
           "bye": false,
           "qb_rating": 80.28,
           "qb_ypa": 6.98,
           "rb_ypc": 4.76,
           "wr_ypr": 12.15,
-          "top3_rec_yards": 2141.0
+          "top3_rec_yards": 2141.0,
+          "weekly_qb_ypa": 7.49,
+          "weekly_qb_epa_att": 0.134,
+          "weekly_rb_ypc": 4.14,
+          "weekly_wr_ypr": 11.89,
+          "weekly_top3_rec_yards": 309.0
         },
         "players": {
           "prior_season": 2025,
           "qb": "J.J. McCarthy",
           "rb": "Jordan Mason",
-          "wr": "Justin Jefferson"
+          "wr": "Justin Jefferson",
+          "weekly": {
+            "season": 2026,
+            "week": 11,
+            "qb": "K.Cousins",
+            "rb": "J.Mason",
+            "wr": "J.Jefferson"
+          }
         }
       },
       "predicted_winner": "SF",
       "confidence": "low",
-      "edge_pp": 7.3
+      "edge_pp": 8.7
     },
     {
-      "game_id": "2026_11_PIT_PHI",
+      "game_id": "2026_11_TB_DET",
       "gameday": "2026-11-22",
       "weekday": "Sunday",
-      "gametime": "16:25",
-      "stadium": "Lincoln Financial Field",
+      "gametime": "13:00",
+      "stadium": "Ford Field",
       "home": {
-        "abbr": "PHI",
-        "name": "Philadelphia Eagles",
-        "record": "2-7",
-        "win_prob": 0.4631,
+        "abbr": "DET",
+        "name": "Detroit Lions",
+        "record": "7-2",
+        "win_prob": 0.5797,
         "features": {
-          "off_epa": -7.97,
-          "def_epa": 6.85,
-          "pace": 87.3,
-          "rest_days": 14,
-          "bye": true,
-          "qb_rating": 106.11,
-          "qb_ypa": 7.18,
-          "rb_ypc": 4.02,
-          "wr_ypr": 12.79,
-          "top3_rec_yards": 2680.0
+          "off_epa": 1.83,
+          "def_epa": -11.33,
+          "pace": 81.3,
+          "off_epa_per_play": 0.021,
+          "def_epa_per_play": -0.152,
+          "success_rate": 0.478,
+          "adj_off_epa": -0.235,
+          "adj_def_epa": -0.176,
+          "rest_days": 7,
+          "bye": false,
+          "qb_rating": 108.53,
+          "qb_ypa": 8.01,
+          "rb_ypc": 4.89,
+          "wr_ypr": 11.9,
+          "top3_rec_yards": 3002.0,
+          "weekly_qb_ypa": 8.21,
+          "weekly_qb_epa_att": 0.137,
+          "weekly_rb_ypc": 5.09,
+          "weekly_wr_ypr": 11.8,
+          "weekly_top3_rec_yards": 764.0
         },
         "players": {
           "prior_season": 2025,
-          "qb": "Jalen Hurts",
-          "rb": "Saquon Barkley",
-          "wr": "DeVonta Smith"
+          "qb": "Jared Goff",
+          "rb": "Jahmyr Gibbs",
+          "wr": "Amon-Ra St. Brown",
+          "weekly": {
+            "season": 2026,
+            "week": 11,
+            "qb": "J.Goff",
+            "rb": "J.Gibbs",
+            "wr": "A.St. Brown"
+          }
         }
       },
       "away": {
-        "abbr": "PIT",
-        "name": "Pittsburgh Steelers",
-        "record": "6-3",
-        "win_prob": 0.5369,
+        "abbr": "TB",
+        "name": "Tampa Bay Buccaneers",
+        "record": "3-6",
+        "win_prob": 0.4203,
         "features": {
-          "off_epa": 3.31,
-          "def_epa": 1.35,
-          "pace": 75.3,
-          "rest_days": 7,
-          "bye": false,
-          "qb_rating": 95.88,
-          "qb_ypa": 6.65,
-          "rb_ypc": 4.51,
-          "wr_ypr": 14.41,
-          "top3_rec_yards": 1717.0
+          "off_epa": -2.25,
+          "def_epa": -17.48,
+          "pace": 82.3,
+          "off_epa_per_play": -0.024,
+          "def_epa_per_play": -0.256,
+          "success_rate": 0.448,
+          "adj_off_epa": -0.176,
+          "adj_def_epa": -0.235,
+          "rest_days": 14,
+          "bye": true,
+          "qb_rating": 92.45,
+          "qb_ypa": 6.94,
+          "rb_ypc": 3.37,
+          "wr_ypr": 14.89,
+          "top3_rec_yards": 1882.0,
+          "weekly_qb_ypa": 5.65,
+          "weekly_qb_epa_att": -0.246,
+          "weekly_rb_ypc": 5.35,
+          "weekly_wr_ypr": 8.05,
+          "weekly_top3_rec_yards": 366.0
         },
         "players": {
           "prior_season": 2025,
-          "qb": "Aaron Rodgers",
-          "rb": "Jaylen Warren",
-          "wr": "DK Metcalf"
+          "qb": "Baker Mayfield",
+          "rb": "Bucky Irving",
+          "wr": "Emeka Egbuka",
+          "weekly": {
+            "season": 2026,
+            "week": 11,
+            "qb": "B.Mayfield",
+            "rb": "B.Irving",
+            "wr": "E.Egbuka"
+          }
         }
       },
-      "predicted_winner": "PIT",
+      "predicted_winner": "DET",
       "confidence": "low",
-      "edge_pp": 3.7
+      "edge_pp": 8.0
+    },
+    {
+      "game_id": "2026_11_IND_HOU",
+      "gameday": "2026-11-19",
+      "weekday": "Thursday",
+      "gametime": "20:15",
+      "stadium": "Reliant Stadium",
+      "home": {
+        "abbr": "HOU",
+        "name": "Houston Texans",
+        "record": "3-6",
+        "win_prob": 0.5719,
+        "features": {
+          "off_epa": 3.49,
+          "def_epa": -1.39,
+          "pace": 85.3,
+          "off_epa_per_play": 0.038,
+          "def_epa_per_play": -0.012,
+          "success_rate": 0.414,
+          "adj_off_epa": 0.002,
+          "adj_def_epa": -0.217,
+          "rest_days": 4,
+          "bye": false,
+          "qb_rating": 96.16,
+          "qb_ypa": 6.97,
+          "rb_ypc": 3.38,
+          "wr_ypr": 15.65,
+          "top3_rec_yards": 2467.0,
+          "weekly_qb_ypa": 8.47,
+          "weekly_qb_epa_att": 0.286,
+          "weekly_rb_ypc": 3.79,
+          "weekly_wr_ypr": 20.4,
+          "weekly_top3_rec_yards": 545.0
+        },
+        "players": {
+          "prior_season": 2025,
+          "qb": "C.J. Stroud",
+          "rb": "Woody Marks",
+          "wr": "Nico Collins",
+          "weekly": {
+            "season": 2026,
+            "week": 11,
+            "qb": "C.Stroud",
+            "rb": "W.Marks",
+            "wr": "K.Boutte"
+          }
+        }
+      },
+      "away": {
+        "abbr": "IND",
+        "name": "Indianapolis Colts",
+        "record": "3-7",
+        "win_prob": 0.4281,
+        "features": {
+          "off_epa": -16.18,
+          "def_epa": -3.55,
+          "pace": 79.3,
+          "off_epa_per_play": -0.204,
+          "def_epa_per_play": -0.037,
+          "success_rate": 0.411,
+          "adj_off_epa": -0.217,
+          "adj_def_epa": 0.002,
+          "rest_days": 4,
+          "bye": false,
+          "qb_rating": 102.33,
+          "qb_ypa": 8.2,
+          "rb_ypc": 4.85,
+          "wr_ypr": 21.34,
+          "top3_rec_yards": 2643.0,
+          "weekly_qb_ypa": 5.56,
+          "weekly_qb_epa_att": -0.239,
+          "weekly_rb_ypc": 4.3,
+          "weekly_wr_ypr": 9.3,
+          "weekly_top3_rec_yards": 328.0
+        },
+        "players": {
+          "prior_season": 2025,
+          "qb": "Daniel Jones",
+          "rb": "Jonathan Taylor",
+          "wr": "Alec Pierce",
+          "weekly": {
+            "season": 2026,
+            "week": 11,
+            "qb": "D.Jones",
+            "rb": "J.Taylor",
+            "wr": "T.Warren"
+          }
+        }
+      },
+      "predicted_winner": "HOU",
+      "confidence": "low",
+      "edge_pp": 7.2
+    },
+    {
+      "game_id": "2026_11_NYJ_LAC",
+      "gameday": "2026-11-22",
+      "weekday": "Sunday",
+      "gametime": "16:05",
+      "stadium": "SoFi Stadium",
+      "home": {
+        "abbr": "LAC",
+        "name": "Los Angeles Chargers",
+        "record": "1-8",
+        "win_prob": 0.5532,
+        "features": {
+          "off_epa": -10.15,
+          "def_epa": 0.77,
+          "pace": 80.3,
+          "off_epa_per_play": -0.128,
+          "def_epa_per_play": 0.003,
+          "success_rate": 0.389,
+          "adj_off_epa": 0.05,
+          "adj_def_epa": -0.025,
+          "rest_days": 6,
+          "bye": false,
+          "qb_rating": 100.14,
+          "qb_ypa": 7.39,
+          "rb_ypc": 4.13,
+          "wr_ypr": 11.74,
+          "top3_rec_yards": 2362.0,
+          "weekly_qb_ypa": 6.68,
+          "weekly_qb_epa_att": -0.304,
+          "weekly_rb_ypc": 4.37,
+          "weekly_wr_ypr": 28.0,
+          "weekly_top3_rec_yards": 417.0
+        },
+        "players": {
+          "prior_season": 2025,
+          "qb": "Justin Herbert",
+          "rb": "Kimani Vidal",
+          "wr": "Ladd McConkey",
+          "weekly": {
+            "season": 2026,
+            "week": 11,
+            "qb": "J.Herbert",
+            "rb": "K.Vidal",
+            "wr": "Q.Johnston"
+          }
+        }
+      },
+      "away": {
+        "abbr": "NYJ",
+        "name": "New York Jets",
+        "record": "2-8",
+        "win_prob": 0.4468,
+        "features": {
+          "off_epa": -2.44,
+          "def_epa": 14.09,
+          "pace": 83.7,
+          "off_epa_per_play": -0.028,
+          "def_epa_per_play": 0.178,
+          "success_rate": 0.511,
+          "adj_off_epa": -0.025,
+          "adj_def_epa": 0.05,
+          "rest_days": 7,
+          "bye": false,
+          "qb_rating": 89.91,
+          "qb_ypa": 6.2,
+          "rb_ypc": 4.44,
+          "wr_ypr": 10.78,
+          "top3_rec_yards": 1069.0,
+          "weekly_qb_ypa": 8.02,
+          "weekly_qb_epa_att": 0.115,
+          "weekly_rb_ypc": 5.75,
+          "weekly_wr_ypr": 13.53,
+          "weekly_top3_rec_yards": 587.0
+        },
+        "players": {
+          "prior_season": 2025,
+          "qb": "Justin Fields",
+          "rb": "Breece Hall",
+          "wr": "Garrett Wilson",
+          "weekly": {
+            "season": 2026,
+            "week": 11,
+            "qb": "G.Smith",
+            "rb": "B.Allen",
+            "wr": "G.Wilson"
+          }
+        }
+      },
+      "predicted_winner": "LAC",
+      "confidence": "low",
+      "edge_pp": 5.3
+    },
+    {
+      "game_id": "2026_11_BAL_CAR",
+      "gameday": "2026-11-22",
+      "weekday": "Sunday",
+      "gametime": "13:00",
+      "stadium": "Bank of America Stadium",
+      "home": {
+        "abbr": "CAR",
+        "name": "Carolina Panthers",
+        "record": "4-5",
+        "win_prob": 0.4554,
+        "features": {
+          "off_epa": -3.52,
+          "def_epa": -0.98,
+          "pace": 85.7,
+          "off_epa_per_play": -0.039,
+          "def_epa_per_play": -0.017,
+          "success_rate": 0.395,
+          "adj_off_epa": -0.02,
+          "adj_def_epa": -0.235,
+          "rest_days": 7,
+          "bye": false,
+          "qb_rating": 91.74,
+          "qb_ypa": 6.42,
+          "rb_ypc": 4.43,
+          "wr_ypr": 14.16,
+          "top3_rec_yards": 1776.0,
+          "weekly_qb_ypa": 6.36,
+          "weekly_qb_epa_att": -0.092,
+          "weekly_rb_ypc": 4.29,
+          "weekly_wr_ypr": 12.0,
+          "weekly_top3_rec_yards": 562.0
+        },
+        "players": {
+          "prior_season": 2025,
+          "qb": "Bryce Young",
+          "rb": "Rico Dowdle",
+          "wr": "Tetairoa McMillan",
+          "weekly": {
+            "season": 2026,
+            "week": 11,
+            "qb": "B.Young",
+            "rb": "C.Hubbard",
+            "wr": "T.McMillan"
+          }
+        }
+      },
+      "away": {
+        "abbr": "BAL",
+        "name": "Baltimore Ravens",
+        "record": "4-6",
+        "win_prob": 0.5446,
+        "features": {
+          "off_epa": -16.21,
+          "def_epa": 1.47,
+          "pace": 77.7,
+          "off_epa_per_play": -0.218,
+          "def_epa_per_play": 0.019,
+          "success_rate": 0.359,
+          "adj_off_epa": -0.235,
+          "adj_def_epa": -0.02,
+          "rest_days": 6,
+          "bye": false,
+          "qb_rating": 105.18,
+          "qb_ypa": 8.56,
+          "rb_ypc": 4.96,
+          "wr_ypr": 13.83,
+          "top3_rec_yards": 2028.0,
+          "weekly_qb_ypa": 5.89,
+          "weekly_qb_epa_att": -0.092,
+          "weekly_rb_ypc": 3.44,
+          "weekly_wr_ypr": 12.29,
+          "weekly_top3_rec_yards": 381.0
+        },
+        "players": {
+          "prior_season": 2025,
+          "qb": "Lamar Jackson",
+          "rb": "Derrick Henry",
+          "wr": "Zay Flowers",
+          "weekly": {
+            "season": 2026,
+            "week": 11,
+            "qb": "J.Brissett",
+            "rb": "D.Henry",
+            "wr": "Z.Flowers"
+          }
+        }
+      },
+      "predicted_winner": "BAL",
+      "confidence": "low",
+      "edge_pp": 4.5
     },
     {
       "game_id": "2026_11_JAX_NYG",
@@ -734,53 +1055,179 @@
         "abbr": "NYG",
         "name": "New York Giants",
         "record": "6-3",
-        "win_prob": 0.5074,
+        "win_prob": 0.5322,
         "features": {
           "off_epa": 2.68,
           "def_epa": -2.04,
           "pace": 83.3,
+          "off_epa_per_play": 0.032,
+          "def_epa_per_play": -0.023,
+          "success_rate": 0.42,
+          "adj_off_epa": -0.163,
+          "adj_def_epa": 0.104,
           "rest_days": 10,
           "bye": false,
           "qb_rating": 95.62,
           "qb_ypa": 6.76,
           "rb_ypc": 4.22,
           "wr_ypr": 10.84,
-          "top3_rec_yards": 2094.0
+          "top3_rec_yards": 2094.0,
+          "weekly_qb_ypa": 9.15,
+          "weekly_qb_epa_att": 0.097,
+          "weekly_rb_ypc": 4.43,
+          "weekly_wr_ypr": 12.57,
+          "weekly_top3_rec_yards": 860.0
         },
         "players": {
           "prior_season": 2025,
           "qb": "Jaxson Dart",
           "rb": "Tyrone Tracy Jr.",
-          "wr": "Wan'Dale Robinson"
+          "wr": "Wan'Dale Robinson",
+          "weekly": {
+            "season": 2026,
+            "week": 11,
+            "qb": "J.McCarthy",
+            "rb": "C.Skattebo",
+            "wr": "M.Nabers"
+          }
         }
       },
       "away": {
         "abbr": "JAX",
         "name": "Jacksonville Jaguars",
         "record": "7-2",
-        "win_prob": 0.4926,
+        "win_prob": 0.4678,
         "features": {
           "off_epa": 10.56,
           "def_epa": -15.26,
           "pace": 79.0,
+          "off_epa_per_play": 0.126,
+          "def_epa_per_play": -0.195,
+          "success_rate": 0.515,
+          "adj_off_epa": 0.104,
+          "adj_def_epa": -0.163,
           "rest_days": 7,
           "bye": false,
           "qb_rating": 92.14,
           "qb_ypa": 7.22,
           "rb_ypc": 4.26,
           "wr_ypr": 14.6,
-          "top3_rec_yards": 2094.0
+          "top3_rec_yards": 2094.0,
+          "weekly_qb_ypa": 9.07,
+          "weekly_qb_epa_att": 0.299,
+          "weekly_rb_ypc": 3.94,
+          "weekly_wr_ypr": 20.38,
+          "weekly_top3_rec_yards": 663.0
         },
         "players": {
           "prior_season": 2025,
           "qb": "Trevor Lawrence",
           "rb": "Travis Etienne",
-          "wr": "Parker Washington"
+          "wr": "Parker Washington",
+          "weekly": {
+            "season": 2026,
+            "week": 11,
+            "qb": "T.Lawrence",
+            "rb": "B.Tuten",
+            "wr": "P.Washington"
+          }
         }
       },
       "predicted_winner": "NYG",
       "confidence": "low",
-      "edge_pp": 0.7
+      "edge_pp": 3.2
+    },
+    {
+      "game_id": "2026_11_PIT_PHI",
+      "gameday": "2026-11-22",
+      "weekday": "Sunday",
+      "gametime": "16:25",
+      "stadium": "Lincoln Financial Field",
+      "home": {
+        "abbr": "PHI",
+        "name": "Philadelphia Eagles",
+        "record": "2-7",
+        "win_prob": 0.497,
+        "features": {
+          "off_epa": -7.97,
+          "def_epa": 6.85,
+          "pace": 87.3,
+          "off_epa_per_play": -0.089,
+          "def_epa_per_play": 0.085,
+          "success_rate": 0.367,
+          "adj_off_epa": -0.071,
+          "adj_def_epa": 0.129,
+          "rest_days": 14,
+          "bye": true,
+          "qb_rating": 106.11,
+          "qb_ypa": 7.18,
+          "rb_ypc": 4.02,
+          "wr_ypr": 12.79,
+          "top3_rec_yards": 2680.0,
+          "weekly_qb_ypa": null,
+          "weekly_qb_epa_att": null,
+          "weekly_rb_ypc": 4.92,
+          "weekly_wr_ypr": 8.86,
+          "weekly_top3_rec_yards": 479.0
+        },
+        "players": {
+          "prior_season": 2025,
+          "qb": "Jalen Hurts",
+          "rb": "Saquon Barkley",
+          "wr": "DeVonta Smith",
+          "weekly": {
+            "season": 2026,
+            "week": 11,
+            "qb": null,
+            "rb": "S.Barkley",
+            "wr": "M.Lemon"
+          }
+        }
+      },
+      "away": {
+        "abbr": "PIT",
+        "name": "Pittsburgh Steelers",
+        "record": "6-3",
+        "win_prob": 0.503,
+        "features": {
+          "off_epa": 3.31,
+          "def_epa": 1.35,
+          "pace": 75.3,
+          "off_epa_per_play": 0.044,
+          "def_epa_per_play": 0.018,
+          "success_rate": 0.456,
+          "adj_off_epa": 0.129,
+          "adj_def_epa": -0.071,
+          "rest_days": 7,
+          "bye": false,
+          "qb_rating": 95.88,
+          "qb_ypa": 6.65,
+          "rb_ypc": 4.51,
+          "wr_ypr": 14.41,
+          "top3_rec_yards": 1717.0,
+          "weekly_qb_ypa": 6.46,
+          "weekly_qb_epa_att": -0.052,
+          "weekly_rb_ypc": 6.17,
+          "weekly_wr_ypr": 8.96,
+          "weekly_top3_rec_yards": 524.0
+        },
+        "players": {
+          "prior_season": 2025,
+          "qb": "Aaron Rodgers",
+          "rb": "Jaylen Warren",
+          "wr": "DK Metcalf",
+          "weekly": {
+            "season": 2026,
+            "week": 11,
+            "qb": "A.Rodgers",
+            "rb": "J.Warren",
+            "wr": "G.Bernard"
+          }
+        }
+      },
+      "predicted_winner": "PIT",
+      "confidence": "low",
+      "edge_pp": 0.3
     }
   ]
 }

@@ -30,7 +30,7 @@ const pickSide = (g) => (g.home.abbr === g.predicted_winner ? 'home' : 'away');
 const pickTeam = (g) => g[pickSide(g)];
 const shortName = (name) => name.split(' ').pop();
 const pct = (p) => `${Math.round(p * 100)}%`;
-const signed = (n, digits = 1) => `${n > 0 ? '+' : ''}${Number(n).toFixed(digits)}`;
+const signed = (n, digits = 1) => (n === null || n === undefined || Number.isNaN(Number(n)) ? '—' : `${n > 0 ? '+' : ''}${Number(n).toFixed(digits)}`);
 const num = (v, digits = 1) => (v === null || v === undefined || Number.isNaN(Number(v)) ? '—' : Number(v).toFixed(digits));
 const winCount = (record) => parseInt(record, 10) || 0;
 
@@ -49,6 +49,24 @@ function playerFeatureLabel(feature) {
   if (String(feature || '').startsWith('diff_player_')) return `${base} (home − away)`;
   if (String(feature || '').startsWith('home_player_')) return `${base} (home)`;
   if (String(feature || '').startsWith('away_player_')) return `${base} (away)`;
+  return base;
+}
+
+function weeklyFeatureLabel(feature) {
+  const name = String(feature || '')
+    .replace(/^(home|away)_weekly_/, '')
+    .replace(/^diff_weekly_/, '');
+  const labels = {
+    qb_ypa: 'Weekly QB yards/attempt',
+    qb_epa_att: 'Weekly QB EPA/attempt',
+    rb_ypc: 'Weekly lead RB yards/carry',
+    wr_ypr: 'Weekly lead receiver yards/reception',
+    top3_rec_yards: 'Weekly top-3 receiving yards',
+  };
+  const base = labels[name] || name.replace(/_/g, ' ');
+  if (String(feature || '').startsWith('diff_weekly_')) return `${base} (home − away)`;
+  if (String(feature || '').startsWith('home_weekly_')) return `${base} (home)`;
+  if (String(feature || '').startsWith('away_weekly_')) return `${base} (away)`;
   return base;
 }
 
@@ -363,8 +381,9 @@ function renderMetrics(metrics, data) {
   setText('#kpi-logloss', metrics.in_sample.log_loss.toFixed(3));
   setText('#acc-badge', `${pct(last.accuracy)} Acc`);
   setText('#week-badge', `Week ${data.week}`);
-  setText('#metrics-note', `Walk-forward validation on ${wf.reduce((s, r) => s + r.games, 0)} held-out games (${wf[0].season}-${wf[wf.length - 1].season}).`);
-  setText('#meta-summary', `${metrics.training_games.toLocaleString()} games • ${metrics.seasons[0]}-${metrics.seasons[metrics.seasons.length - 1]} • ${metrics.features} features • ${metrics.num_teams} team codes`);
+  setText('#metrics-note', `Nested walk-forward validation on ${wf.reduce((s, r) => s + r.games, 0)} held-out games (${wf[0].season}-${wf[wf.length - 1].season}).`);
+  const tuning = metrics.tuned ? 'C tuned by inner walk-forward' : 'fixed L2 strength';
+  setText('#meta-summary', `${metrics.training_games.toLocaleString()} games • ${metrics.seasons[0]}-${metrics.seasons[metrics.seasons.length - 1]} • ${metrics.features} features • ${metrics.num_teams} team codes • ${tuning} (C ${metrics.C}) • temperature ${Number(metrics.temperature).toFixed(2)}`);
 
   const bars = $('#season-bars');
   if (bars) bars.innerHTML = wf.map((r) => `<div class="flex items-center gap-space-sm">
@@ -375,7 +394,9 @@ function renderMetrics(metrics, data) {
     </div>`).join('');
 
   renderCalibration(metrics.calibration);
+  renderTuning(metrics);
   renderPlayerStats(metrics);
+  renderWeeklyStats(metrics);
 
   const base = $('#baseline-bars');
   if (base) {
@@ -390,6 +411,70 @@ function renderMetrics(metrics, data) {
         <span class="font-label-md text-label-md font-bold text-on-surface w-10 text-right">${pct(value)}</span>
       </div>`).join('');
   }
+}
+
+function renderTuning(metrics) {
+  const note = $('#tuning-note');
+  if (note) {
+    const cGrid = (metrics.c_grid || []).join(', ');
+    const tGrid = (metrics.temperature_grid || []).join(', ');
+    note.textContent = `L2 strength was chosen by an inner walk-forward search over C = [${cGrid}]; probabilities were then softened with a temperature fitted only on earlier out-of-fold games (T grid = [${tGrid}]).`;
+  }
+  const cards = $('#tuning-cards');
+  if (!cards) return;
+  const oofGames = (metrics.walk_forward || []).reduce((sum, row) => sum + row.games, 0);
+  const entries = [
+    ['Selected C', Number(metrics.C).toFixed(2)],
+    ['Temperature', Number(metrics.temperature).toFixed(2)],
+    ['Tuned', metrics.tuned ? 'Yes · nested' : 'No · fixed'],
+    ['OOF games', oofGames.toLocaleString()],
+  ];
+  cards.innerHTML = entries.map(([label, value]) => `<div class="bg-surface-container-low rounded-lg p-space-sm">
+      <span class="font-label-sm text-label-sm text-outline uppercase tracking-wider block">${label}</span>
+      <span class="font-data-display text-data-display font-bold text-on-surface">${value}</span>
+    </div>`).join('');
+}
+
+function renderWeeklyStats(metrics) {
+  setText(
+    '#weekly-source-note',
+    metrics.weekly_player_source
+      ? `${metrics.weekly_player_source} • ${metrics.weekly_window || '—'}-game rolling window • current game excluded`
+      : 'Current-season weekly player form was not available in this model artifact.'
+  );
+  const coverage = $('#weekly-coverage');
+  if (coverage) {
+    const cards = [
+      ['Rolling window', `${metrics.weekly_window || '—'} games`],
+      ['Model inputs', metrics.weekly_player_feature_count != null ? metrics.weekly_player_feature_count : '—'],
+      ['Available inputs', metrics.weekly_player_available_count != null ? metrics.weekly_player_available_count : '—'],
+      ['Timing', 'Prior games only'],
+    ];
+    coverage.innerHTML = cards.map(([label, value]) => `<div class="bg-surface-container-low rounded-lg p-space-sm">
+        <span class="font-label-sm text-label-sm text-outline uppercase tracking-wider block">${label}</span>
+        <span class="font-data-display text-data-display font-bold text-on-surface">${value}</span>
+      </div>`).join('');
+  }
+
+  const impact = $('#weekly-impact');
+  if (!impact) return;
+  const items = metrics.weekly_feature_importance || [];
+  if (!items.length) {
+    impact.innerHTML = '<p class="font-body-sm text-body-sm text-outline">No weekly-form coefficients were exported.</p>';
+    return;
+  }
+  const max = Math.max(...items.map((item) => Math.abs(item.magnitude || 0))) || 1;
+  impact.innerHTML = items.map((item) => {
+    const positive = item.coefficient >= 0;
+    const width = Math.max(4, (Math.abs(item.magnitude || 0) / max) * 100);
+    return `<div class="flex items-center gap-space-sm">
+        <span class="font-label-sm text-label-sm text-on-surface-variant w-56 flex-shrink-0 truncate">${weeklyFeatureLabel(item.feature)}</span>
+        <span class="flex-1 h-2 rounded-full bg-surface-container overflow-hidden">
+          <span class="block h-full ${positive ? 'bg-primary' : 'bg-secondary'} rounded-full" style="width:${width}%"></span>
+        </span>
+        <span class="font-label-sm text-label-sm font-bold ${positive ? 'text-primary' : 'text-secondary'} w-14 text-right">${signed(item.coefficient, 3)}</span>
+      </div>`;
+  }).join('');
 }
 
 function renderCalibration(cal) {
@@ -541,6 +626,36 @@ function playerCard(g, side) {
   </div>`;
 }
 
+function weeklyPlayerCard(g, side) {
+  const team = g[side];
+  const weekly = team.players?.weekly || {};
+  const features = team.features || {};
+  const person = (label, name, metrics) => `<div class="bg-surface-container-lowest rounded-lg p-space-sm min-w-0">
+      <span class="font-label-sm text-label-sm text-outline uppercase tracking-wider block">${label}</span>
+      <div class="font-label-md text-label-md font-bold text-on-surface truncate" title="${esc(name || '')}">${esc(name || '—')}</div>
+      <div class="font-body-sm text-body-sm text-on-surface-variant">${metrics}</div>
+    </div>`;
+  return `<div class="bg-surface-container-low rounded-xl p-space-md">
+    <div class="flex items-center gap-space-xs">
+      ${logo(team.abbr, 'w-8 h-8', 'text-label-md')}
+      <div>
+        <div class="font-label-lg text-label-lg font-bold text-on-surface">${team.abbr} — entering week ${weekly.week || '—'}</div>
+        <div class="font-body-sm text-body-sm text-outline">Rolling production from prior ${insightState.data?.model?.weekly_player_window || '—'} games</div>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-space-xs mt-space-sm">
+      ${person('Quarterback', weekly.qb, `${num(features.weekly_qb_ypa, 2)} YPA · ${num(features.weekly_qb_epa_att, 3)} EPA/att`)}
+      ${person('Lead rusher', weekly.rb, `${num(features.weekly_rb_ypc, 2)} YPC`)}
+      ${person('Lead receiver', weekly.wr, `${num(features.weekly_wr_ypr, 2)} YPR`)}
+    </div>
+    <div class="mt-space-xs bg-surface-container-lowest rounded-lg px-space-sm py-1.5 flex items-center justify-between font-body-sm text-body-sm">
+      <span class="text-on-surface-variant">Top-3 receiving yards (rolling)</span>
+      <span class="font-bold text-primary">${num(features.weekly_top3_rec_yards, 0)}</span>
+    </div>
+    <p class="font-label-sm text-label-sm text-outline mt-space-xs">QB EPA/attempt is shown for context; only the other four rates are model inputs.</p>
+  </div>`;
+}
+
 function renderSelectedGame() {
   const g = insightState.data?.games[insightState.index];
   if (!g) return;
@@ -576,15 +691,21 @@ function renderSelectedGame() {
     const rows = [
       ['Rolling OFF EPA', hf.off_epa, af.off_epa, 2, 'Higher is better'],
       ['EPA allowed (DEF)', hf.def_epa, af.def_epa, 2, 'Lower is better'],
+      ['OFF EPA / play', hf.off_epa_per_play, af.off_epa_per_play, 3, 'Per-play efficiency'],
+      ['DEF EPA / play allowed', hf.def_epa_per_play, af.def_epa_per_play, 3, 'Lower is better'],
+      ['Success rate', hf.success_rate, af.success_rate, 3, 'Successful play share'],
+      ['Adj OFF EPA', hf.adj_off_epa, af.adj_off_epa, 3, 'Own OFF + opp DEF'],
+      ['Adj DEF EPA allowed', hf.adj_def_epa, af.adj_def_epa, 3, 'Lower is better'],
       ['Pace (plays/game)', hf.pace, af.pace, 1, 'Offensive tempo'],
       ['Rest days', hf.rest_days, af.rest_days, 0, 'Days since last game'],
       ['Bye proxy', hf.bye ? 1 : 0, af.bye ? 1 : 0, 0, 'Rest ≥ 12 days'],
     ];
     features.innerHTML = rows.map(([label, h, a, digits, hint]) => {
-      const diff = h - a;
+      const valid = Number.isFinite(Number(h)) && Number.isFinite(Number(a));
+      const diff = valid ? Number(h) - Number(a) : NaN;
       const better = label.includes('allowed') ? diff < 0 : diff > 0;
-      const color = diff === 0 ? 'text-outline' : better ? 'text-primary' : 'text-secondary';
-      const fmt = (v) => digits === 0 ? String(v) : Number(v).toFixed(digits);
+      const color = !valid || diff === 0 ? 'text-outline' : better ? 'text-primary' : 'text-secondary';
+      const fmt = (v) => (v === null || v === undefined || Number.isNaN(Number(v)) ? '—' : digits === 0 ? String(v) : Number(v).toFixed(digits));
       return `<div class="bg-surface-container-lowest rounded-lg p-space-sm">
         <div class="flex items-center justify-between font-label-md text-label-md">
           <span class="font-bold text-on-surface">${label}</span>
@@ -607,6 +728,16 @@ function renderSelectedGame() {
   );
   const players = $('#insight-players');
   if (players) players.innerHTML = playerCard(g, 'away') + playerCard(g, 'home');
+
+  const weeklyModel = insightState.data?.model || {};
+  setText(
+    '#weekly-player-source-note',
+    weeklyModel.weekly_player_source
+      ? `${weeklyModel.weekly_player_source} • ${weeklyModel.weekly_player_window || '—'}-game rolling window • ${weeklyModel.weekly_player_features || 0} model inputs • current game excluded`
+      : 'Current-season weekly player data was not available in this prediction export.'
+  );
+  const weeklyPlayers = $('#insight-weekly-players');
+  if (weeklyPlayers) weeklyPlayers.innerHTML = weeklyPlayerCard(g, 'away') + weeklyPlayerCard(g, 'home');
 
   $$('.game-chip').forEach((btn) => btn.classList.toggle('bg-on-surface', Number(btn.dataset.index) === insightState.index));
   $$('.slate-bar').forEach((btn) => btn.classList.toggle('bg-surface-container', Number(btn.dataset.index) === insightState.index));

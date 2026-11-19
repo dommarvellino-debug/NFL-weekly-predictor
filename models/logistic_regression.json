@@ -48,53 +48,95 @@
     2025
   ],
   "rolling_window": 3,
-  "C": 1.0,
+  "weekly_window": 4,
+  "C": 0.03,
+  "temperature": 1.5,
+  "tuned": true,
+  "c_grid": [
+    0.03,
+    0.1,
+    0.3,
+    1.0,
+    3.0
+  ],
+  "temperature_grid": [
+    0.7,
+    0.8,
+    0.9,
+    1.0,
+    1.1,
+    1.25,
+    1.5,
+    1.75,
+    2.0,
+    2.5
+  ],
   "in_sample": {
-    "accuracy": 0.6524900036350418,
-    "log_loss": 0.6213281684088133,
-    "roc_auc": 0.7061588472558465,
-    "brier": 0.2162145384190371
+    "accuracy": 0.6561250454380225,
+    "log_loss": 0.6275813710114996,
+    "roc_auc": 0.7090566194899879,
+    "brier": 0.21861169293495508
   },
   "walk_forward": [
     {
       "season": 2021,
       "games": 284,
-      "accuracy": 0.6302816901408451,
-      "log_loss": 0.7014902799226299,
-      "roc_auc": 0.627786881175828,
-      "brier": 0.2478341011154227
+      "selected_C": 0.03,
+      "temperature": 1.0,
+      "accuracy": 0.6197183098591549,
+      "log_loss": 0.6897618584578115,
+      "roc_auc": 0.6353344257410993,
+      "brier": 0.2439063749345168,
+      "raw_log_loss": 0.6897618584578115,
+      "raw_brier": 0.24390637493451686
     },
     {
       "season": 2022,
       "games": 282,
-      "accuracy": 0.549645390070922,
-      "log_loss": 0.6958308086915073,
-      "roc_auc": 0.5964139344262295,
-      "brier": 0.24975293119082484
+      "selected_C": 0.03,
+      "temperature": 2.0,
+      "accuracy": 0.5673758865248227,
+      "log_loss": 0.665447879974797,
+      "roc_auc": 0.6103995901639345,
+      "brier": 0.2366735142187874,
+      "raw_log_loss": 0.6781038364946708,
+      "raw_brier": 0.24231865806434277
     },
     {
       "season": 2023,
       "games": 285,
-      "accuracy": 0.5929824561403508,
-      "log_loss": 0.6869026607812291,
-      "roc_auc": 0.610649168503306,
-      "brier": 0.2442926419596323
+      "selected_C": 0.03,
+      "temperature": 2.0,
+      "accuracy": 0.5824561403508772,
+      "log_loss": 0.6690624375523971,
+      "roc_auc": 0.612252053696654,
+      "brier": 0.2381370239258343,
+      "raw_log_loss": 0.6814920230905386,
+      "raw_brier": 0.2423077909496415
     },
     {
       "season": 2024,
       "games": 285,
-      "accuracy": 0.631578947368421,
-      "log_loss": 0.6324621912930555,
-      "roc_auc": 0.6869409660107335,
-      "brier": 0.22203416745938317
+      "selected_C": 0.03,
+      "temperature": 1.75,
+      "accuracy": 0.656140350877193,
+      "log_loss": 0.6395865062910795,
+      "roc_auc": 0.7017988471476844,
+      "brier": 0.22374214292176992,
+      "raw_log_loss": 0.6297305185867207,
+      "raw_brier": 0.21875367626997455
     },
     {
       "season": 2025,
       "games": 284,
-      "accuracy": 0.6197183098591549,
-      "log_loss": 0.6469935219943217,
-      "roc_auc": 0.6727970494417863,
-      "brier": 0.22764339353570162
+      "selected_C": 0.03,
+      "temperature": 1.5,
+      "accuracy": 0.6126760563380281,
+      "log_loss": 0.6509266691546863,
+      "roc_auc": 0.6646730462519936,
+      "brier": 0.2295975481834344,
+      "raw_log_loss": 0.6502401701068659,
+      "raw_brier": 0.22935071436718185
     }
   ],
   "calibration": [
@@ -106,66 +148,69 @@
     },
     {
       "bin": "10-20%",
-      "mean_pred": 0.16935246321328606,
-      "actual": 0.3125,
-      "count": 32
+      "mean_pred": 0.1677323549082606,
+      "actual": 0.625,
+      "count": 8
     },
     {
       "bin": "20-30%",
-      "mean_pred": 0.25831974318680767,
-      "actual": 0.4067796610169492,
-      "count": 118
+      "mean_pred": 0.2633043100515603,
+      "actual": 0.43243243243243246,
+      "count": 37
     },
     {
       "bin": "30-40%",
-      "mean_pred": 0.3523935660669311,
-      "actual": 0.42473118279569894,
-      "count": 186
+      "mean_pred": 0.35815851391579656,
+      "actual": 0.34965034965034963,
+      "count": 143
     },
     {
       "bin": "40-50%",
-      "mean_pred": 0.44721382554308386,
-      "actual": 0.45493562231759654,
-      "count": 233
+      "mean_pred": 0.45324483937153937,
+      "actual": 0.44591029023746703,
+      "count": 379
     },
     {
       "bin": "50-60%",
-      "mean_pred": 0.5520561274896996,
-      "actual": 0.5353159851301115,
-      "count": 269
+      "mean_pred": 0.5482383087271833,
+      "actual": 0.5529953917050692,
+      "count": 434
     },
     {
       "bin": "60-70%",
-      "mean_pred": 0.6454311141204842,
-      "actual": 0.596,
-      "count": 250
+      "mean_pred": 0.6423561983819989,
+      "actual": 0.6870503597122302,
+      "count": 278
     },
     {
       "bin": "70-80%",
-      "mean_pred": 0.7482585943570381,
-      "actual": 0.7038834951456311,
-      "count": 206
+      "mean_pred": 0.7374005842314914,
+      "actual": 0.7678571428571429,
+      "count": 112
     },
     {
       "bin": "80-90%",
-      "mean_pred": 0.845440435044409,
-      "actual": 0.7454545454545455,
-      "count": 110
+      "mean_pred": 0.8449153595730676,
+      "actual": 0.6666666666666666,
+      "count": 27
     },
     {
       "bin": "90-100%",
-      "mean_pred": 0.9172749606179762,
-      "actual": 0.8125,
-      "count": 16
+      "mean_pred": 0.9090024728775843,
+      "actual": 0.5,
+      "count": 2
     }
   ],
   "baselines": {
-    "always_home": 0.5503453289712832,
-    "market_favorite": 0.6666666666666666,
-    "market_games": 2634
+    "always_home": 0.5464788732394367,
+    "market_favorite": 0.6671490593342981,
+    "market_games": 1382,
+    "always_home_all": 0.5503453289712832,
+    "market_favorite_all": 0.6666666666666666
   },
   "training_games": 2751,
-  "feature_count": 98,
+  "feature_count": 116,
+  "numeric_feature_count": 48,
   "num_teams": 34,
   "player_stats": {
     "dataset": "philiphyde1/nfl-stats-1999-2022",
@@ -185,148 +230,273 @@
     ]
   },
   "player_feature_count": 15,
+  "weekly_player_feature_count": 12,
+  "weekly_player_available_count": 15,
+  "weekly_player_source": "nflreadpy weekly player stats (current season, prior games)",
   "feature_importance": [
     {
-      "feature": "diff_def_epa",
-      "coefficient": -0.3012,
-      "magnitude": 0.3012
-    },
-    {
-      "feature": "diff_player_qb_ypa",
-      "coefficient": 0.2501,
-      "magnitude": 0.2501
-    },
-    {
-      "feature": "home_off_epa",
-      "coefficient": 0.226,
-      "magnitude": 0.226
-    },
-    {
-      "feature": "diff_player_top3_rec_yards",
-      "coefficient": 0.2232,
-      "magnitude": 0.2232
-    },
-    {
-      "feature": "home_player_wr_ypr",
-      "coefficient": -0.1927,
-      "magnitude": 0.1927
-    },
-    {
-      "feature": "diff_player_wr_ypr",
-      "coefficient": 0.1605,
-      "magnitude": 0.1605
-    },
-    {
-      "feature": "away_player_qb_ypa",
-      "coefficient": 0.1506,
-      "magnitude": 0.1506
-    },
-    {
-      "feature": "diff_player_qb_rating",
-      "coefficient": -0.1497,
-      "magnitude": 0.1497
-    },
-    {
       "feature": "away_CLE",
-      "coefficient": 0.1414,
-      "magnitude": 0.1414
-    },
-    {
-      "feature": "away_player_qb_rating",
-      "coefficient": -0.1345,
-      "magnitude": 0.1345
+      "coefficient": 0.1277,
+      "magnitude": 0.1277
     },
     {
       "feature": "away_KC",
-      "coefficient": -0.1327,
-      "magnitude": 0.1327
-    },
-    {
-      "feature": "away_NE",
-      "coefficient": -0.1274,
-      "magnitude": 0.1274
-    },
-    {
-      "feature": "home_player_qb_ypa",
-      "coefficient": -0.1269,
-      "magnitude": 0.1269
-    },
-    {
-      "feature": "home_KC",
-      "coefficient": 0.1227,
-      "magnitude": 0.1227
-    },
-    {
-      "feature": "home_BUF",
-      "coefficient": 0.1194,
+      "coefficient": -0.1194,
       "magnitude": 0.1194
     },
     {
-      "feature": "diff_off_epa",
-      "coefficient": 0.114,
-      "magnitude": 0.114
+      "feature": "home_BUF",
+      "coefficient": 0.1174,
+      "magnitude": 0.1174
     },
     {
-      "feature": "away_def_epa",
-      "coefficient": -0.1129,
-      "magnitude": 0.1129
+      "feature": "away_NE",
+      "coefficient": -0.1173,
+      "magnitude": 0.1173
     },
     {
       "feature": "home_ARI",
-      "coefficient": -0.1122,
-      "magnitude": 0.1122
+      "coefficient": -0.1107,
+      "magnitude": 0.1107
+    },
+    {
+      "feature": "home_KC",
+      "coefficient": 0.1097,
+      "magnitude": 0.1097
     },
     {
       "feature": "home_GB",
-      "coefficient": 0.1111,
-      "magnitude": 0.1111
+      "coefficient": 0.1045,
+      "magnitude": 0.1045
     },
     {
-      "feature": "away_off_epa",
-      "coefficient": -0.1105,
-      "magnitude": 0.1105
+      "feature": "home_weekly_qb_ypa",
+      "coefficient": 0.0959,
+      "magnitude": 0.0959
+    },
+    {
+      "feature": "home_NYJ",
+      "coefficient": -0.0955,
+      "magnitude": 0.0955
+    },
+    {
+      "feature": "home_off_epa",
+      "coefficient": 0.0954,
+      "magnitude": 0.0954
+    },
+    {
+      "feature": "away_weekly_qb_ypa",
+      "coefficient": -0.0931,
+      "magnitude": 0.0931
+    },
+    {
+      "feature": "away_NYJ",
+      "coefficient": 0.0916,
+      "magnitude": 0.0916
+    },
+    {
+      "feature": "away_NYG",
+      "coefficient": 0.089,
+      "magnitude": 0.089
+    },
+    {
+      "feature": "away_BAL",
+      "coefficient": -0.0868,
+      "magnitude": 0.0868
+    },
+    {
+      "feature": "away_JAX",
+      "coefficient": 0.0863,
+      "magnitude": 0.0863
+    },
+    {
+      "feature": "away_weekly_rb_ypc",
+      "coefficient": -0.0855,
+      "magnitude": 0.0855
+    },
+    {
+      "feature": "home_WAS",
+      "coefficient": -0.083,
+      "magnitude": 0.083
+    },
+    {
+      "feature": "diff_weekly_rb_ypc",
+      "coefficient": -0.0823,
+      "magnitude": 0.0823
+    },
+    {
+      "feature": "diff_player_top3_rec_yards",
+      "coefficient": 0.0805,
+      "magnitude": 0.0805
+    },
+    {
+      "feature": "home_LV",
+      "coefficient": -0.077,
+      "magnitude": 0.077
+    },
+    {
+      "feature": "diff_off_epa",
+      "coefficient": 0.0761,
+      "magnitude": 0.0761
+    },
+    {
+      "feature": "home_weekly_rb_ypc",
+      "coefficient": 0.0743,
+      "magnitude": 0.0743
+    },
+    {
+      "feature": "away_CAR",
+      "coefficient": 0.0739,
+      "magnitude": 0.0739
+    },
+    {
+      "feature": "home_PIT",
+      "coefficient": 0.0731,
+      "magnitude": 0.0731
+    },
+    {
+      "feature": "away_SEA",
+      "coefficient": -0.0728,
+      "magnitude": 0.0728
     }
   ],
   "player_feature_importance": [
     {
-      "feature": "diff_player_qb_ypa",
-      "coefficient": 0.2501,
-      "magnitude": 0.2501
-    },
-    {
       "feature": "diff_player_top3_rec_yards",
-      "coefficient": 0.2232,
-      "magnitude": 0.2232
+      "coefficient": 0.0805,
+      "magnitude": 0.0805
     },
     {
       "feature": "home_player_wr_ypr",
-      "coefficient": -0.1927,
-      "magnitude": 0.1927
+      "coefficient": -0.0711,
+      "magnitude": 0.0711
     },
     {
-      "feature": "diff_player_wr_ypr",
-      "coefficient": 0.1605,
-      "magnitude": 0.1605
-    },
-    {
-      "feature": "away_player_qb_ypa",
-      "coefficient": 0.1506,
-      "magnitude": 0.1506
-    },
-    {
-      "feature": "diff_player_qb_rating",
-      "coefficient": -0.1497,
-      "magnitude": 0.1497
+      "feature": "diff_player_rb_ypc",
+      "coefficient": 0.0461,
+      "magnitude": 0.0461
     },
     {
       "feature": "away_player_qb_rating",
-      "coefficient": -0.1345,
-      "magnitude": 0.1345
+      "coefficient": -0.0455,
+      "magnitude": 0.0455
+    },
+    {
+      "feature": "home_player_qb_rating",
+      "coefficient": -0.0449,
+      "magnitude": 0.0449
+    },
+    {
+      "feature": "diff_player_qb_ypa",
+      "coefficient": 0.0394,
+      "magnitude": 0.0394
+    },
+    {
+      "feature": "home_player_top3_rec_yards",
+      "coefficient": 0.0384,
+      "magnitude": 0.0384
+    },
+    {
+      "feature": "away_player_wr_ypr",
+      "coefficient": -0.0368,
+      "magnitude": 0.0368
+    },
+    {
+      "feature": "home_player_rb_ypc",
+      "coefficient": 0.0279,
+      "magnitude": 0.0279
+    },
+    {
+      "feature": "away_player_top3_rec_yards",
+      "coefficient": -0.027,
+      "magnitude": 0.027
+    },
+    {
+      "feature": "away_player_rb_ypc",
+      "coefficient": -0.0223,
+      "magnitude": 0.0223
+    },
+    {
+      "feature": "diff_player_wr_ypr",
+      "coefficient": 0.0136,
+      "magnitude": 0.0136
+    },
+    {
+      "feature": "away_player_qb_ypa",
+      "coefficient": 0.0092,
+      "magnitude": 0.0092
+    },
+    {
+      "feature": "diff_player_qb_rating",
+      "coefficient": -0.0071,
+      "magnitude": 0.0071
     },
     {
       "feature": "home_player_qb_ypa",
-      "coefficient": -0.1269,
-      "magnitude": 0.1269
+      "coefficient": -0.0009,
+      "magnitude": 0.0009
+    }
+  ],
+  "weekly_feature_importance": [
+    {
+      "feature": "home_weekly_qb_ypa",
+      "coefficient": 0.0959,
+      "magnitude": 0.0959
+    },
+    {
+      "feature": "away_weekly_qb_ypa",
+      "coefficient": -0.0931,
+      "magnitude": 0.0931
+    },
+    {
+      "feature": "away_weekly_rb_ypc",
+      "coefficient": -0.0855,
+      "magnitude": 0.0855
+    },
+    {
+      "feature": "diff_weekly_rb_ypc",
+      "coefficient": -0.0823,
+      "magnitude": 0.0823
+    },
+    {
+      "feature": "home_weekly_rb_ypc",
+      "coefficient": 0.0743,
+      "magnitude": 0.0743
+    },
+    {
+      "feature": "diff_weekly_top3_rec_yards",
+      "coefficient": 0.0687,
+      "magnitude": 0.0687
+    },
+    {
+      "feature": "diff_weekly_wr_ypr",
+      "coefficient": -0.0595,
+      "magnitude": 0.0595
+    },
+    {
+      "feature": "diff_weekly_qb_ypa",
+      "coefficient": -0.0585,
+      "magnitude": 0.0585
+    },
+    {
+      "feature": "home_weekly_wr_ypr",
+      "coefficient": -0.0428,
+      "magnitude": 0.0428
+    },
+    {
+      "feature": "away_weekly_top3_rec_yards",
+      "coefficient": -0.0345,
+      "magnitude": 0.0345
+    },
+    {
+      "feature": "home_weekly_top3_rec_yards",
+      "coefficient": 0.0196,
+      "magnitude": 0.0196
+    },
+    {
+      "feature": "away_weekly_wr_ypr",
+      "coefficient": -0.0172,
+      "magnitude": 0.0172
     }
   ]
 }

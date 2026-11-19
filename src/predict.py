@@ -26,16 +26,23 @@ import pandas as pd
 
 from src import data as nfl_data
 from src.betting_data import load_teams
-from src.features import KAGGLE_TO_NFLVERSE, add_rolling_form, build_game_features
+from src.features import (
+    KAGGLE_TO_NFLVERSE,
+    MATCHUP_COLUMNS,
+    ROLLING_BASE_COLUMNS,
+    add_rolling_form,
+    build_game_features,
+)
 from src.model import load_model, predict_games
 from src.player_stats import PLAYER_COLUMNS, PLAYER_NAME_COLUMNS
+from src.weekly_players import WEEKLY_PLAYER_COLUMNS, WEEKLY_PLAYER_NAME_COLUMNS
 
 SEASON = 2026
 CONTEXT_SEASONS = (2025, 2026)
 WEB_DATA = Path(__file__).resolve().parents[1] / "web" / "data"
 PREDICTIONS_PATH = WEB_DATA / "predictions.json"
 METRICS_PATH = WEB_DATA / "model-metrics.json"
-FORM_COLUMNS = ("prev3_off_epa", "prev3_def_epa", "prev3_pace")
+FORM_COLUMNS = ROLLING_BASE_COLUMNS + MATCHUP_COLUMNS
 
 # Canonical current names keyed by nflverse abbreviation. The Kaggle teams
 # table lists historical names in inconsistent order, so it's only a fallback.
@@ -116,7 +123,11 @@ def generate_week_predictions(
     # Build features across the context seasons so rolling form carries over
     # the offseason into the early weeks of the target season.
     context = tuple(s for s in CONTEXT_SEASONS if s <= season)
-    games = build_game_features(context, include_betting=False)
+    games = build_game_features(
+        context,
+        include_betting=False,
+        weekly_window=artifact.get("weekly_window", 4),
+    )
     games = add_rolling_form(games, window=artifact["rolling_window"])
 
     week_games = games[(games["season"] == season) & (games["week"] == week)].copy()
@@ -134,12 +145,18 @@ def generate_week_predictions(
     picks = picks.merge(schedule_meta, on="game_id", how="left", validate="one_to_one")
     picks["gameday"] = picks["gameday"].astype(str)
 
-    form_cols = [f"{side}_{col}" for side in ("home", "away") for col in FORM_COLUMNS]
+    prefix = f"prev{artifact['rolling_window']}_"
+    form_cols = [f"{side}_{prefix}{col}" for side in ("home", "away") for col in FORM_COLUMNS]
     form_cols += ["home_rest", "away_rest", "home_had_bye", "away_had_bye"]
     form_cols += [
         f"{side}_player_{col}"
         for side in ("home", "away")
         for col in (*PLAYER_COLUMNS, *PLAYER_NAME_COLUMNS)
+    ]
+    form_cols += [
+        f"{side}_weekly_{col}"
+        for side in ("home", "away")
+        for col in (*WEEKLY_PLAYER_NAME_COLUMNS, *WEEKLY_PLAYER_COLUMNS)
     ]
     form = week_games[["game_id"] + form_cols].copy()
     picks = picks.merge(form, on="game_id", how="left", validate="one_to_one")
@@ -173,11 +190,22 @@ def _name(value):
     return None if pd.isna(value) else str(value)
 
 
-def _side_features(row, side: str) -> dict:
+def _side_features(row, side: str, prefix: str = "prev3_") -> dict:
+    def rolling(col: str):
+        return getattr(row, f"{side}_{prefix}{col}")
+
+    def weekly(col: str):
+        return getattr(row, f"{side}_weekly_{col}")
+
     return {
-        "off_epa": _num(getattr(row, f"{side}_prev3_off_epa")),
-        "def_epa": _num(getattr(row, f"{side}_prev3_def_epa")),
-        "pace": _num(getattr(row, f"{side}_prev3_pace"), 1),
+        "off_epa": _num(rolling("off_epa")),
+        "def_epa": _num(rolling("def_epa")),
+        "pace": _num(rolling("pace"), 1),
+        "off_epa_per_play": _num(rolling("off_epa_per_play"), 3),
+        "def_epa_per_play": _num(rolling("def_epa_per_play"), 3),
+        "success_rate": _num(rolling("success_rate"), 3),
+        "adj_off_epa": _num(rolling("adj_off_epa"), 3),
+        "adj_def_epa": _num(rolling("adj_def_epa"), 3),
         "rest_days": int(getattr(row, f"{side}_rest")),
         "bye": bool(getattr(row, f"{side}_had_bye")),
         # Prior-season player inputs used by the model.
@@ -186,15 +214,28 @@ def _side_features(row, side: str) -> dict:
         "rb_ypc": _num(getattr(row, f"{side}_player_rb_ypc")),
         "wr_ypr": _num(getattr(row, f"{side}_player_wr_ypr")),
         "top3_rec_yards": _num(getattr(row, f"{side}_player_top3_rec_yards"), 0),
+        # Current-season prior-week player form (qb_epa_att is insight-only).
+        "weekly_qb_ypa": _num(weekly("qb_ypa"), 2),
+        "weekly_qb_epa_att": _num(weekly("qb_epa_att"), 3),
+        "weekly_rb_ypc": _num(weekly("rb_ypc"), 2),
+        "weekly_wr_ypr": _num(weekly("wr_ypr"), 2),
+        "weekly_top3_rec_yards": _num(weekly("top3_rec_yards"), 0),
     }
 
 
-def _side_players(row, side: str, season: int) -> dict:
+def _side_players(row, side: str, season: int, week: int) -> dict:
     return {
         "prior_season": season - 1,
         "qb": _name(getattr(row, f"{side}_player_qb_name")),
         "rb": _name(getattr(row, f"{side}_player_rb_name")),
         "wr": _name(getattr(row, f"{side}_player_wr_name")),
+        "weekly": {
+            "season": season,
+            "week": week,
+            "qb": _name(getattr(row, f"{side}_weekly_qb_name")),
+            "rb": _name(getattr(row, f"{side}_weekly_rb_name")),
+            "wr": _name(getattr(row, f"{side}_weekly_wr_name")),
+        },
     }
 
 
@@ -205,14 +246,20 @@ def to_json(
     artifact = artifact if artifact is not None else load_model()
     recent = artifact["walk_forward"][-3:]
     player_stats = artifact.get("player_stats", {})
+    prefix = f"prev{artifact.get('rolling_window', 3)}_"
     meta = {
         "type": "logistic_regression",
         "seasons": artifact["seasons"],
         "training_games": artifact["training_games"],
         "features": artifact["feature_count"],
+        "C": artifact.get("C"),
+        "temperature": artifact.get("temperature", 1.0),
         "player_features": artifact.get("player_feature_count", 0),
         "player_source": player_stats.get("dataset"),
         "player_seasons": player_stats.get("seasons"),
+        "weekly_player_features": artifact.get("weekly_player_feature_count", 0),
+        "weekly_player_window": artifact.get("weekly_window", 4),
+        "weekly_player_source": artifact.get("weekly_player_source"),
         "walk_forward_accuracy": round(sum(r["accuracy"] for r in recent) / len(recent), 4),
         "walk_forward_auc": round(sum(r["roc_auc"] for r in recent) / len(recent), 4),
     }
@@ -220,7 +267,10 @@ def to_json(
         "season": season,
         "week": week,
         "model": meta,
-        "note": "Model probabilities only; no 2026 betting line. Player form is prior-season.",
+        "note": (
+            f"Temperature-calibrated model probabilities only; no {season} betting line. "
+            "Player form is real prior-season and prior-week data."
+        ),
         "games": [
             {
                 "game_id": row.game_id,
@@ -233,16 +283,16 @@ def to_json(
                     "name": row.home_name,
                     "record": row.home_record,
                     "win_prob": round(float(row.home_win_prob), 4),
-                    "features": _side_features(row, "home"),
-                    "players": _side_players(row, "home", season),
+                    "features": _side_features(row, "home", prefix),
+                    "players": _side_players(row, "home", season, week),
                 },
                 "away": {
                     "abbr": row.away_team,
                     "name": row.away_name,
                     "record": row.away_record,
                     "win_prob": round(float(row.away_win_prob), 4),
-                    "features": _side_features(row, "away"),
-                    "players": _side_players(row, "away", season),
+                    "features": _side_features(row, "away", prefix),
+                    "players": _side_players(row, "away", season, week),
                 },
                 "predicted_winner": row.predicted_winner,
                 "confidence": row.confidence,
@@ -262,7 +312,12 @@ def write_model_metrics(artifact: dict, path: Path = METRICS_PATH) -> Path:
         "training_games": artifact["training_games"],
         "features": artifact["feature_count"],
         "num_teams": artifact["num_teams"],
-        "C": artifact["C"],
+        "numeric_features": artifact.get("numeric_feature_count"),
+        "C": artifact.get("C"),
+        "temperature": artifact.get("temperature", 1.0),
+        "tuned": artifact.get("tuned", False),
+        "c_grid": artifact.get("c_grid", []),
+        "temperature_grid": artifact.get("temperature_grid", []),
         "rolling_window": artifact["rolling_window"],
         "in_sample": artifact["in_sample"],
         "walk_forward": artifact["walk_forward"],
@@ -270,8 +325,13 @@ def write_model_metrics(artifact: dict, path: Path = METRICS_PATH) -> Path:
         "baselines": artifact["baselines"],
         "player_stats": artifact.get("player_stats", {}),
         "player_feature_count": artifact.get("player_feature_count", 0),
+        "weekly_window": artifact.get("weekly_window", 4),
+        "weekly_player_feature_count": artifact.get("weekly_player_feature_count", 0),
+        "weekly_player_available_count": artifact.get("weekly_player_available_count", 0),
+        "weekly_player_source": artifact.get("weekly_player_source"),
         "feature_importance": artifact.get("feature_importance", []),
         "player_feature_importance": artifact.get("player_feature_importance", []),
+        "weekly_feature_importance": artifact.get("weekly_feature_importance", []),
         "recent_average": {
             "accuracy": round(sum(r["accuracy"] for r in recent) / len(recent), 4),
             "roc_auc": round(sum(r["roc_auc"] for r in recent) / len(recent), 4),
@@ -307,9 +367,10 @@ def main() -> None:
     print_table(picks, week, args.season)
     ps = artifact.get("player_stats", {})
     if ps:
-        print(f"\nPlayer form: {ps['dataset']} "
-              f"({ps['seasons'][0]}-{ps['seasons'][1]}), "
-              f"prior season only")
+        print(f"\nPrior-season player form: {ps['dataset']} "
+              f"({ps['seasons'][0]}-{ps['seasons'][1]})")
+    print(f"Current-season player form: nflreadpy, {artifact.get('weekly_window', 4)}-game window")
+    print(f"Probability calibration: temperature={artifact.get('temperature', 1.0):.3f}")
 
     if not args.no_write:
         args.json.parent.mkdir(parents=True, exist_ok=True)

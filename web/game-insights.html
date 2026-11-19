@@ -20,7 +20,7 @@
 <div class="flex items-center gap-space-xs">
 <img alt="GridironML Logo" class="h-6 w-auto object-contain" src="logo.svg">
 <span class="font-headline-sm text-[15px] text-on-surface tracking-tight font-bold">GridironML</span>
-<span class="font-label-sm text-[10px] bg-primary-fixed text-on-primary-fixed px-1.5 py-0.5 rounded-full uppercase tracking-wider font-bold ml-1">v4.2</span>
+<span class="font-label-sm text-[10px] bg-primary-fixed text-on-primary-fixed px-1.5 py-0.5 rounded-full uppercase tracking-wider font-bold ml-1">v4.3</span>
 </div>
 <nav class="hidden lg:flex items-center gap-0.5 bg-surface-container-low p-0.5 rounded-lg" data-active-classes="bg-surface-container text-on-surface font-label-md font-bold rounded">
 <a class="px-space-sm py-1 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors rounded" data-path="weekly-board" href="index.html">Weekly Board</a>
@@ -50,7 +50,7 @@
 <div class="flex flex-col gap-space-xs">
 <span class="font-label-md text-label-md uppercase tracking-wider text-primary font-bold" id="game-week-label">Week Slate</span>
 <h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight font-extrabold">Game Insights &amp; ML Deep Dive</h1>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Every number below is a real model input or output — rolling form from games already played, plus the model's win probability. No simulated box scores or betting lines.</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Every number below is real pre-game data or model output — rolling team form, prior-game player production, and a temperature-calibrated win probability. No simulated box scores or betting lines.</p>
 </div>
 <section class="bg-surface-container-lowest rounded-xl shadow-sm p-space-md flex flex-col gap-space-sm">
 <div class="flex items-center justify-between">
@@ -73,8 +73,8 @@
 </section>
 <section class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col gap-space-md">
 <div>
-<h2 class="font-headline-md text-headline-md font-bold text-on-surface">Model Inputs — Home vs Away</h2>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Rolling averages cover each team's previous three games (offensive EPA, EPA allowed, pace). Rest and bye come from the schedule; prior-season player form is below.</p>
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface">Pre-Game Inputs — Home vs Away</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Rolling averages cover each team's previous three games. EPA per play, success rate and opponent-adjusted EPA are derived from those same prior games; the adjusted columns are the model inputs. Rest and bye come from the schedule.</p>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-space-sm" id="insight-features"></div>
 </section>
@@ -84,6 +84,13 @@
 <p class="font-body-sm text-body-sm text-on-surface-variant" id="player-source-note">Team leaders from the Kaggle player-stat dataset. These are real model inputs from the season before this game.</p>
 </div>
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-space-sm" id="insight-players"></div>
+</section>
+<section class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col gap-space-md">
+<div>
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface">Current-Season Weekly Player Form</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant" id="weekly-player-source-note">Team leaders from already-completed games this season. The current game is excluded from every rolling value.</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-space-sm" id="insight-weekly-players"></div>
 </section>
 <section class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col gap-space-md">
 <div>
