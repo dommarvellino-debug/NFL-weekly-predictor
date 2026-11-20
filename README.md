@@ -40,7 +40,8 @@ nfl-game-predictor/
 │   ├── features.py   # EPA rates / rest / bye / player joins + rolling form
 │   ├── model.py      # tuned logistic regression + walk-forward evaluation
 │   └── predict.py    # current-week predictions + web data exports
-├── tests/            # unit tests
+├── tests/            # offline leakage-guard tests (pytest)
+├── pytest.ini         # pytest discovery / import path
 ├── web/              # static GridironML-style UI (4 screens)
 │   ├── index.html          # Weekly Matchup Board & AI Picks (landing)
 │   ├── pick-simulator.html # Solo Pick Simulator & AI Comparison
@@ -70,6 +71,18 @@ pip install -r requirements.txt
 
 (If PowerShell blocks the activation script, run
 `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` first.)
+
+## Tests
+
+The suite in `tests/` guards the pre-game-only contract with in-memory fixtures,
+so it never downloads data or calls the network. It verifies that rolling team
+form and weekly player form exclude the current game, that prior-season joins
+never use the current season, that adjusted EPA is built only from prior games,
+and that the model matrix and calibration keep their expected shape and ordering.
+
+```powershell
+python -m pytest
+```
 
 ## Static web UI
 
@@ -382,7 +395,8 @@ pre-game form yet.
 Data loading, EPA/play + opponent-adjusted EPA, pace/rest/bye features,
 prior-season player features, current-season weekly player form, nested
 walk-forward tuning, temperature calibration, generated 2026 weekly predictions,
-feature-impact exports, and the four-screen static UI are complete. Run
-`python -m src.model` after changing the feature set, then `python -m src.predict`
+feature-impact exports, the four-screen static UI, and offline leakage-guard
+tests are complete. Run `python -m pytest` after changing the feature pipeline,
+then `python -m src.model` after changing the feature set and `python -m src.predict`
 whenever a new week's games are complete; refresh the served `web/` pages to see
 the updated slate.
