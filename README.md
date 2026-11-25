@@ -1,5 +1,7 @@
 # NFL Weekly Game Predictor
 
+[![tests](https://github.com/dommarvellino-debug/NFL-weekly-predictor/actions/workflows/tests.yml/badge.svg)](https://github.com/dommarvellino-debug/NFL-weekly-predictor/actions/workflows/tests.yml)
+
 Predict the outcomes of weekly NFL games using historical play-by-play and
 schedule data from the [nflverse](https://nflverse.nflverse.com/) via
 `nflreadpy`, enriched with historical scores and betting lines from the Kaggle
@@ -80,9 +82,18 @@ form and weekly player form exclude the current game, that prior-season joins
 never use the current season, that adjusted EPA is built only from prior games,
 and that the model matrix and calibration keep their expected shape and ordering.
 
+A second group of tests validates the JSON served to the UI: required keys,
+probabilities that sum to one, game IDs that match the matchup and week, no
+fabricated betting lines, one coherent slate of gamedays, fresh dates during
+the season, and agreement between `predictions.json` and `model-metrics.json`.
+
 ```powershell
 python -m pytest
 ```
+
+The same command runs on every push and pull request via
+`.github/workflows/tests.yml`, so the badge above turns red if either the
+leakage guarantees or the exported data contract breaks.
 
 ## Static web UI
 
