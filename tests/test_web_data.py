@@ -89,8 +89,10 @@ def test_probabilities_are_valid_and_consistent(games):
         )
         assert game["predicted_winner"] == expected_winner
         assert game["confidence"] in CONFIDENCE_LABELS
+        # edge_pp is rounded from the unrounded probability before win_prob is
+        # rounded for JSON, so allow one rounding step of drift.
         assert game["edge_pp"] == pytest.approx(
-            round(abs(p_home - 0.5) * 100, 1), abs=0.1
+            round(abs(p_home - 0.5) * 100, 1), abs=0.2
         )
 
 
@@ -109,7 +111,8 @@ def test_gamedays_form_one_valid_slate(games, predictions):
     for game in games:
         gameday = date.fromisoformat(game["gameday"])
         assert gameday.year == predictions["season"]
-        assert gameday <= today + timedelta(days=1)  # no future-dated picks
+        # An upcoming slate includes future kickoffs, but never a distant one.
+        assert gameday <= today + timedelta(days=14)
         assert game["weekday"] == gameday.strftime("%A")
         datetime.strptime(game["gametime"], "%H:%M")
         slate.append(gameday)

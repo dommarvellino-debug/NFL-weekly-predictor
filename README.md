@@ -23,7 +23,9 @@ dataset and current-season weekly player form from nflreadpy.
 | kagglehub | Download both Kaggle datasets (scores/betting lines and player stats) |
 
 > Note: `nflreadpy` returns **Polars** DataFrames. The helpers in `src/data.py`
-> convert them to pandas with `.to_pandas()` (which requires `pyarrow`).
+> convert them to pandas with `.to_pandas()` (which requires `pyarrow`). When
+> nflverse temporarily publishes only `schedules/games.csv`, the schedule loader
+> falls back to that CSV and filters to the requested seasons.
 
 ## Project structure
 
@@ -403,11 +405,13 @@ pre-game form yet.
 
 ## Status
 
-Data loading, EPA/play + opponent-adjusted EPA, pace/rest/bye features,
+Data loading (with a CSV fallback when nflverse's schedule parquet asset is
+unavailable), EPA/play + opponent-adjusted EPA, pace/rest/bye features,
 prior-season player features, current-season weekly player form, nested
-walk-forward tuning, temperature calibration, generated 2026 weekly predictions,
-feature-impact exports, the four-screen static UI, and offline leakage-guard
-tests are complete. Run `python -m pytest` after changing the feature pipeline,
-then `python -m src.model` after changing the feature set and `python -m src.predict`
-whenever a new week's games are complete; refresh the served `web/` pages to see
-the updated slate.
+walk-forward tuning, temperature calibration, generated 2026 weekly predictions
+(currently Week 12), feature-impact exports, the four-screen static UI, and
+offline leakage/data-contract tests are complete. Run `python -m pytest` after
+changing the feature pipeline, then `python -m src.model` after changing the
+feature set and `python -m src.predict` whenever a new week's games are complete;
+refresh the served `web/` pages to see the updated slate. CI runs the same suite
+on every push.
